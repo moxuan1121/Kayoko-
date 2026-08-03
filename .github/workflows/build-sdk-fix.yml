@@ -1,0 +1,100 @@
+name: Build Kayoko Packages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+      - release
+
+permissions:
+  contents: write
+
+env:
+  THEOS: ${{ github.workspace }}/theos-roothide
+  THEOS_IGNORE_PARALLEL_BUILDING_NOTICE: "yes"
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+
+jobs:
+  build:
+    name: Build ${{ matrix.variant }}
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        variant: [rootful, rootless, roothide]
+
+    steps:
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "15.4"
+
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Check out Theos
+        uses: actions/checkout@v4
+        with:
+          repository: roothide/theos
+          path: theos-roothide
+          submodules: recursive
+
+      - name: Install iOS SDK and build dependencies
+        run: |
+          "${THEOS}/bin/install-sdk" iPhoneOS16.5
+          brew install ldid xz
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
+          echo "${THEOS}/bin" >> "$GITHUB_PATH"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Build ${{ matrix.variant }} package
+        run: |
+          chmod +x build.sh
+          ./build.sh "${{ matrix.variant }}"
+          mkdir -p artifacts
+          for package in packages/*.deb; do
+            name="$(basename "$package" .deb)"
+            cp "$package" "artifacts/${name}-${{ matrix.variant }}.deb"
+          done
+
+      - name: Upload ${{ matrix.variant }} package
+        uses: actions/upload-artifact@v4
+        with:
+          name: kayoko-${{ matrix.variant }}
+          path: artifacts/*.deb
+          if-no-files-found: error
+
+  release:
+    name: Create draft release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/release'
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Read package version
+        run: |
+          VERSION=$(awk -F ': ' '/^Version:/{print $2; exit}' control)
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: kayoko-*
+          path: release-packages
+          merge-multiple: true
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: Kayoko v${{ env.VERSION }}
+          draft: true
+          files: release-packages/*.deb
