@@ -52,6 +52,9 @@ NS_ASSUME_NONNULL_END
         _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
                                                                         action:@selector(handlePanGestureRecognizer:)];
         [_panGestureRecognizer setDelegate:self];
+        // The grabber is decorative only: panel dismissal is handled by the
+        // explicit controls and outside-touch preference, not header gestures.
+        [_panGestureRecognizer setEnabled:NO];
         [panelView addGestureRecognizer:_panGestureRecognizer];
         _headerViews = [NSHashTable weakObjectsHashTable];
         _scrollViewPanGestureRecognizersRequiringPanelPanFailure = [NSHashTable weakObjectsHashTable];
@@ -66,11 +69,6 @@ NS_ASSUME_NONNULL_END
     }
 
     [[self headerViews] addObject:headerView];
-    UITapGestureRecognizer *recognizer =
-        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGrabberTapGestureRecognizer:)];
-    [recognizer setCancelsTouchesInView:NO];
-    [recognizer setDelegate:self];
-    [headerView addGestureRecognizer:recognizer];
 }
 
 #pragma mark - State
@@ -363,13 +361,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - UIGestureRecognizerDelegate
 
-- (CGRect)grabberTapTargetFrameInHeaderView:(__unused KayokoHeaderView *)headerView {
-    // The compact header places interactive controls close to the decorative
-    // grabber. Do not reserve a tap target here, otherwise it intercepts the
-    // history/favorites segmented control. Panel panning remains available.
-    return CGRectNull;
-}
-
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     if (gestureRecognizer == [self panGestureRecognizer]) {
         [self setPanGestureTouchView:[touch view]];
@@ -380,15 +371,7 @@ NS_ASSUME_NONNULL_END
         return YES;
     }
 
-    UIView *gestureView = [gestureRecognizer view];
-    if (![gestureView isKindOfClass:[KayokoHeaderView class]] ||
-        ![[self headerViews] containsObject:(KayokoHeaderView *)gestureView]) {
-        return YES;
-    }
-
-    KayokoHeaderView *headerView = (KayokoHeaderView *)gestureView;
-    CGPoint location = [touch locationInView:headerView];
-    return CGRectContainsPoint([self grabberTapTargetFrameInHeaderView:headerView], location);
+    return YES;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -397,14 +380,6 @@ NS_ASSUME_NONNULL_END
     }
 
     return YES;
-}
-
-- (void)handleGrabberTapGestureRecognizer:(UITapGestureRecognizer *)recognizer {
-    if ([recognizer state] != UIGestureRecognizerStateEnded) {
-        return;
-    }
-
-    [[self delegate] panelPresentationControllerDidTapGrabberArea:self];
 }
 
 #pragma mark - Presentation
