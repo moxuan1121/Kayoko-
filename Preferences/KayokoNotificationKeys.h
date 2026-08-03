@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-static NSString *const kKayokoNotificationKeyCoreShow = @"com.mlgm.kayoko.core.show";
+static NSString *const kKayokoNotificationKeyCoreShow = @"codes.aurora.kayoko.core.show";
 static NSString *const kKayokoLegacyNotificationKeyCoreShow = @"dev.traurige.kayoko.core.show";
 static NSString *const kKayokoNotificationKeyCoreHide = @"com.mlgm.kayoko.core.hide";
 static NSString *const kKayokoLegacyNotificationKeyCoreHide = @"dev.traurige.kayoko.core.hide";
