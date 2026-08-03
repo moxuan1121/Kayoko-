@@ -289,35 +289,20 @@ NS_ASSUME_NONNULL_END
 }
 
 - (CGRect)portraitPanelFrameInWindow:(nullable UIWindow *)window {
-    // Portrait: bottom floating card (IMG_0634 style).
-    // - left/right/bottom gaps
-    // - height from user preference, NOT full screen
+    // Full-width bottom sheet: no side or bottom gaps. Height still follows
+    // the user's panel-height preference.
     CGRect bounds = [self referenceBoundsForWindow:window];
-    CGFloat inset = kKayokoPanelFloatingInset;
-
-    CGFloat width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-    width = MAX(width, 280.0);
-    CGFloat x = CGRectGetMidX(bounds) - width * 0.5;
-
-    CGFloat maxHeight = MAX(CGRectGetHeight(bounds) - inset * 2.0, 220.0);
+    CGFloat width = CGRectGetWidth(bounds);
+    CGFloat maxHeight = MAX(CGRectGetHeight(bounds), 220.0);
     CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maxHeight);
-    CGFloat y = CGRectGetMaxY(bounds) - height - inset;
-    return CGRectMake(x, y, width, height);
+    CGFloat y = CGRectGetMaxY(bounds) - height;
+    return CGRectMake(CGRectGetMinX(bounds), y, width, height);
 }
 
 - (CGRect)fullscreenPanelFrameInWindow:(UIWindow *)window {
-    // Landscape: nearly full height because vertical space is limited,
-    // but still a floating card with side/top/bottom gaps.
+    // Compact landscape uses the complete host bounds with no edge gaps.
     CGRect bounds = [self referenceBoundsForWindow:window];
-    CGFloat inset = kKayokoPanelFloatingInset;
-
-    CGFloat width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-    width = MAX(width, 280.0);
-    CGFloat x = CGRectGetMidX(bounds) - width * 0.5;
-
-    CGFloat y = CGRectGetMinY(bounds) + inset;
-    CGFloat height = MAX(CGRectGetHeight(bounds) - inset * 2.0, 220.0);
-    return CGRectMake(x, y, width, height);
+    return bounds;
 }
 
 

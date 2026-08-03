@@ -9,7 +9,7 @@
 
 #import "KayokoPasteboardManager.h"
 
-static CGFloat const kKayokoHistoryListViewBaseRowHeight = 65;
+static CGFloat const kKayokoHistoryListViewBaseRowHeight = 46;
 static CGFloat const kKayokoHistoryListViewAdditionalPreviewLineHeight = 18;
 static CGFloat const kKayokoHistoryListViewDetailLineHeight = 15;
 static NSUInteger const kKayokoHistoryListViewMaximumPreviewLineCount = 3;

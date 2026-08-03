@@ -831,8 +831,7 @@
     }
 
     // Outer view keeps radius for shadow path; clip view actually clips children.
-    CACornerMask cornerMask =
-        kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner | kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner;
+    CACornerMask cornerMask = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
     [[self layer] setCornerRadius:radius];
     [[[self chromeClipView] layer] setCornerRadius:radius];
     [[[self blurEffectView] layer] setCornerRadius:radius];
@@ -848,7 +847,9 @@
 
     // Continuous corners are not exact circular arcs, but a rounded shadow path is still
     // dramatically cheaper than forcing Core Animation to recompute soft shadows every frame.
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius];
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
+                                               byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight
+                                                     cornerRadii:CGSizeMake(radius, radius)];
     [[self layer] setShadowPath:path.CGPath];
     [self setCachedChromeBoundsSize:boundsSize];
     [self setHasCachedChromeAppearance:YES];
