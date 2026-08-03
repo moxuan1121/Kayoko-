@@ -363,10 +363,11 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - UIGestureRecognizerDelegate
 
-- (CGRect)grabberTapTargetFrameInHeaderView:(KayokoHeaderView *)headerView {
-    UIView *grabberView = (UIView *)[headerView grabber];
-    CGRect grabberFrame = [grabberView convertRect:[grabberView bounds] toView:headerView];
-    return CGRectInset(grabberFrame, -44, -16);
+- (CGRect)grabberTapTargetFrameInHeaderView:(__unused KayokoHeaderView *)headerView {
+    // The compact header places interactive controls close to the decorative
+    // grabber. Do not reserve a tap target here, otherwise it intercepts the
+    // history/favorites segmented control. Panel panning remains available.
+    return CGRectNull;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

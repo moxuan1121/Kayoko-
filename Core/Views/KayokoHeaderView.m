@@ -9,7 +9,7 @@
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoPasteboardManager.h"
 
-static CGFloat const kKayokoHeaderHeight = 44;
+static CGFloat const kKayokoHeaderHeight = 60;
 static CGFloat const kKayokoTitleTapControlHeight = 44;
 static CGFloat const kKayokoTitleTapControlTrailingSpacing = 8;
 static CGFloat const kKayokoHistorySegmentWidth = 146;
@@ -48,9 +48,6 @@ static CGFloat const kKayokoSegmentBottomInset = 10;
         _historySwitcherVisible = YES;
 
         _grabber = [[KayokoGrabberView alloc] init];
-        // Keep the existing hit target for panel gestures, but do not draw the
-        // grabber in the compact header.
-        [_grabber setHidden:YES];
         [self addSubview:_grabber];
         [_grabber setTranslatesAutoresizingMaskIntoConstraints:NO];
 
