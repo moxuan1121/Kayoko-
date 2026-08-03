@@ -14,7 +14,6 @@ static CGFloat const kKayokoHistoryListViewAdditionalPreviewLineHeight = 18;
 static CGFloat const kKayokoHistoryListViewDetailLineHeight = 15;
 static NSUInteger const kKayokoHistoryListViewMaximumPreviewLineCount = 3;
 static CGFloat const kKayokoHistoryListViewHiddenHeaderInsetPadding = 1;
-static CGFloat const kKayokoHistoryListViewVerticalFadeHeight = 20;
 static CGFloat const kKayokoNoSearchResultsPlaceholderMinimumHeight = 96;
 static NSTimeInterval const kKayokoHistoryListViewTransientContentOffsetPreservationDuration = 1.0;
 
@@ -412,9 +411,10 @@ NS_ASSUME_NONNULL_END
         if (@available(iOS 11.1, *)) {
             [self setVerticalScrollIndicatorInsets:UIEdgeInsetsMake(4, 0, 8, 2)];
         }
-        [self setEdgeFadeAxis:KayokoEdgeFadeAxisVertical];
-        [self setEdgeFadeWidth:kKayokoHistoryListViewVerticalFadeHeight];
-        [self setEdgeFadeEnabled:YES];
+        // Keep list rows fully opaque at both edges. The panel already clips the
+        // table to its rounded chrome, so an additional vertical fade makes the
+        // first and last visible rows look unnecessarily blurred.
+        [self setEdgeFadeEnabled:NO];
         _itemDetailsMode = kKayokoItemDetailsModeImagesOnly;
         [self setPreviewLineCount:1];
     }

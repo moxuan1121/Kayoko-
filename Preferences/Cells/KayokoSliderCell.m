@@ -5,6 +5,7 @@
 
 #import "KayokoSliderCell.h"
 
+#import <math.h>
 #import <Preferences/PSSpecifier.h>
 
 @implementation KayokoSliderCell {
@@ -67,6 +68,10 @@
         _valueLabel.textColor = [UIColor secondaryLabelColor];
         _valueLabel.numberOfLines = 1;
         _valueLabel.lineBreakMode = NSLineBreakByClipping;
+        _valueLabel.userInteractionEnabled = YES;
+        UILongPressGestureRecognizer *valueLongPress =
+            [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(valueLabelLongPressed:)];
+        [_valueLabel addGestureRecognizer:valueLongPress];
         [self.contentView addSubview:_valueLabel];
     }
 
@@ -224,6 +229,68 @@
         NSNumber *value = @(slider.value);
         [specifier performSetterWithValue:value];
     }
+}
+
+- (UIViewController *)presentingViewController {
+    UIResponder *responder = self;
+    while ((responder = [responder nextResponder])) {
+        if ([responder isKindOfClass:[UIViewController class]]) {
+            UIViewController *viewController = (UIViewController *)responder;
+            while ([viewController presentedViewController]) {
+                viewController = [viewController presentedViewController];
+            }
+            return viewController;
+        }
+    }
+    return nil;
+}
+
+- (void)valueLabelLongPressed:(UILongPressGestureRecognizer *)recognizer {
+    if ([recognizer state] != UIGestureRecognizerStateBegan || ![_slider isEnabled]) {
+        return;
+    }
+
+    UIViewController *presenter = [self presentingViewController];
+    if (!presenter || [presenter isKindOfClass:[UIAlertController class]]) {
+        return;
+    }
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Enter Value"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+      [textField setKeyboardType:UIKeyboardTypeDecimalPad];
+      [textField setText:[NSString stringWithFormat:self->_formatString, self->_slider.value]];
+      [textField setClearButtonMode:UITextFieldViewModeWhileEditing];
+      [textField selectAll:nil];
+    }];
+
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:@"Save"
+                                             style:UIAlertActionStyleDefault
+                                           handler:^(__unused UIAlertAction *action) {
+      __strong typeof(weakSelf) strongSelf = weakSelf;
+      if (!strongSelf) {
+          return;
+      }
+
+      NSString *text = [[[alert textFields] firstObject] text];
+      NSScanner *scanner = [NSScanner scannerWithString:text ?: @""];
+      double enteredValue = 0;
+      if (![scanner scanDouble:&enteredValue] || ![scanner isAtEnd] || !isfinite(enteredValue)) {
+          return;
+      }
+
+      float boundedValue = (float)MIN(MAX(enteredValue, strongSelf->_slider.minimumValue),
+                                      strongSelf->_slider.maximumValue);
+      [strongSelf->_slider setValue:boundedValue animated:NO];
+      [strongSelf sliderValueChanged:strongSelf->_slider];
+    }]];
+
+    [presenter presentViewController:alert animated:YES completion:^{
+      [[[alert textFields] firstObject] becomeFirstResponder];
+    }];
 }
 
 - (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier {
