@@ -1492,7 +1492,7 @@
 				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(KAYOKO_ALTLIST_FRAMEWORK_DIR) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
@@ -1505,7 +1505,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_INCLUDE)";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				KAYOKO_ALTLIST_FRAMEWORK_DIR = "$(SRCROOT)/Preferences/Frameworks/_roothide";
 				KAYOKO_PACKAGE_SCHEME = roothide;
 				KAYOKO_ROOTHIDE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
 				KAYOKO_SUBSTRATE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
@@ -1612,8 +1611,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					AltList,
-					"-framework",
 					Preferences,
 					"-framework",
 					FrontBoardServices,
@@ -1690,8 +1687,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					AltList,
 					"-framework",
 					Preferences,
 					"-framework",
@@ -1839,7 +1834,7 @@
 				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(KAYOKO_ALTLIST_FRAMEWORK_DIR) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1857,7 +1852,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_INCLUDE)";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				KAYOKO_ALTLIST_FRAMEWORK_DIR = "$(SRCROOT)/Preferences/Frameworks/_roothide";
 				KAYOKO_PACKAGE_SCHEME = roothide;
 				KAYOKO_ROOTHIDE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
 				KAYOKO_SUBSTRATE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";

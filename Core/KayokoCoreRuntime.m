@@ -300,9 +300,16 @@ NS_ASSUME_NONNULL_END
 }
 
 - (CGRect)fullscreenPanelFrameInWindow:(UIWindow *)window {
-    // Compact landscape uses the complete host bounds with no edge gaps.
+    // Landscape keeps the same floating-card language as portrait: cap the
+    // width, honor the configured height, and center the card in the host.
     CGRect bounds = [self referenceBoundsForWindow:window];
-    return bounds;
+    CGFloat inset = kKayokoPanelFloatingInset;
+    CGFloat width = MIN(kKayokoPanelFloatingMaxWidth, MAX(CGRectGetWidth(bounds) - inset * 2.0, 0.0));
+    CGFloat maximumHeight = MAX(CGRectGetHeight(bounds) - inset * 2.0, 0.0);
+    CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maximumHeight);
+    CGFloat x = CGRectGetMidX(bounds) - width * 0.5;
+    CGFloat y = CGRectGetMidY(bounds) - height * 0.5;
+    return CGRectMake(x, y, width, height);
 }
 
 
@@ -465,10 +472,13 @@ NS_ASSUME_NONNULL_END
         return NO;
     }
 
-    [self.mainViewController setOutsideDismissOverlayView:nil];
+    UIControl *outsideDismissOverlayView = [self ensurePortraitOutsideDismissOverlayInWindow:window];
+    [self.mainViewController setOutsideDismissOverlayView:outsideDismissOverlayView];
     [self.mainViewController
         setKayokoSupportedInterfaceOrientations:[self compactLandscapeSupportedInterfaceOrientations]];
-    [self.mainViewController setPresentationMode:KayokoPanelPresentationModeCompactLandscapeFullscreen];
+    // The overlay window still follows the foreground app's landscape
+    // orientation, but its content uses the regular floating-card layout.
+    [self.mainViewController setPresentationMode:KayokoPanelPresentationModePortraitDrawer];
     [self applyOverlayWindowFrame:window];
     if ([window rootViewController] != self.mainViewController) {
         [[self.mainViewController view] removeFromSuperview];
@@ -478,6 +488,8 @@ NS_ASSUME_NONNULL_END
     [self applyOverlayWindowFrame:window];
 
     UIView *panelView = [self.mainViewController view];
+    [window bringSubviewToFront:outsideDismissOverlayView];
+    [window bringSubviewToFront:panelView];
     [panelView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
     [panelView setFrame:[self fullscreenPanelFrameInWindow:window]];
     [panelView setNeedsLayout];
@@ -668,7 +680,6 @@ NS_ASSUME_NONNULL_END
         kKayokoPreferenceKeyDismissOnOutsideTouch : @(kKayokoPreferenceKeyDismissOnOutsideTouchDefaultValue),
         kKayokoPreferenceKeyDisablePasteTips : @(kKayokoPreferenceKeyDisablePasteTipsDefaultValue),
         kKayokoPreferenceKeyIgnoreRemoteReplication : @(kKayokoPreferenceKeyIgnoreRemoteReplicationDefaultValue),
-        kKayokoPreferenceKeyApplicationBlacklist : @[],
         kKayokoPreferenceKeyPlaySoundEffects : @(kKayokoPreferenceKeyPlaySoundEffectsDefaultValue),
         kKayokoPreferenceKeyPlayHapticFeedback : @(kKayokoPreferenceKeyPlayHapticFeedbackDefaultValue),
         kKayokoPreferenceKeyPreviewLineCount : @(kKayokoPreferenceKeyPreviewLineCountDefaultValue),
@@ -723,8 +734,6 @@ NS_ASSUME_NONNULL_END
     self.dismissOnOutsideTouch = [[self.preferences objectForKey:kKayokoPreferenceKeyDismissOnOutsideTouch] boolValue];
     BOOL ignoreRemoteReplication =
         [[self.preferences objectForKey:kKayokoPreferenceKeyIgnoreRemoteReplication] boolValue];
-    NSSet<NSString *> *applicationBlacklist =
-        [NSSet setWithArray:[self.preferences arrayForKey:kKayokoPreferenceKeyApplicationBlacklist] ?: @[]];
     self.playSoundEffects = [[self.preferences objectForKey:kKayokoPreferenceKeyPlaySoundEffects] boolValue];
     self.playHapticFeedback = [[self.preferences objectForKey:kKayokoPreferenceKeyPlayHapticFeedback] boolValue];
     self.previewLineCount = [[self.preferences objectForKey:kKayokoPreferenceKeyPreviewLineCount] unsignedIntegerValue];
@@ -772,10 +781,6 @@ NS_ASSUME_NONNULL_END
     if ([pasteboardManager ignoreRemoteReplication] != ignoreRemoteReplication) {
         [pasteboardManager setIgnoreRemoteReplication:ignoreRemoteReplication];
     }
-    if (![[pasteboardManager applicationBlacklist] isEqualToSet:applicationBlacklist]) {
-        [pasteboardManager setApplicationBlacklist:applicationBlacklist];
-    }
-
     [self applyPreferencesToView];
 }
 

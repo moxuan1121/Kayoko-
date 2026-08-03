@@ -40,7 +40,6 @@ settings:
     KAYOKO_THEOS_PRIVATE_FRAMEWORKS: "$(KAYOKO_THEOS_SDK)/System/Library/PrivateFrameworks"
     KAYOKO_SUBSTRATE_LIB_DIR: "$(THEOS)/vendor/lib/iphone/roothide"
     KAYOKO_ROOTHIDE_LIB_DIR: "$(THEOS)/vendor/lib/iphone/roothide"
-    KAYOKO_ALTLIST_FRAMEWORK_DIR: "$(SRCROOT)/Preferences/Frameworks/_roothide"
     ARCHS: "arm64 arm64e"
     VALID_ARCHS: "arm64 arm64e"
     ENABLE_MODULE_VERIFIER: NO
@@ -49,7 +48,7 @@ settings:
     GCC_PREPROCESSOR_DEFINITIONS: "$(inherited) THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\" THEOS_PACKAGE_SCHEME_ROOTHIDE=1"
     HEADER_SEARCH_PATHS: "$(inherited) $(KAYOKO_THEOS_INCLUDE)"
     LIBRARY_SEARCH_PATHS: "$(inherited) $(KAYOKO_SUBSTRATE_LIB_DIR) $(KAYOKO_ROOTHIDE_LIB_DIR)"
-    FRAMEWORK_SEARCH_PATHS: "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(KAYOKO_ALTLIST_FRAMEWORK_DIR) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib"
+    FRAMEWORK_SEARCH_PATHS: "$(inherited) $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS) $(THEOS)/vendor/lib/iphone/roothide $(THEOS)/vendor/lib"
     SYSTEM_FRAMEWORK_SEARCH_PATHS: "$(inherited) $(SDKROOT)/System/Library/Frameworks $(KAYOKO_THEOS_PRIVATE_FRAMEWORKS)"
     OTHER_CFLAGS: "$(inherited) -fobjc-arc -Wno-unused-command-line-argument"
     OTHER_LDFLAGS: "$(inherited) -ObjC -lroothide"
@@ -229,8 +228,6 @@ targets:
         LD_DYLIB_INSTALL_NAME: "@loader_path/.jbroot/Library/PreferenceBundles/KayokoPreferences.bundle/KayokoPreferences"
         OTHER_LDFLAGS:
           - "$(inherited)"
-          - "-framework"
-          - "AltList"
           - "-framework"
           - "Preferences"
           - "-framework"

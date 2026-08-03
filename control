@@ -7,6 +7,6 @@ Maintainer: mlgm
 Author: mlgm
 Section: Tweaks
 Icon: https://mlgm66.github.io/icon/kayoko.png
-Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader, com.opa334.altlist
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
 Conflicts: codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
 Replaces: codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
