@@ -14,8 +14,8 @@ static CGFloat const kKayokoTitleTapControlHeight = 44;
 static CGFloat const kKayokoTitleTapControlTrailingSpacing = 8;
 static CGFloat const kKayokoHistorySegmentWidth = 146;
 static CGFloat const kKayokoHistorySegmentHeight = 28;
-static CGFloat const kKayokoGrabberTopInset = 8;
-static CGFloat const kKayokoSegmentBottomInset = 2;
+static CGFloat const kKayokoGrabberTopInset = 4;
+static CGFloat const kKayokoSegmentBottomInset = 6;
 
 @interface KayokoHeaderView ()
 
