@@ -23,7 +23,6 @@
 
 static NSTimeInterval const kKayokoMinimumFeedbackInterval = 0.6;
 static NSTimeInterval const kKayokoPasteSuppressionExpirationDelay = 1.0;
-static CGFloat const kKayokoPortraitPanelTopTrim = 20.0;
 
 @interface UIApplication (KayokoPrivate)
 - (UIInterfaceOrientation)_frontMostAppOrientation;
@@ -290,12 +289,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (CGRect)portraitPanelFrameInWindow:(nullable UIWindow *)window {
-    // Keep the bottom edge anchored while trimming the unused grabber band
-    // from the top of the portrait panel.
+    // Full-width bottom sheet: no side or bottom gaps. Height follows the
+    // user's panel-height preference exactly.
     CGRect bounds = [self referenceBoundsForWindow:window];
     CGFloat width = CGRectGetWidth(bounds);
     CGFloat maxHeight = MAX(CGRectGetHeight(bounds), 220.0);
-    CGFloat height = MIN(MAX(self.heightInPoints - kKayokoPortraitPanelTopTrim, 220.0), maxHeight);
+    CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maxHeight);
     CGFloat y = CGRectGetMaxY(bounds) - height;
     return CGRectMake(CGRectGetMinX(bounds), y, width, height);
 }
