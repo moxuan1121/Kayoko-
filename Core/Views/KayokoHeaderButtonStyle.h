@@ -17,5 +17,5 @@ static CGFloat const kKayokoPanelFloatingInset = 5.0;
 // Landscape can span nearly full height; portrait uses preference height.
 static CGFloat const kKayokoPanelFloatingMaxWidth = 430.0;
 
-// Fallback only; runtime prefers UIScreen display corner radius.
-static CGFloat const kKayokoPanelCornerRadiusFallback = 55.0;
+// The floating panel uses a fixed, compact continuous corner radius.
+static CGFloat const kKayokoPanelCornerRadiusFallback = 28.0;

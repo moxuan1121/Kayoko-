@@ -192,18 +192,18 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
         if (hasContentText) {
             [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] topAnchor]
                                                         constraintEqualToAnchor:[self topAnchor]
-                                                                       constant:showsDetail ? 13 : 12] ]];
+                                                                       constant:3] ]];
             if (showsDetail) {
                 [NSLayoutConstraint activateConstraints:@[
                     [[[self detailLabel] topAnchor] constraintEqualToAnchor:[[self contentLabel] bottomAnchor]
                                                                    constant:2],
                     [[[self detailLabel] bottomAnchor] constraintLessThanOrEqualToAnchor:[self bottomAnchor]
-                                                                                constant:-8]
+                                                                                constant:-3]
                 ]];
             } else {
                 [NSLayoutConstraint activateConstraints:@[ [[[self contentLabel] bottomAnchor]
                                                             constraintLessThanOrEqualToAnchor:[self bottomAnchor]
-                                                                                     constant:-10] ]];
+                                                                                     constant:-3] ]];
             }
         } else if (showsDetail) {
             [NSLayoutConstraint activateConstraints:@[

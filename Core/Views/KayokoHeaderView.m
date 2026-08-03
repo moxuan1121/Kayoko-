@@ -9,7 +9,7 @@
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoPasteboardManager.h"
 
-static CGFloat const kKayokoHeaderHeight = 76;
+static CGFloat const kKayokoHeaderHeight = 60;
 static CGFloat const kKayokoTitleTapControlHeight = 44;
 static CGFloat const kKayokoTitleTapControlTrailingSpacing = 8;
 static CGFloat const kKayokoHistorySegmentWidth = 146;

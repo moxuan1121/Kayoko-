@@ -768,38 +768,7 @@
 }
 
 - (CGFloat)resolvedPanelCornerRadius {
-    // Prefer Apple's private display corner radius (continuous/squircle corners).
-    CGFloat radius = 0;
-    UIScreen *screen = self.window.windowScene.screen ?: [UIScreen mainScreen];
-    @try {
-        NSNumber *value = [screen valueForKey:@"_displayCornerRadius"];
-        if (!value) {
-            value = [screen valueForKey:@"displayCornerRadius"];
-        }
-        if ([value respondsToSelector:@selector(doubleValue)]) {
-            radius = [value doubleValue];
-        }
-    } @catch (__unused NSException *exception) {
-        radius = 0;
-    }
-
-    // Fallback for older devices / failed KVC: approximate continuous device radius.
-    if (radius < 20.0) {
-        UIWindow *window = self.window;
-        UIEdgeInsets insets = window ? window.safeAreaInsets : UIEdgeInsetsZero;
-        if (insets.bottom > 0) {
-            radius = 55.0; // modern iPhone continuous corner ballpark
-        } else if (insets.top > 20.0) {
-            radius = 47.0;
-        } else {
-            radius = kKayokoPanelCornerRadiusFallback;
-        }
-    }
-
-    // Floating sheet is inset from the screen edge, so slightly reduce the device radius
-    // to keep the visual curvature harmonious with the device bezel.
-    radius = MAX(radius - 3.0, 28.0);
-    return radius;
+    return kKayokoPanelCornerRadiusFallback;
 }
 
 - (void)updateFloatingChromeAppearance {
