@@ -9,10 +9,10 @@
 #import <ImageIO/ImageIO.h>
 #import <sys/stat.h>
 
-static NSUInteger const kKayokoThumbnailMemoryCacheCountLimit = 80;
-static NSUInteger const kKayokoThumbnailMemoryCacheCostLimit = 24 * 1024 * 1024;
-static NSUInteger const kKayokoThumbnailPendingWriteCountLimit = 16;
-static NSUInteger const kKayokoThumbnailPendingWriteCostLimit = 16 * 1024 * 1024;
+static NSUInteger const kKayokoThumbnailMemoryCacheCountLimit = 32;
+static NSUInteger const kKayokoThumbnailMemoryCacheCostLimit = 8 * 1024 * 1024;
+static NSUInteger const kKayokoThumbnailPendingWriteCountLimit = 8;
+static NSUInteger const kKayokoThumbnailPendingWriteCostLimit = 4 * 1024 * 1024;
 static CGFloat const kKayokoThumbnailDiskCacheJPEGQuality = 0.9;
 static NSString *const kKayokoThumbnailDefaultCacheDirectoryPath =
     @"/var/mobile/Library/Caches/com.mlgm.kayoko/thumbnails/v2";

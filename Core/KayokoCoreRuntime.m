@@ -23,6 +23,7 @@
 
 static NSTimeInterval const kKayokoMinimumFeedbackInterval = 0.6;
 static NSTimeInterval const kKayokoPasteSuppressionExpirationDelay = 1.0;
+static CGFloat const kKayokoPortraitPanelTopTrim = 20.0;
 
 @interface UIApplication (KayokoPrivate)
 - (UIInterfaceOrientation)_frontMostAppOrientation;
@@ -289,12 +290,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (CGRect)portraitPanelFrameInWindow:(nullable UIWindow *)window {
-    // Full-width bottom sheet: no side or bottom gaps. Height still follows
-    // the user's panel-height preference.
+    // Keep the bottom edge anchored while trimming the unused grabber band
+    // from the top of the portrait panel.
     CGRect bounds = [self referenceBoundsForWindow:window];
     CGFloat width = CGRectGetWidth(bounds);
     CGFloat maxHeight = MAX(CGRectGetHeight(bounds), 220.0);
-    CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maxHeight);
+    CGFloat height = MIN(MAX(self.heightInPoints - kKayokoPortraitPanelTopTrim, 220.0), maxHeight);
     CGFloat y = CGRectGetMaxY(bounds) - height;
     return CGRectMake(CGRectGetMinX(bounds), y, width, height);
 }
@@ -431,6 +432,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleMainPanelDidHide {
+    // Thumbnails can be reconstructed from the bounded disk cache when the
+    // panel opens again; do not keep decoded images resident in SpringBoard.
+    [[KayokoPasteboardManager sharedInstance] resetThumbnailMemoryCache];
+
     if ([self activePresentationMode] != KayokoPanelPresentationModeCompactLandscapeFullscreen &&
         [self.overlayWindow rootViewController] != self.mainViewController) {
         return;

@@ -9,7 +9,7 @@
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoPasteboardManager.h"
 
-static CGFloat const kKayokoHeaderHeight = 60;
+static CGFloat const kKayokoHeaderHeight = 44;
 static CGFloat const kKayokoTitleTapControlHeight = 44;
 static CGFloat const kKayokoTitleTapControlTrailingSpacing = 8;
 static CGFloat const kKayokoHistorySegmentWidth = 146;
@@ -48,6 +48,9 @@ static CGFloat const kKayokoSegmentBottomInset = 10;
         _historySwitcherVisible = YES;
 
         _grabber = [[KayokoGrabberView alloc] init];
+        // Keep the existing hit target for panel gestures, but do not draw the
+        // grabber in the compact header.
+        [_grabber setHidden:YES];
         [self addSubview:_grabber];
         [_grabber setTranslatesAutoresizingMaskIntoConstraints:NO];
 
@@ -144,12 +147,10 @@ static CGFloat const kKayokoSegmentBottomInset = 10;
             [[_grabber widthAnchor] constraintEqualToConstant:42],
             [[_grabber heightAnchor] constraintEqualToConstant:14],
 
-            // Keep controls below the grabber with clear breathing room.
             [[_leadingButton bottomAnchor] constraintEqualToAnchor:[self bottomAnchor]
                                                           constant:-kKayokoSegmentBottomInset],
             [[_leadingButton centerXAnchor] constraintEqualToAnchor:[self leadingAnchor]
                                                            constant:kKayokoLeadingHeaderButtonCenterXInset],
-            [[_leadingButton topAnchor] constraintGreaterThanOrEqualToAnchor:[_grabber bottomAnchor] constant:8],
 
             [[_titleLabel centerYAnchor] constraintEqualToAnchor:[_leadingButton centerYAnchor]],
             [[_titleLabel leadingAnchor] constraintEqualToAnchor:[self leadingAnchor]
