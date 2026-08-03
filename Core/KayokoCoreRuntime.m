@@ -306,9 +306,12 @@ NS_ASSUME_NONNULL_END
     CGFloat inset = kKayokoPanelFloatingInset;
     CGFloat width = MIN(kKayokoPanelFloatingMaxWidth, MAX(CGRectGetWidth(bounds) - inset * 2.0, 0.0));
     CGFloat maximumHeight = MAX(CGRectGetHeight(bounds) - inset * 2.0, 0.0);
-    CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maximumHeight);
+    CGFloat preferredHeight = MIN(MAX(self.heightInPoints, 220.0), maximumHeight);
     CGFloat x = CGRectGetMidX(bounds) - width * 0.5;
-    CGFloat y = CGRectGetMidY(bounds) - height * 0.5;
+    CGFloat y = CGRectGetMidY(bounds) - preferredHeight * 0.5;
+    // Preserve the reference top position while extending the card to the
+    // screen bottom, avoiding an exposed strip below the landscape panel.
+    CGFloat height = MAX(CGRectGetMaxY(bounds) - y, 0.0);
     return CGRectMake(x, y, width, height);
 }
 
