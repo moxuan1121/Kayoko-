@@ -17,6 +17,7 @@ typedef void (*KayokoSystemTranslationSendVoidWithBoolean)(id object, SEL select
 typedef BOOL (*KayokoSystemTranslationSendBoolean)(id object, SEL selector);
 
 @interface KayokoSystemTranslationPresenter ()
+<UIPopoverPresentationControllerDelegate>
 
 @property(nonatomic, strong, nullable) UIViewController *presentedController;
 
@@ -31,7 +32,9 @@ typedef BOOL (*KayokoSystemTranslationSendBoolean)(id object, SEL selector);
     return [self hasCompatibleSystemTranslationUI];
 }
 
-- (BOOL)presentTranslationForText:(NSString *)text fromController:(UIViewController *)controller {
+- (BOOL)presentTranslationForText:(NSString *)text
+                   fromController:(UIViewController *)controller
+                       anchorView:(UIView *)anchorView {
     if (![self isAvailable] || [text length] == 0 || !controller || [self isPresentingTranslation] ||
         [controller presentedViewController] || [controller isBeingPresented] || [controller isBeingDismissed] ||
         ![[controller viewIfLoaded] window]) {
@@ -45,15 +48,17 @@ typedef BOOL (*KayokoSystemTranslationSendBoolean)(id object, SEL selector);
     SEL setSourceLocale = NSSelectorFromString(@"setSourceLocale:");
     SEL setIsSourceEditable = NSSelectorFromString(@"setIsSourceEditable:");
     SEL setDismissCompletionHandler = NSSelectorFromString(@"setDismissCompletionHandler:");
-    if (!translationViewController || ![translationViewController respondsToSelector:setText] ||
-        ![translationViewController respondsToSelector:setTargetLocale]) {
+
+    if (!translationViewController || ![translationViewController respondsToSelector:setText]) {
         return NO;
     }
 
     ((KayokoSystemTranslationSendVoidWithObject)objc_msgSend)(translationViewController, setText,
                                                                 [[NSAttributedString alloc] initWithString:text]);
-    ((KayokoSystemTranslationSendVoidWithObject)objc_msgSend)(translationViewController, setTargetLocale,
-                                                                [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]);
+    if ([translationViewController respondsToSelector:setTargetLocale]) {
+        ((KayokoSystemTranslationSendVoidWithObject)objc_msgSend)(
+            translationViewController, setTargetLocale, [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]);
+    }
     if ([translationViewController respondsToSelector:setSourceLocale]) {
         ((KayokoSystemTranslationSendVoidWithObject)objc_msgSend)(translationViewController, setSourceLocale, nil);
     }
@@ -74,8 +79,47 @@ typedef BOOL (*KayokoSystemTranslationSendBoolean)(id object, SEL selector);
     }
 
     [self setPresentedController:translationViewController];
+
+    UIView *presentationAnchor = anchorView ?: [controller viewIfLoaded];
+    [translationViewController setModalPresentationStyle:UIModalPresentationPopover];
+    UIPopoverPresentationController *popover = [translationViewController popoverPresentationController];
+    if (popover) {
+        [popover setDelegate:self];
+        [popover setSourceView:presentationAnchor];
+        [popover setSourceRect:[presentationAnchor bounds]];
+        [popover setPermittedArrowDirections:UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown];
+    }
+
+    UIWindow *hostWindow = [presentationAnchor window] ?: [[controller viewIfLoaded] window];
+    CGFloat width = MIN(CGRectGetWidth([hostWindow bounds]) - 32.0, 360.0);
+    if (width <= 0) {
+        width = 320.0;
+    }
+    [translationViewController setPreferredContentSize:CGSizeMake(width, 340.0)];
+
     [controller presentViewController:translationViewController animated:YES completion:nil];
     return YES;
+}
+
+#pragma mark - UIPopoverPresentationControllerDelegate
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller
+                                                              traitCollection:(UITraitCollection *)traitCollection {
+    return UIModalPresentationPageSheet;
+}
+
+- (void)prepareForPopoverPresentation:(UIPopoverPresentationController *)popoverPresentationController {
+    if (@available(iOS 15.0, *)) {
+        UISheetPresentationController *sheet =
+            [[popoverPresentationController presentedViewController] sheetPresentationController];
+        if (sheet) {
+            [sheet setDetents:@[
+                [UISheetPresentationControllerDetent mediumDetent],
+                [UISheetPresentationControllerDetent largeDetent]
+            ]];
+            [sheet setPrefersGrabberVisible:YES];
+        }
+    }
 }
 
 - (void)dismissTranslationAnimated:(BOOL)animated {
@@ -115,14 +159,10 @@ typedef BOOL (*KayokoSystemTranslationSendBoolean)(id object, SEL selector);
 
     Class translationViewControllerClass = NSClassFromString(@"LTUITranslationViewController");
     SEL setText = NSSelectorFromString(@"setText:");
-    SEL setTargetLocale = NSSelectorFromString(@"setTargetLocale:");
-    SEL isAvailable = NSSelectorFromString(@"isAvailable");
+    SEL expandSheet = NSSelectorFromString(@"expandSheet");
     if (!translationViewControllerClass || ![translationViewControllerClass instancesRespondToSelector:setText] ||
-        ![translationViewControllerClass instancesRespondToSelector:setTargetLocale]) {
+        ![translationViewControllerClass instancesRespondToSelector:expandSheet]) {
         return NO;
-    }
-    if ([translationViewControllerClass respondsToSelector:isAvailable]) {
-        return ((KayokoSystemTranslationSendBoolean)objc_msgSend)(translationViewControllerClass, isAvailable);
     }
     return YES;
 }
