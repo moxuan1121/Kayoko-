@@ -17,8 +17,9 @@
 #import "KayokoTableViewCellContent.h"
 #import "KayokoTableViewCellContentProvider.h"
 
-@interface UIKeyboardImpl : UIView
+@interface UIKeyboardImpl : NSObject
 + (instancetype)sharedInstance;
++ (instancetype)activeInstance;
 - (void)showTokenSelectionPopup:(NSString *)text;
 @end
 
@@ -935,7 +936,16 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
-    NSIndexPath *indexPath = [[self tableView] indexPathForCell:(UITableViewCell *)[recognizer view]];
+    UIView *recognizedView = [recognizer view];
+    if (![recognizedView isKindOfClass:[UITableViewCell class]]) {
+        return;
+    }
+
+    NSIndexPath *indexPath = [[self tableView] indexPathForCell:(UITableViewCell *)recognizedView];
+    if (!indexPath || [indexPath section] != 0 || [indexPath row] >= (NSInteger)[[self displayedItems] count]) {
+        return;
+    }
+
     KayokoPasteboardItem *item = [KayokoPasteboardItem itemFromDictionary:[self itemDictionaryAtIndexPath:indexPath]];
     if (!item) {
         return;
@@ -944,13 +954,18 @@ NS_ASSUME_NONNULL_END
     NSString *text = [[item content] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if ([[item imageName] length] == 0 && [text length] > 0) {
         Class keyboardImplClass = NSClassFromString(@"UIKeyboardImpl");
+        UIKeyboardImpl *keyboardImpl = nil;
         if ([keyboardImplClass respondsToSelector:@selector(sharedInstance)]) {
-            UIKeyboardImpl *keyboardImpl = [keyboardImplClass sharedInstance];
-            if ([keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)]) {
-                [[self delegate] historyListViewControllerDidRequestHide:self];
-                [keyboardImpl showTokenSelectionPopup:[item content] ?: @""];
-                return;
-            }
+            keyboardImpl = [keyboardImplClass sharedInstance];
+        }
+        if (![keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)] &&
+            [keyboardImplClass respondsToSelector:@selector(activeInstance)]) {
+            keyboardImpl = [keyboardImplClass activeInstance];
+        }
+        if ([keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)]) {
+            [[self delegate] historyListViewControllerDidRequestHide:self];
+            [keyboardImpl showTokenSelectionPopup:[item content] ?: @""];
+            return;
         }
     }
 
