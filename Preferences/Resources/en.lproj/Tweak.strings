@@ -21,7 +21,6 @@
 "Clear History Confirmation" = "Clear history? This action cannot be undone.";
 "Clear Images" = "Clear Images";
 "Clear Images Confirmation" = "Clear all images? This action cannot be undone.";
-"Clear Selection" = "Clear Selection";
 "Clipboard" = "Clipboard";
 "Continue" = "Continue";
 "Continuity" = "Continuity";
@@ -62,8 +61,6 @@
 "Save" = "Save";
 "Save to Photos" = "Save to Photos";
 "Search" = "Search";
-"Select All" = "Select All";
-"Selection Order" = "Selection Order";
 "Share" = "Share";
 "Spotlight" = "Spotlight";
 "SpringBoard" = "SpringBoard";

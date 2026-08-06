@@ -17,6 +17,11 @@
 #import "KayokoTableViewCellContent.h"
 #import "KayokoTableViewCellContentProvider.h"
 
+@interface UIKeyboardImpl : UIView
++ (instancetype)sharedInstance;
+- (void)showTokenSelectionPopup:(NSString *)text;
+@end
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoHistoryListViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -932,9 +937,24 @@ NS_ASSUME_NONNULL_END
 
     NSIndexPath *indexPath = [[self tableView] indexPathForCell:(UITableViewCell *)[recognizer view]];
     KayokoPasteboardItem *item = [KayokoPasteboardItem itemFromDictionary:[self itemDictionaryAtIndexPath:indexPath]];
-    if (item) {
-        [[self delegate] historyListViewController:self didRequestPreviewForItem:item];
+    if (!item) {
+        return;
     }
+
+    NSString *text = [[item content] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([[item imageName] length] == 0 && [text length] > 0) {
+        Class keyboardImplClass = NSClassFromString(@"UIKeyboardImpl");
+        if ([keyboardImplClass respondsToSelector:@selector(sharedInstance)]) {
+            UIKeyboardImpl *keyboardImpl = [keyboardImplClass sharedInstance];
+            if ([keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)]) {
+                [[self delegate] historyListViewControllerDidRequestHide:self];
+                [keyboardImpl showTokenSelectionPopup:[item content] ?: @""];
+                return;
+            }
+        }
+    }
+
+    [[self delegate] historyListViewController:self didRequestPreviewForItem:item];
 }
 
 @end
