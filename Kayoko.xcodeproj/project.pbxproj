@@ -58,7 +58,6 @@
 		2CFA9F8EAC72B1A2CC8E8E12 /* Tags.strings in Resources */ = {isa = PBXBuildFile; fileRef = B9A4AD282F7DBA19011610A8 /* Tags.strings */; };
 		2E3236ED6A210286F2F93A0C /* KayokoTagDotView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3431241125D6D540C48CFD9D /* KayokoTagDotView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F2655417E2A1204B94DBCF7 /* KayokoNoteEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0931934F1FCF4351C46450A2 /* KayokoNoteEditorView.m */; };
-		2F2A219F697509C21893B47A /* KayokoWordTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 253E9B9017C8F5C7A8433AD2 /* KayokoWordTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32173B0B873C8DD860E4ACFC /* KayokoListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910980166F9774A18BE704B8 /* KayokoListItemsController.m */; };
 		329D483320688F3745B5A3D5 /* KayokoPredictionBarHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3097C3C19FC378343C2DB6C4 /* KayokoPredictionBarHooks.m */; };
 		32D0E3E4AF2412585D324FFC /* HomeScreen-Search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D1522F655F08DE27D58107D8 /* HomeScreen-Search@3x.png */; };
@@ -84,7 +83,6 @@
 		484E4900A387C5F868E3F859 /* KayokoHelperConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = CA47CF38CF044F489AA0D299 /* KayokoHelperConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4900C081D91471AE4DB43BBD /* KayokoSwipeUpGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 329939B6A6B7E37EB00C798C /* KayokoSwipeUpGestureRecognizer.m */; };
 		494F5704B0DCAACAADC207C2 /* KayokoCore.m in Sources */ = {isa = PBXBuildFile; fileRef = A319E94A1536332DBB68B053 /* KayokoCore.m */; };
-		498375BA8747912D76340ED5 /* KayokoWordTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0D16E2333AA2789EFD0EE8 /* KayokoWordTokenView.m */; };
 		49CB9623AEFCA135298545C0 /* KayokoPreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = FB9200AECF827133129A26AD /* KayokoPreviewView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4ACEA45775CE928609B7BFBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AFCC3146095CECBD347E944 /* Foundation.framework */; };
 		4C4C004C787B0749956C9754 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F159528372065006DC14C58 /* Security.framework */; };
@@ -255,7 +253,6 @@
 		09C306D3FE1D5B84C76C7CE3 /* KayokoStepSliderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoStepSliderCell.m; sourceTree = "<group>"; };
 		0D8746DA202B376FC8B8A276 /* KayokoApplicationMetadataProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoApplicationMetadataProvider.h; sourceTree = "<group>"; };
 		0DCD40AE6A3B5007B58CBE7D /* KayokoHistoryListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoHistoryListViewController.m; sourceTree = "<group>"; };
-		0E0D16E2333AA2789EFD0EE8 /* KayokoWordTokenView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoWordTokenView.m; sourceTree = "<group>"; };
 		0EBCEC5D830F998257C1EC18 /* KayokoEmptyStateView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoEmptyStateView.h; sourceTree = "<group>"; };
 		11E75E627E502213B1E2942C /* KayokoTagTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoTagTableViewCell.m; sourceTree = "<group>"; };
 		14BDF1C33E5D287D0A0824EE /* KayokoSpringBoardHooks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoSpringBoardHooks.h; sourceTree = "<group>"; };
@@ -281,7 +278,6 @@
 		22245D3E0D5081A3178B6C12 /* KayokoListItemsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoListItemsController.h; sourceTree = "<group>"; };
 		236F1BFC7F30686920F45914 /* KayokoFavoritesTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoFavoritesTableView.h; sourceTree = "<group>"; };
 		239E200FDF8C8F7E0099FD07 /* KayokoEdgeFadingCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoEdgeFadingCollectionView.m; sourceTree = "<group>"; };
-		253E9B9017C8F5C7A8433AD2 /* KayokoWordTokenView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoWordTokenView.h; sourceTree = "<group>"; };
 		25A0A3FC942890B8FFE67F3F /* Spotlight-Search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spotlight-Search@2x.png"; sourceTree = "<group>"; };
 		2820FE63C61B95B0C2B786C8 /* KayokoSwipeUpHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoSwipeUpHooks.m; sourceTree = "<group>"; };
 		2B485B9F32D3F476E0B190C9 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -782,8 +778,6 @@
 				33655E26FC8FF8938EDB68EF /* KayokoTagChipBarView.m */,
 				3431241125D6D540C48CFD9D /* KayokoTagDotView.h */,
 				794F8BBDBB6350F531DDB34E /* KayokoTagDotView.m */,
-				253E9B9017C8F5C7A8433AD2 /* KayokoWordTokenView.h */,
-				0E0D16E2333AA2789EFD0EE8 /* KayokoWordTokenView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1003,7 +997,6 @@
 				2E3236ED6A210286F2F93A0C /* KayokoTagDotView.h in Headers */,
 				CA2BE3162E9FC88C5EA5B78A /* KayokoTagStore.h in Headers */,
 				DA1C2A6D4D91C62A311EE835 /* KayokoThumbnailCache.h in Headers */,
-				2F2A219F697509C21893B47A /* KayokoWordTokenView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1286,7 +1279,6 @@
 				DDEC5EB08AF98610D44DB273 /* KayokoTagDotView.m in Sources */,
 				5FF5D2E337B5D1D1C5A45FC2 /* KayokoTagStore.m in Sources */,
 				3FDF077D30F46D62911E3FFD /* KayokoThumbnailCache.m in Sources */,
-				498375BA8747912D76340ED5 /* KayokoWordTokenView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
