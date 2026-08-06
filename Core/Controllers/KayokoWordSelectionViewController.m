@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoWordSelectionViewController ()
 #pragma mark - Views
+
 @property(nonatomic, strong, readwrite) KayokoWordSelectionView *wordSelectionView;
 
 #pragma mark - State
@@ -136,7 +137,7 @@ NS_ASSUME_NONNULL_END
     [[headerView alternateTrailingButton] setEnabled:YES];
     [[headerView alternateTrailingButton] setAlpha:1.0];
     [[headerView selectionActionButton] setHidden:NO];
-    NSString *translationImageName = [UIImage systemImageNamed:@"character.bubble"] ? @"character.bubble" : @"globe";
+    NSString *translationImageName = [UIImage systemImageNamed:@"character.book.closed"] ? @"character.book.closed" : @"globe";
     [headerView updateStyleForButton:[headerView translationButton]
                        withImageName:translationImageName
                            imageSize:kKayokoBackButtonImageSize
@@ -225,10 +226,7 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
-    KayokoHeaderView *headerView = [[self wordSelectionView] headerView];
-    if ([[self systemTranslationPresenter] presentTranslationForText:[self selectedText]
-                                                      fromController:self
-                                                          anchorView:[headerView translationButton]]) {
+    if ([[self systemTranslationPresenter] presentTranslationForText:[self selectedText] fromController:self]) {
         [[self delegate] wordSelectionViewController:self triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleLight];
     }
 }
