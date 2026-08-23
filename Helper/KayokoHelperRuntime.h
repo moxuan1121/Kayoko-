@@ -16,13 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)installApplicationRuntimeWithConfiguration:(KayokoHelperConfiguration *)configuration;
 - (void)installSpringBoardRuntimeWithConfiguration:(KayokoHelperConfiguration *)configuration;
 
-- (BOOL)activateKayoko;
 - (BOOL)activateKayokoAfterCapturingCurrentFocus;
-- (BOOL)activateKayokoFromResponder:(UIResponder *)responder;
 - (void)captureCurrentFirstResponder;
 - (void)restoreCapturedFirstResponder;
 - (void)paste;
-- (void)pasteFromPredictionBar;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;

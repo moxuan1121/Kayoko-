@@ -14,22 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
                                      spotlightSwipeUpOnly:(BOOL)spotlightSwipeUpOnly;
 @end
 
-@interface KayokoHelperHookInstaller (PredictionBar)
-+ (void)installPredictionBarHooks;
-@end
-
-@interface KayokoHelperHookInstaller (CalloutMenu)
-+ (void)installCalloutBarHooks;
-@end
-
-@interface KayokoHelperHookInstaller (InputSwitcher)
-+ (void)installInputSwitcherHooks;
-@end
-
-@interface KayokoHelperHookInstaller (Dictation)
-+ (void)installDictationHooks;
-@end
-
 @interface KayokoHelperHookInstaller (SwipeUp)
 + (void)installSwipeUpHooks;
 + (void)installKeyboardExtensionSwipeUpHooksForSpotlightOnly:(BOOL)spotlightOnly;

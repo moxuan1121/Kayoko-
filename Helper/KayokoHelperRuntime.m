@@ -266,9 +266,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)postCoreShow;
 - (void)postCoreHide;
-- (void)showKayoko;
 - (void)showKayokoAfterCapturingCurrentFocus;
-- (void)showKayokoFromResponder:(UIResponder *)responder;
 
 #pragma mark - Application And Window State
 
@@ -296,7 +294,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearLastKayokoKeyboardInput;
 - (BOOL)hasRecentKayokoKeyboardInput;
 - (UIResponder *)currentFirstResponder;
-- (UIResponder *)currentKayokoInputResponder;
 - (BOOL)currentInputIsKayokoOwnedUpdatingLast:(BOOL)clearsLastForExternalInput;
 - (BOOL)currentInputIsKayokoOwned;
 - (BOOL)keyboardHideIsFromKayokoInput;
@@ -306,7 +303,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIResponder *)restorableKeyboardInputDelegate;
 - (BOOL)restoreResponder:(UIResponder *)responder;
 - (void)captureFocusSessionInKeyWindow:(UIWindow *)keyWindow;
-- (void)captureFocusSessionFromResponder:(UIResponder *)responder keyWindow:(UIWindow *)keyWindow;
 - (void)captureResponderForFocusRestore:(UIResponder *)responder;
 - (BOOL)restoreCapturedFocusSessionInKeyWindow:(UIWindow *)keyWindow;
 
@@ -315,7 +311,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIResponder *)capturedFocusResponderForPasteRequiringKeyboardDelegate:(BOOL *)requiresKeyboardDelegate;
 - (void)postPasteWillStart;
 - (BOOL)preparePasteboardForPaste;
-- (BOOL)pasteIntoKayokoInputResponder:(UIResponder *)responder;
 - (BOOL)performPaste;
 - (BOOL)pendingPasteIsReady;
 - (BOOL)pendingPasteboardChangeIsReady;
@@ -475,24 +470,9 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
 
 #pragma mark - Public Runtime API
 
-- (void)showKayoko {
-    [self postCoreShow];
-}
-
 - (void)showKayokoAfterCapturingCurrentFocus {
     [self captureCurrentFirstResponder];
     [self postCoreShow];
-}
-
-- (void)showKayokoFromResponder:(UIResponder *)responder {
-    if ([responder isKindOfClass:[UIResponder class]] && ![self responderIsKayokoOwned:responder]) {
-        [self captureFocusSessionFromResponder:responder
-                                     keyWindow:[self activeKeyWindowForApplication:[UIApplication sharedApplication]]];
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self postCoreShow];
-    });
 }
 
 - (void)captureCurrentFirstResponder {
@@ -561,16 +541,6 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
     }
 }
 
-- (BOOL)activateKayoko {
-    if (![self shouldHandleActivationForCurrentInput]) {
-        [self playActivationRejectedFeedbackIfNeeded];
-        return NO;
-    }
-
-    [self showKayoko];
-    return YES;
-}
-
 - (BOOL)activateKayokoAfterCapturingCurrentFocus {
     if (![self shouldHandleActivationForCurrentInput]) {
         [self playActivationRejectedFeedbackIfNeeded];
@@ -579,26 +549,6 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
 
     [self showKayokoAfterCapturingCurrentFocus];
     return YES;
-}
-
-- (BOOL)activateKayokoFromResponder:(UIResponder *)responder {
-    if (![self shouldHandleActivationForCurrentInput]) {
-        [self playActivationRejectedFeedbackIfNeeded];
-        return NO;
-    }
-
-    [self showKayokoFromResponder:responder];
-    return YES;
-}
-
-- (void)pasteFromPredictionBar {
-    UIResponder *responder = [self currentKayokoInputResponder];
-    if (responder) {
-        [self pasteIntoKayokoInputResponder:responder];
-        return;
-    }
-
-    [self paste];
 }
 
 #pragma mark - Runtime Hook Events
@@ -912,22 +862,6 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
     return self.resolvedCurrentFirstResponder;
 }
 
-- (UIResponder *)currentKayokoInputResponder {
-    UIResponder *keyboardInputDelegate = [self activeKeyboardInputDelegate];
-    if ([self responderIsKayokoOwned:keyboardInputDelegate]) {
-        [self rememberKayokoKeyboardInput];
-        return keyboardInputDelegate;
-    }
-
-    UIResponder *firstResponder = [self currentFirstResponder];
-    if ([self responderIsKayokoOwned:firstResponder]) {
-        [self rememberKayokoKeyboardInput];
-        return firstResponder;
-    }
-
-    return nil;
-}
-
 - (BOOL)currentInputIsKayokoOwnedUpdatingLast:(BOOL)clearsLastForExternalInput {
     if (!self.isSpringBoardRuntime) {
         return NO;
@@ -1043,16 +977,6 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
                keyWindow ? NSStringFromClass([keyWindow class]) : @"nil");
 }
 
-- (void)captureFocusSessionFromResponder:(UIResponder *)responder keyWindow:(UIWindow *)keyWindow {
-    if ([self responderIsKayokoOwned:responder]) {
-        return;
-    }
-
-    [self captureFocusSessionInKeyWindow:keyWindow];
-    self.focusSession.firstResponder = responder;
-    [self.focusSession finishCapturing];
-}
-
 - (void)captureResponderForFocusRestore:(UIResponder *)responder {
     if ([self responderIsKayokoOwned:responder]) {
         return;
@@ -1111,35 +1035,6 @@ CHOptimizedMethod0(self, BOOL, UITextField, resignFirstResponder) {
                image != nil ? @"YES" : @"NO");
 
     return canPaste;
-}
-
-- (BOOL)pasteIntoKayokoInputResponder:(UIResponder *)responder {
-    if (!responder) {
-        HBLogDebug(@"Kayoko: paste into Kayoko responder skipped because responder is nil");
-        return NO;
-    }
-
-    UIApplication *activeApplication = [UIApplication sharedApplication];
-    if (!activeApplication || [activeApplication applicationState] != UIApplicationStateActive) {
-        HBLogDebug(@"Kayoko: paste into Kayoko responder skipped because application is inactive state=%ld",
-                   (long)[activeApplication applicationState]);
-        return NO;
-    }
-
-    [self postPasteWillStart];
-    if (![self preparePasteboardForPaste]) {
-        HBLogDebug(@"Kayoko: paste into Kayoko responder skipped because pasteboard is empty responder=%@",
-                   responder ? NSStringFromClass([responder class]) : @"nil");
-        return NO;
-    }
-
-#if DEBUG
-    BOOL didSendAction = [activeApplication sendAction:@selector(paste:) to:responder from:nil forEvent:nil];
-    HBLogDebug(@"Kayoko: paste into Kayoko responder sent=%@ responder=%@", didSendAction ? @"YES" : @"NO",
-               responder ? NSStringFromClass([responder class]) : @"nil");
-#endif
-
-    return YES;
 }
 
 - (BOOL)performPaste {

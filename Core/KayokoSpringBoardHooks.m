@@ -34,7 +34,6 @@ CHDeclareClass(_UISystemGestureWindow);
 
 @interface SpringBoard : UIApplication
 - (void)applicationDidFinishLaunching:(id)application;
-- (NSArray<UIKeyCommand *> *)keyCommands;
 @end
 
 @interface UIStatusBarWindow : UIWindow
@@ -106,25 +105,8 @@ static const NSInteger kKayokoSystemGestureTypeMultitaskingB = 0x2B;
 static const NSInteger kKayokoSystemGestureTypeControlCenter = 0x6;
 
 static CGFloat const kKayokoSystemKeyboardFrameEdgeTolerance = 1.0;
-static NSString *const kKayokoExternalKeyboardDiscoverabilityTitle = @"Kayoko";
-
 static char kayokoSystemSwipeUpGestureRecognizerKey;
 static char kayokoSystemSwipeUpGestureHandlerKey;
-
-static void kayokoHandleExternalKeyboardShortcut(id self, SEL _cmd, UIKeyCommand *command) {
-    (void)self;
-    (void)_cmd;
-    (void)command;
-    KayokoCoreRuntime *runtime = [KayokoCoreRuntime sharedRuntime];
-    if ([runtime panelVisible]) {
-        [runtime hideWithStandardDismissAnimation];
-        return;
-    }
-
-    NSString *notificationName = kKayokoNotificationKeyCoreShow;
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
-                                         (__bridge CFStringRef)notificationName, nil, nil, YES);
-}
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -310,19 +292,6 @@ CHOptimizedMethod1(self, id, UIStatusBarWindow, initWithFrame, CGRect, frame) {
 CHOptimizedMethod1(self, void, SpringBoard, applicationDidFinishLaunching, id, application) {
     CHSuper1(SpringBoard, applicationDidFinishLaunching, application);
     [[KayokoCoreRuntime sharedRuntime] preloadInitialHistory];
-}
-
-CHOptimizedMethod0(self, NSArray<UIKeyCommand *> *, SpringBoard, keyCommands) {
-    NSArray<UIKeyCommand *> *keyCommands = CHSuper0(SpringBoard, keyCommands);
-    if (!([[KayokoCoreRuntime sharedRuntime] activationMethod] & kActivationMethodExternalKeyboard)) {
-        return keyCommands;
-    }
-
-    UIKeyCommand *command = [UIKeyCommand keyCommandWithInput:@"V"
-                                                modifierFlags:UIKeyModifierCommand | UIKeyModifierShift
-                                                       action:@selector(kayokoHandleExternalKeyboardShortcut:)];
-    [command setDiscoverabilityTitle:kKayokoExternalKeyboardDiscoverabilityTitle];
-    return keyCommands ? [keyCommands arrayByAddingObject:command] : @[ command ];
 }
 
 #pragma mark - Visibility Hooks
@@ -736,11 +705,7 @@ CHOptimizedMethod3(self, void, FBScene, updateSettings, UIApplicationSceneSettin
     [self installStatusBarHooks];
 
     CHLoadClass_(&SpringBoard$, NSClassFromString(@"SpringBoard"));
-    class_addMethod(CHClass(SpringBoard), @selector(kayokoHandleExternalKeyboardShortcut:),
-                    (IMP)kayokoHandleExternalKeyboardShortcut, "v@:@");
-
     CHHook1(SpringBoard, applicationDidFinishLaunching);
-    CHHook0(SpringBoard, keyCommands);
 
     [self installHomeScreenHooks];
     [self installAppSwitcherHooks];

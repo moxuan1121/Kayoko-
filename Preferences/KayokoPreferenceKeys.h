@@ -7,14 +7,15 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_OPTIONS(NSUInteger, ActivationMethod) {
-    kActivationMethodPredictionBar = 1 << 0,
-    kActivationMethodDictationKey = 1 << 1,
-    kActivationMethodInputSwitcher = 1 << 2,
-    kActivationMethodCalloutBar = 1 << 3,
-    kActivationMethodSwipeUp = 1 << 4,
-    kActivationMethodExternalKeyboard = 1 << 5
+typedef NS_ENUM(NSUInteger, ActivationMethod) {
+    kActivationMethodNone = 0,
+    // Keep the historical value so existing swipe-up preferences remain compatible.
+    kActivationMethodSwipeUp = 1 << 4
 };
+
+NS_INLINE ActivationMethod KayokoNormalizedActivationMethod(NSUInteger value) {
+    return (value & kActivationMethodSwipeUp) != 0 ? kActivationMethodSwipeUp : kActivationMethodNone;
+}
 
 typedef NS_ENUM(NSUInteger, KayokoAutomaticPasteMode) {
     kKayokoAutomaticPasteModeClassic = 0,
@@ -89,8 +90,7 @@ static BOOL const kKayokoPreferenceKeyEnabledDefaultValue = YES;
 static NSUInteger const kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue = 200;
 static BOOL const kKayokoPreferenceKeySaveTextDefaultValue = YES;
 static BOOL const kKayokoPreferenceKeySaveImagesDefaultValue = YES;
-static ActivationMethod const kKayokoPreferenceKeyActivationMethodDefaultValue =
-    kActivationMethodDictationKey | kActivationMethodInputSwitcher | kActivationMethodExternalKeyboard;
+static ActivationMethod const kKayokoPreferenceKeyActivationMethodDefaultValue = kActivationMethodSwipeUp;
 static KayokoGestureRecognizerMode const kKayokoPreferenceKeyGestureRecognizerModeDefaultValue =
     kKayokoGestureRecognizerModeClassic;
 static BOOL const kKayokoPreferenceKeyAutomaticallyPasteDefaultValue = YES;

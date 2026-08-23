@@ -9,20 +9,8 @@
 @implementation KayokoHelperHookInstaller
 
 + (void)installActivationHooksWithActivationMethod:(NSUInteger)activationMethod {
-    if (activationMethod & kActivationMethodPredictionBar) {
-        [self installPredictionBarHooks];
-    }
-    if (activationMethod & kActivationMethodDictationKey) {
-        [self installDictationHooks];
-    }
-    if (activationMethod & kActivationMethodInputSwitcher) {
-        [self installInputSwitcherHooks];
-    }
     if (activationMethod & kActivationMethodSwipeUp) {
         [self installSwipeUpHooks];
-    }
-    if (activationMethod & kActivationMethodCalloutBar) {
-        [self installCalloutBarHooks];
     }
 }
 

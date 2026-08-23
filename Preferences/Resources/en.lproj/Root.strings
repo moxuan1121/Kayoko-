@@ -1,5 +1,3 @@
-"%@ and %@" = "%@ and %@";
-"%@ and %d others" = "%@ and %d others";
 "%@ data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "%@ data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko.";
 "ACTIVATION_METHODS" = "Activation";
 "Acknowledgments & Licenses" = "Acknowledgments & Licenses";
@@ -19,10 +17,8 @@
 "Choose which list Kayoko opens when it is shown. “Previous” keeps the list you last used." = "Choose which list Kayoko opens when it is shown. “Previous” keeps the list you last used.";
 "Credits" = "Credits";
 "Default View" = "Default View";
-"Dictation Key" = "Dictation Key";
 "Disable Paste Tips" = "Disable Paste Tips";
 "Double Line" = "Double Line";
-"Edit Menu" = "Edit Menu";
 "Enable Kayoko" = "Enable Kayoko";
 "Favorites" = "Favorites";
 "Feature-rich clipboard manager for iOS." = "Feature-rich clipboard manager for iOS.";
@@ -31,7 +27,6 @@
 "History" = "History";
 "History Only" = "History Only";
 "Images Only" = "Images Only";
-"Input Switcher" = "Input Switcher";
 "Invalid Response" = "Invalid Response";
 "Item Details" = "Item Details";
 "Item details show when an item was last captured, along with its text length or image dimensions and file size." = "Item details show when an item was last captured, along with its text length or image dimensions and file size.";
@@ -41,6 +36,7 @@
 "Maximum Amount" = "Maximum Amount";
 "More" = "More";
 "Network Request Failed" = "Network Request Failed";
+"None" = "None";
 "Not Now" = "Not Now";
 "Off" = "Off";
 "One-Finger Swipe Up" = "One-Finger Swipe Up";
@@ -51,7 +47,6 @@
 "Please check the following: open Sileo → tap the avatar in the top-right corner → tap Havoc → make sure Kayoko is in your purchases" = "Please check the following: open Sileo → tap the avatar in the top-right corner → tap Havoc → make sure Kayoko is in your purchases";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in" = "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → tap My Account in the top-right corner → make sure Kayoko is in your purchases" = "Please check the following: open Zebra → select the Sources tab → tap Havoc → tap My Account in the top-right corner → make sure Kayoko is in your purchases";
-"Prediction Bar" = "Prediction Bar";
 "Preview" = "Preview";
 "Preview Lines" = "Preview Lines";
 "Previous" = "Previous";
@@ -68,7 +63,7 @@
 "Single Line" = "Single Line";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko.";
 "The network request failed." = "The network request failed.";
-"The “Prediction Bar” method displays custom suggestions on the “More Keyboard Keyplane” (123)." = "The “Prediction Bar” method displays custom suggestions on the “More Keyboard Keyplane” (123).";
+"Choose whether a one-finger swipe up opens Kayoko." = "Choose whether a one-finger swipe up opens Kayoko.";
 "This build was modified by mlgm based on the OwnGoal Studio edition." = "This build was modified by mlgm based on the OwnGoal Studio edition.";
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "This option requires restarting SpringBoard to apply. Do you want to restart now?";
 "Tools" = "Tools";
@@ -82,4 +77,3 @@
 "View Priority" = "View Priority";
 "Wishing on a star…" = "Wishing on a star…";
 "mlgm Personal Repo" = "mlgm Personal Repo";
-"⌘⇧V External Keyboard" = "⌘⇧V External Keyboard";

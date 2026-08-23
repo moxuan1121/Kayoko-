@@ -688,7 +688,8 @@ NS_ASSUME_NONNULL_END
     }];
 
     [self readPasteTipPreferencesFromPreferences:self.preferences];
-    self.activationMethod = [[self.preferences objectForKey:kKayokoPreferenceKeyActivationMethod] unsignedIntegerValue];
+    self.activationMethod = KayokoNormalizedActivationMethod(
+        [[self.preferences objectForKey:kKayokoPreferenceKeyActivationMethod] unsignedIntegerValue]);
     self.gestureRecognizerMode =
         [[self.preferences objectForKey:kKayokoPreferenceKeyGestureRecognizerMode] unsignedIntegerValue];
     if (self.gestureRecognizerMode != kKayokoGestureRecognizerModeClassic &&
@@ -1104,9 +1105,6 @@ NS_ASSUME_NONNULL_END
 
     [self.mainViewController show];
 
-    if (self.activationMethod & kActivationMethodDictationKey) {
-        [self playSuccessHapticFeedbackIfNeeded];
-    }
 }
 
 - (void)hideWithAnimationStyle:(KayokoPanelHideAnimationStyle)animationStyle {

@@ -58,8 +58,6 @@
 		2CFA9F8EAC72B1A2CC8E8E12 /* Tags.strings in Resources */ = {isa = PBXBuildFile; fileRef = B9A4AD282F7DBA19011610A8 /* Tags.strings */; };
 		2E3236ED6A210286F2F93A0C /* KayokoTagDotView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3431241125D6D540C48CFD9D /* KayokoTagDotView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F2655417E2A1204B94DBCF7 /* KayokoNoteEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0931934F1FCF4351C46450A2 /* KayokoNoteEditorView.m */; };
-		32173B0B873C8DD860E4ACFC /* KayokoListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910980166F9774A18BE704B8 /* KayokoListItemsController.m */; };
-		329D483320688F3745B5A3D5 /* KayokoPredictionBarHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3097C3C19FC378343C2DB6C4 /* KayokoPredictionBarHooks.m */; };
 		32D0E3E4AF2412585D324FFC /* HomeScreen-Search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D1522F655F08DE27D58107D8 /* HomeScreen-Search@3x.png */; };
 		342F3458F906C9E62D1FCFE6 /* Tweak.strings in Resources */ = {isa = PBXBuildFile; fileRef = BDAFB3C88199504CF2F4D450 /* Tweak.strings */; };
 		35E2D45AD5BA1B9B40304BC2 /* KayokoKeyboardHostResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AEA016F80DFD80BAC41F58 /* KayokoKeyboardHostResolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -168,11 +166,9 @@
 		B2E2BD7E7C0FB9B7F2C64D5A /* KayokoMainViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = FABE6302356607FD5D4ED500 /* KayokoMainViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B499B16869070725259D0E39 /* KayokoHistoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DCD40AE6A3B5007B58CBE7D /* KayokoHistoryListViewController.m */; };
 		B55E2BE2B3289EF4232E7E37 /* KayokoPasteboardManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EF274B84FA5EF8E7889D6D6F /* KayokoPasteboardManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B624F7E1A699C019B9BC67A4 /* KayokoInputSwitcherHooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = F9A074033490972EF895B446 /* KayokoInputSwitcherHooks.mm */; };
 		B6D05972E162AF53B4335848 /* KayokoFavoritesTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 236F1BFC7F30686920F45914 /* KayokoFavoritesTableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B7A9FCFA46BA98AF4C4A057B /* KayokoPasteboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C021F55C22F19EB4815B09DF /* KayokoPasteboardManager.m */; };
 		B81A73778165D363C618A379 /* KayokoApplicationMetadataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D8746DA202B376FC8B8A276 /* KayokoApplicationMetadataProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B848A32D276002E74CD89FBC /* KayokoCalloutMenuHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = 0093C7AA60684065B638BE2A /* KayokoCalloutMenuHooks.m */; };
 		B850E914F63AE44F76CE2509 /* KayokoHistoryRepository.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB8BE24B004591EBF3363AA /* KayokoHistoryRepository.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8872F0A09AB519470A9345B /* KayokoHistoryChangeNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 77420C0F26D6A079C31DC6F8 /* KayokoHistoryChangeNotifier.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B98B66598AA0AA8A262738E5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F159528372065006DC14C58 /* Security.framework */; };
@@ -207,7 +203,6 @@
 		DE0901A29FF720632C2F0ADD /* KayokoHistoryStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 94C9EE578FBA5EAF8197DCC6 /* KayokoHistoryStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE7D9EAE345EB7EDEBC45DCF /* KayokoTagPlaceholderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B60AE32527D106C814966B4B /* KayokoTagPlaceholderView.m */; };
 		DF70913215464AC747BC81DD /* KayokoTableViewCellContentProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FF87D8C399B284B0583A468 /* KayokoTableViewCellContentProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DFF8A95913B53E2EDB0EB0DE /* KayokoDictationHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A20DE33B3DA39193623776C /* KayokoDictationHooks.m */; };
 		E1A85B71A1DFFC55022B6A6F /* Icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 08066E429074AA75D5366585 /* Icon@3x.png */; };
 		E39D4D08D3E7E265C902DA42 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CBCF1C542DC788504C5907 /* QuartzCore.framework */; };
 		E3B3052ED410331F702D4AF1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AFCC3146095CECBD347E944 /* Foundation.framework */; };
@@ -237,7 +232,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0093C7AA60684065B638BE2A /* KayokoCalloutMenuHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoCalloutMenuHooks.m; sourceTree = "<group>"; };
 		022ACFA540FEB276DC0DCBAE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		03F3A86C19EEE17BC08EB7FF /* KayokoEdgeFadingTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoEdgeFadingTableView.h; sourceTree = "<group>"; };
 		055D829E19C47334BFDD1504 /* KayokoActivitySharePresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoActivitySharePresenter.m; sourceTree = "<group>"; };
@@ -275,7 +269,6 @@
 		211CB15BCA18809C87719E1C /* HandOff-Search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HandOff-Search@2x.png"; sourceTree = "<group>"; };
 		21C1CC9275CA172A334FE5A1 /* KayokoSearchCriteria.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoSearchCriteria.m; sourceTree = "<group>"; };
 		21CB13C5C001C3D73D2A2DC9 /* KayokoEmptyStateView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoEmptyStateView.m; sourceTree = "<group>"; };
-		22245D3E0D5081A3178B6C12 /* KayokoListItemsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoListItemsController.h; sourceTree = "<group>"; };
 		236F1BFC7F30686920F45914 /* KayokoFavoritesTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoFavoritesTableView.h; sourceTree = "<group>"; };
 		239E200FDF8C8F7E0099FD07 /* KayokoEdgeFadingCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoEdgeFadingCollectionView.m; sourceTree = "<group>"; };
 		25A0A3FC942890B8FFE67F3F /* Spotlight-Search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spotlight-Search@2x.png"; sourceTree = "<group>"; };
@@ -284,7 +277,6 @@
 		2CD8B1BC3C14B77C4E56FD6D /* KayokoTableViewCellContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoTableViewCellContent.m; sourceTree = "<group>"; };
 		2FC331A62CC5B76522C2133B /* KayokoKeyboardHostResolver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoKeyboardHostResolver.m; sourceTree = "<group>"; };
 		307BCA9CA5965C2CDF6B05A2 /* AdvancedOptions.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = AdvancedOptions.plist; sourceTree = "<group>"; };
-		3097C3C19FC378343C2DB6C4 /* KayokoPredictionBarHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoPredictionBarHooks.m; sourceTree = "<group>"; };
 		31185E6EACA8648FF40D5F59 /* KayokoTagCatalog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoTagCatalog.m; sourceTree = "<group>"; };
 		329939B6A6B7E37EB00C798C /* KayokoSwipeUpGestureRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoSwipeUpGestureRecognizer.m; sourceTree = "<group>"; };
 		3359F5EE7D82ACBD5F623337 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AdvancedOptions.strings"; sourceTree = "<group>"; };
@@ -361,7 +353,6 @@
 		8D55850B98D871FEBED74EC7 /* KayokoHelperConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoHelperConfiguration.m; sourceTree = "<group>"; };
 		8FD2D82B1FEA9D5F8E6B4CE2 /* KayokoSearchTokenCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoSearchTokenCollectionViewCell.h; sourceTree = "<group>"; };
 		90E0AE8C6B18321C47B76A3F /* Credits.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Credits.plist; sourceTree = "<group>"; };
-		910980166F9774A18BE704B8 /* KayokoListItemsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoListItemsController.m; sourceTree = "<group>"; };
 		94901245CFFA8C4C58E6B718 /* KayokoHistoryController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoHistoryController.h; sourceTree = "<group>"; };
 		94C9EE578FBA5EAF8197DCC6 /* KayokoHistoryStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoHistoryStore.h; sourceTree = "<group>"; };
 		95317F61A7406002B15D7F38 /* KayokoNoteEditorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoNoteEditorViewController.h; sourceTree = "<group>"; };
@@ -369,7 +360,6 @@
 		96CBCF1C542DC788504C5907 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		978B6D7DA23B9664D648AC59 /* KayokoTableDataStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoTableDataStore.h; sourceTree = "<group>"; };
 		98CA87EEC3A328C10E5354D7 /* KayokoEdgeFadingTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoEdgeFadingTextView.m; sourceTree = "<group>"; };
-		9A20DE33B3DA39193623776C /* KayokoDictationHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoDictationHooks.m; sourceTree = "<group>"; };
 		9B12C404F168373911933DDA /* KayokoSearchBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoSearchBar.m; sourceTree = "<group>"; };
 		9DC93BBEEC6159457B58CE95 /* KayokoPanelPresentationMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoPanelPresentationMode.h; sourceTree = "<group>"; };
 		9F7AA48BD58453784E78ABBE /* KayokoPasteTipHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoPasteTipHooks.m; sourceTree = "<group>"; };
@@ -465,7 +455,6 @@
 		F750C6459C7C201D932ED783 /* Spotlight-Search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spotlight-Search.png"; sourceTree = "<group>"; };
 		F8272FEC1E57E1392F9141D6 /* KayokoPreviewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoPreviewViewController.h; sourceTree = "<group>"; };
 		F91E49E0921575A03DD4B638 /* KayokoSearchTokenCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoSearchTokenCollectionViewCell.m; sourceTree = "<group>"; };
-		F9A074033490972EF895B446 /* KayokoInputSwitcherHooks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KayokoInputSwitcherHooks.mm; sourceTree = "<group>"; };
 		FABE6302356607FD5D4ED500 /* KayokoMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoMainViewController.h; sourceTree = "<group>"; };
 		FAC8D7B3D87E21C524A5DD67 /* KayokoEdgeFadingScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoEdgeFadingScrollView.h; sourceTree = "<group>"; };
 		FB9200AECF827133129A26AD /* KayokoPreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoPreviewView.h; sourceTree = "<group>"; };
@@ -789,8 +778,6 @@
 				9603AC6AEBA03DDAD368AB36 /* KayokoAdvancedOptionsListController.m */,
 				B4C103FBE9B4C25586E1AB19 /* KayokoCreditsListController.h */,
 				AD8F34765FB7620384E1F2DE /* KayokoCreditsListController.m */,
-				22245D3E0D5081A3178B6C12 /* KayokoListItemsController.h */,
-				910980166F9774A18BE704B8 /* KayokoListItemsController.m */,
 				152654D5AD07D926ED7086BB /* KayokoRespringControllerSupport.h */,
 				1D78D30BC2978C32DEB2981D /* KayokoRespringControllerSupport.m */,
 				86D4F9F263C4F00E215934CF /* KayokoRootListController.h */,
@@ -892,8 +879,6 @@
 		E0FA20897812BE3B6E1372ED /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				0093C7AA60684065B638BE2A /* KayokoCalloutMenuHooks.m */,
-				9A20DE33B3DA39193623776C /* KayokoDictationHooks.m */,
 				CA69E25C1A9E70F834C5B3F4 /* KayokoHelper.h */,
 				579E2A12AC8E4F422B0D7B72 /* KayokoHelper.m */,
 				CA47CF38CF044F489AA0D299 /* KayokoHelperConfiguration.h */,
@@ -906,8 +891,6 @@
 				C10A4771499B2B8919C79DED /* KayokoHelperProcessContext.m */,
 				17B4DD45FE70AD427EA8537C /* KayokoHelperRuntime.h */,
 				EC91FF6B18A5200DBF113EAD /* KayokoHelperRuntime.m */,
-				F9A074033490972EF895B446 /* KayokoInputSwitcherHooks.mm */,
-				3097C3C19FC378343C2DB6C4 /* KayokoPredictionBarHooks.m */,
 				A92EDAF3BA022434453742FA /* KayokoSwipeUpGestureRecognizer.h */,
 				329939B6A6B7E37EB00C798C /* KayokoSwipeUpGestureRecognizer.m */,
 				2820FE63C61B95B0C2B786C8 /* KayokoSwipeUpHooks.m */,
@@ -1291,7 +1274,6 @@
 				5B983493EB3BF3A338EBAA42 /* KayokoHeaderCell.m in Sources */,
 				8D28D2BFA320DDEB32CEBDE6 /* KayokoKeyboardAvoidanceCoordinator.m in Sources */,
 				8B66B7B7E12AFCF59B07E5E6 /* KayokoLinkCell.m in Sources */,
-				32173B0B873C8DD860E4ACFC /* KayokoListItemsController.m in Sources */,
 				F438FF86C1EDF18389A638DA /* KayokoRespringControllerSupport.m in Sources */,
 				CC3700AA2F1852F0B04CE791 /* KayokoRootListController.m in Sources */,
 				3DE85B8E2286A28E6B93344B /* KayokoSliderCell.m in Sources */,
@@ -1330,16 +1312,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B848A32D276002E74CD89FBC /* KayokoCalloutMenuHooks.m in Sources */,
-				DFF8A95913B53E2EDB0EB0DE /* KayokoDictationHooks.m in Sources */,
 				F1C3D9D70CA9B8D4671A27B5 /* KayokoHelper.m in Sources */,
 				28BFDA9B9E4641EB8DC1EA1A /* KayokoHelperConfiguration.m in Sources */,
 				3E640A50903B952ED65FF1EE /* KayokoHelperHookInstaller.m in Sources */,
 				62F7AB66E77CAD947965EAA3 /* KayokoHelperLocalization.m in Sources */,
 				831D98ABC898F8D3F119D19E /* KayokoHelperProcessContext.m in Sources */,
 				ECA6CE29FDD61E8B38062B89 /* KayokoHelperRuntime.m in Sources */,
-				B624F7E1A699C019B9BC67A4 /* KayokoInputSwitcherHooks.mm in Sources */,
-				329D483320688F3745B5A3D5 /* KayokoPredictionBarHooks.m in Sources */,
 				375E91CCEF5CBD31598A87A6 /* KayokoSwipeUpGestureRecognizer.m in Sources */,
 				246719C779A1B83157378C71 /* KayokoSwipeUpHooks.m in Sources */,
 			);

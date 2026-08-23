@@ -27,6 +27,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoRootListController () <UISearchResultsUpdating>
+- (void)migrateActivationMethodPreferenceIfNeeded;
 - (void)presentExternalImportRestartReminderIfNeeded;
 - (void)updateOverlayWindowLevelSpecifierAvailability;
 @end
@@ -46,6 +47,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Lifecycle
 
 - (void)viewDidLoad {
+    [self migrateActivationMethodPreferenceIfNeeded];
     [super viewDidLoad];
 
     [self configureTestInputSearchController];
@@ -63,6 +65,19 @@ NS_ASSUME_NONNULL_END
                                              selector:@selector(externalImportRequiresRestart:)
                                                  name:kKayokoNotificationKeyExternalImportRequiresRestart
                                                object:nil];
+}
+
+- (void)migrateActivationMethodPreferenceIfNeeded {
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
+    id storedValue = [userDefaults objectForKey:kKayokoPreferenceKeyActivationMethod];
+    if (!storedValue) {
+        return;
+    }
+
+    ActivationMethod normalizedValue = KayokoNormalizedActivationMethod([storedValue unsignedIntegerValue]);
+    if ([storedValue unsignedIntegerValue] != normalizedValue) {
+        [userDefaults setInteger:normalizedValue forKey:kKayokoPreferenceKeyActivationMethod];
+    }
 }
 
 - (void)dealloc {
@@ -221,8 +236,11 @@ NS_ASSUME_NONNULL_END
 
 - (ActivationMethod)currentActivationMethod {
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    ActivationMethod activationMethod = [userDefaults integerForKey:kKayokoPreferenceKeyActivationMethod];
-    return activationMethod == 0 ? kKayokoPreferenceKeyActivationMethodDefaultValue : activationMethod;
+    id storedValue = [userDefaults objectForKey:kKayokoPreferenceKeyActivationMethod];
+    if (!storedValue) {
+        return kKayokoPreferenceKeyActivationMethodDefaultValue;
+    }
+    return KayokoNormalizedActivationMethod([storedValue unsignedIntegerValue]);
 }
 
 - (void)updateOverlayWindowLevelSpecifierAvailability {
@@ -354,50 +372,6 @@ NS_ASSUME_NONNULL_END
             slider.continuous = isContinuous;
         }
         return cell;
-    }
-    if ([key isEqualToString:@"PSLinkListCell"]) {
-        NSString *detail = [specifier propertyForKey:@"detail"];
-        if ([detail isEqualToString:@"KayokoListItemsController"]) {
-            UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-            NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-
-            // Get the current activation methods
-            ActivationMethod currentOptions = [self currentActivationMethod];
-
-            // Get valid values and titles
-            NSArray<NSNumber *> *validValues = [specifier propertyForKey:@"validValues"];
-            NSArray<NSString *> *validTitles = [specifier propertyForKey:@"validTitles"];
-
-            // Find selected options
-            NSMutableArray<NSString *> *selectedTitles = [NSMutableArray array];
-            for (NSUInteger i = 0; i < validValues.count; i++) {
-                NSNumber *value = validValues[i];
-                if (currentOptions & [value integerValue]) {
-                    [selectedTitles addObject:[bundle localizedStringForKey:validTitles[i] value:nil table:@"Root"]];
-                }
-            }
-
-            // Format the detail text based on the number of selected options
-            NSString *detailText;
-            if (selectedTitles.count == 1) {
-                // Only one option - display its name
-                detailText = selectedTitles[0];
-            } else if (selectedTitles.count == 2) {
-                // Two options - display "Option A and Option B"
-                NSString *format = [bundle localizedStringForKey:@"%@ and %@" value:nil table:@"Root"];
-                detailText = [NSString stringWithFormat:format, selectedTitles[0], selectedTitles[1]];
-            } else if (selectedTitles.count > 2) {
-                // Three or more options - display "Option A and X others"
-                NSString *format = [bundle localizedStringForKey:@"%@ and %d others" value:nil table:@"Root"];
-                detailText = [NSString stringWithFormat:format, selectedTitles[0], (int)selectedTitles.count - 1];
-            } else {
-                // No options (shouldn't happen)
-                detailText = @"";
-            }
-
-            cell.detailTextLabel.text = detailText;
-            return cell;
-        }
     }
     if ([key isEqualToString:@"PSLinkCell"]) {
         NSString *detail = [specifier propertyForKey:@"detail"];

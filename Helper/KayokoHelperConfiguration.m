@@ -45,7 +45,8 @@ NS_ASSUME_NONNULL_END
     self = [super init];
     if (self) {
         _enabled = [[preferences objectForKey:kKayokoPreferenceKeyEnabled] boolValue];
-        _activationMethod = [[preferences objectForKey:kKayokoPreferenceKeyActivationMethod] unsignedIntegerValue];
+        _activationMethod = KayokoNormalizedActivationMethod(
+            [[preferences objectForKey:kKayokoPreferenceKeyActivationMethod] unsignedIntegerValue]);
         _gestureRecognizerMode =
             [[preferences objectForKey:kKayokoPreferenceKeyGestureRecognizerMode] unsignedIntegerValue];
         if (_gestureRecognizerMode != kKayokoGestureRecognizerModeClassic &&

@@ -8,10 +8,6 @@ KayokoHelper_FILES += KayokoHelperProcessContext.m
 KayokoHelper_FILES += KayokoHelperHookInstaller.m
 KayokoHelper_FILES += KayokoHelperLocalization.m
 KayokoHelper_FILES += KayokoHelperRuntime.m
-KayokoHelper_FILES += KayokoPredictionBarHooks.m
-KayokoHelper_FILES += KayokoCalloutMenuHooks.m
-KayokoHelper_FILES += KayokoInputSwitcherHooks.mm
-KayokoHelper_FILES += KayokoDictationHooks.m
 KayokoHelper_FILES += KayokoSwipeUpGestureRecognizer.m
 KayokoHelper_FILES += KayokoSwipeUpHooks.m
 
