@@ -15,10 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KayokoTableViewCellContentProvider : NSObject
 
 - (KayokoTableViewCellContent *)cellContentForItem:(KayokoPasteboardItem *)item
-                                  previewLineCount:(NSUInteger)previewLineCount
                                    itemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode;
 - (KayokoTableViewCellContent *)cellContentForItem:(KayokoPasteboardItem *)item
-                                  previewLineCount:(NSUInteger)previewLineCount
                                    itemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode
                                         searchText:(nullable NSString *)searchText;
 

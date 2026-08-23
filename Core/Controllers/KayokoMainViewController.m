@@ -22,9 +22,7 @@
 #import "KayokoPreviewView.h"
 #import "KayokoPreviewViewController.h"
 #import "KayokoSearchController.h"
-#import "KayokoTagChipBarView.h"
 #import "KayokoTableViewCell.h"
-#import "KayokoTagCatalog.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -267,12 +265,6 @@ NS_ASSUME_NONNULL_END
     [[self panelPresentationController] setDismissOnOutsideTouch:dismissOnOutsideTouch];
 }
 
-- (void)setPreviewLineCount:(NSUInteger)previewLineCount {
-    _previewLineCount = previewLineCount;
-    [[self historyListViewController] setPreviewLineCount:previewLineCount];
-    [[self favoritesListViewController] setPreviewLineCount:previewLineCount];
-}
-
 - (void)setItemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode {
     if (itemDetailsMode != kKayokoItemDetailsModeOff && itemDetailsMode != kKayokoItemDetailsModeImagesOnly &&
         itemDetailsMode != kKayokoItemDetailsModeAll) {
@@ -485,8 +477,7 @@ NS_ASSUME_NONNULL_END
         KayokoNoteEditorView *noteEditorView = [[self noteEditorViewController] noteEditorView];
         if ([view isDescendantOfView:[noteEditorView textField]] ||
             [view isDescendantOfView:[noteEditorView saveButton]] ||
-            [view isDescendantOfView:[noteEditorView cancelButton]] ||
-            [view isDescendantOfView:[noteEditorView tagChipBarView]]) {
+            [view isDescendantOfView:[noteEditorView cancelButton]]) {
             return NO;
         }
         return [view isDescendantOfView:noteEditorView];
@@ -1132,61 +1123,16 @@ NS_ASSUME_NONNULL_END
     KayokoHeaderView *headerView = [[self mainView] headerView];
     [headerView setHistorySwitcherVisible:YES animated:NO];
     [headerView setSelectedHistorySegmentIndex:showingFavorites ? 1 : 0];
-    // Reference UI: left utility button + pin/trash on the right.
-    [headerView updateStyleForButton:[headerView leadingButton]
+    UIButton *leadingButton = [headerView leadingButton];
+    [leadingButton setHidden:showingFavorites];
+    [leadingButton setEnabled:!showingFavorites];
+    [leadingButton setUserInteractionEnabled:!showingFavorites];
+    [headerView updateStyleForButton:leadingButton
                        withImageName:@"list.bullet"
                            imageSize:kKayokoFavoritesButtonImageSize
                            tintColor:[UIColor labelColor]];
-    [self updateFavoritesFilterMenuForHistoryKey:historyKey];
-}
-
-- (void)updateFavoritesFilterMenuForHistoryKey:(NSString *)historyKey {
-    UIButton *leadingButton = [[[self mainView] headerView] leadingButton];
     [leadingButton setShowsMenuAsPrimaryAction:YES];
-    if ([historyKey isEqualToString:kKayokoHistoryKeyFavorites]) {
-        [leadingButton setMenu:[self favoritesFilterMenu]];
-    } else {
-        [leadingButton setMenu:[self clipboardClearMenu]];
-    }
-}
-
-- (UIMenu *)favoritesFilterMenu {
-    NSBundle *bundle = [KayokoPasteboardManager localizationBundle];
-    KayokoSearchController *searchController = [self searchController];
-    __weak typeof(self) weakSelf = self;
-
-    UIAction *(^makeAction)(NSString *, BOOL, void (^)(KayokoSearchController *, BOOL)) =
-        ^UIAction *(NSString *title, BOOL enabled, void (^apply)(KayokoSearchController *, BOOL)) {
-          UIImage *image = [UIImage systemImageNamed:enabled ? @"eye" : @"eye.slash"];
-          return [UIAction actionWithTitle:title
-                                     image:image
-                                identifier:nil
-                                   handler:^(__kindof UIAction *_Nonnull unusedAction) {
-                                     (void)unusedAction;
-                                     __strong typeof(weakSelf) strongSelf = weakSelf;
-                                     if (!strongSelf) {
-                                         return;
-                                     }
-                                     apply([strongSelf searchController], !enabled);
-                                     [strongSelf updateFavoritesFilterMenuForHistoryKey:
-                                                     [strongSelf effectiveActiveHistoryKey]];
-                                   }];
-        };
-
-    UIAction *categories = makeAction(
-        [bundle localizedStringForKey:@"Categories" value:nil table:@"Tweak"],
-        [searchController favoritesFilterShowsCategories],
-        ^(KayokoSearchController *controller, BOOL value) { [controller setFavoritesFilterShowsCategories:value]; });
-    UIAction *tags = makeAction(
-        [bundle localizedStringForKey:@"Tags" value:nil table:@"Tweak"],
-        [searchController favoritesFilterShowsTags],
-        ^(KayokoSearchController *controller, BOOL value) { [controller setFavoritesFilterShowsTags:value]; });
-    UIAction *apps = makeAction(
-        [bundle localizedStringForKey:@"Applications" value:nil table:@"Tweak"],
-        [searchController favoritesFilterShowsApps],
-        ^(KayokoSearchController *controller, BOOL value) { [controller setFavoritesFilterShowsApps:value]; });
-
-    return [UIMenu menuWithTitle:@"" children:@[ categories, tags, apps ]];
+    [leadingButton setMenu:showingFavorites ? nil : [self clipboardClearMenu]];
 }
 
 - (UIMenu *)clipboardClearMenu {
@@ -1604,7 +1550,6 @@ NS_ASSUME_NONNULL_END
     [[noteEditorView previewCell] setFrame:sourceFrame];
     [[noteEditorView previewCell] setAlpha:hasSourceFrame ? 1 : 0];
     [[noteEditorView inputRowView] setAlpha:0];
-    [[noteEditorView tagChipBarView] setAlpha:0];
 
     KayokoHeaderView *headerView = [[self mainView] headerView];
     [[self mainView] setAnimating:YES];
@@ -1622,7 +1567,6 @@ NS_ASSUME_NONNULL_END
           [[noteEditorView previewCell] setFrame:[noteEditorView targetPreviewCellFrame]];
           [[noteEditorView previewCell] setAlpha:1];
           [[noteEditorView inputRowView] setAlpha:1];
-          [[noteEditorView tagChipBarView] setAlpha:1];
         }
         completion:^(__unused BOOL finished) {
           [listViewController setCellPresentationHidden:NO forItem:item];
@@ -1648,7 +1592,6 @@ NS_ASSUME_NONNULL_END
     [noteEditorView setAlpha:1];
     [noteEditorView setAutomaticallyPositionsPreviewCell:YES];
     [[noteEditorView inputRowView] setAlpha:1];
-    [[noteEditorView tagChipBarView] setAlpha:1];
     [[self noteEditorViewController] reset];
     [self setNoteEditingItem:nil];
     [self setNoteEditingHistoryKey:nil];
@@ -1707,7 +1650,6 @@ NS_ASSUME_NONNULL_END
           [sourceView setAlpha:1];
           [headerView setAlpha:1];
           [[noteEditorView inputRowView] setAlpha:0];
-          [[noteEditorView tagChipBarView] setAlpha:0];
           KayokoTableViewCell *targetCell = [listViewController visibleCellForItem:item];
           if (targetCell && [targetCell window]) {
               [[noteEditorView previewCell] setFrame:[targetCell convertRect:[targetCell bounds]
@@ -1765,15 +1707,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)noteEditorViewController:(KayokoNoteEditorViewController *)controller
-                 didSelectTagUUID:(NSString *)tagUUID {
-    (void)controller;
-    (void)tagUUID;
-    [[self panelPresentationController] triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleLight];
-}
-
-- (void)noteEditorViewController:(KayokoNoteEditorViewController *)controller
-              didRequestSaveNote:(NSString *)note
-                       tagUUID:(NSString *)tagUUID {
+              didRequestSaveNote:(NSString *)note {
     KayokoPasteboardItem *item = [self noteEditingItem];
     NSString *historyKey = [self noteEditingHistoryKey];
     KayokoHistoryListViewController *listViewController = [self noteEditingSourceListViewController];
@@ -1785,7 +1719,7 @@ NS_ASSUME_NONNULL_END
 
     [[KayokoPasteboardManager sharedInstance]
                   setNote:note
-                  tagUUID:tagUUID
+                  tagUUID:[item tagUUID]
         forPasteboardItem:item
          inHistoryWithKey:historyKey
                completion:^(BOOL success) {
@@ -1799,9 +1733,7 @@ NS_ASSUME_NONNULL_END
                  }
 
                  [item setNote:note];
-                 [item setTagUUID:tagUUID];
                  [listViewController updateNote:note
-                                        tagUUID:tagUUID
                                         forItem:item
                                      completion:^{
                                        [self finishNoteEditingWithRequestIdentifier:requestIdentifier];
@@ -1979,7 +1911,6 @@ NS_ASSUME_NONNULL_END
     [self clearExternalHideCoordinator];
     [self setDismissingPanel:NO];
     [self setPreparingToShow:YES];
-    [[KayokoTagCatalog sharedCatalog] reloadTags];
     NSUInteger showRequestIdentifier = [self showRequestIdentifier] + 1;
     [self setShowRequestIdentifier:showRequestIdentifier];
     [self resetClearConfirmationIfNeeded];

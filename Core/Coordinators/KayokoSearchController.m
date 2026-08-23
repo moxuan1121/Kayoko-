@@ -54,10 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL needsAppTokenReloadAfterCurrentLoad;
 @property(nonatomic, assign) NSUInteger appTokenLoadRequestIdentifier;
 @property(nonatomic, assign) BOOL deferredSearchTokenBootstrapPending;
-@property(nonatomic, assign, readwrite, getter=isFavoritesFilterPanelVisible) BOOL favoritesFilterPanelVisible;
-@property(nonatomic, assign) BOOL favoritesFilterShowsCategories;
-@property(nonatomic, assign) BOOL favoritesFilterShowsTags;
-@property(nonatomic, assign) BOOL favoritesFilterShowsApps;
 @end
 
 NS_ASSUME_NONNULL_END
@@ -93,11 +89,6 @@ NS_ASSUME_NONNULL_END
         _appTokens = @[];
         _metadataProvider = [[KayokoApplicationMetadataProvider alloc] init];
         _appTokensDirty = YES;
-        _favoritesFilterPanelVisible = kKayokoPreferenceKeyFavoritesFilterPanelVisibleDefaultValue;
-        _favoritesFilterShowsCategories = kKayokoPreferenceKeyFavoritesFilterShowsCategoriesDefaultValue;
-        _favoritesFilterShowsTags = kKayokoPreferenceKeyFavoritesFilterShowsTagsDefaultValue;
-        _favoritesFilterShowsApps = kKayokoPreferenceKeyFavoritesFilterShowsAppsDefaultValue;
-        [self loadFavoritesFilterPreferences];
 
         _presentationController =
             [[KayokoSearchPresentationController alloc] initWithContainerView:containerView
@@ -112,7 +103,6 @@ NS_ASSUME_NONNULL_END
         [_presentationController setDelegate:self];
 
         [self attachToListViewController:historyListViewController hidesSearchBar:YES];
-        [self applyFavoritesFilterSectionVisibility];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleHistoryDidChangeNotification:)
                                                      name:kKayokoPasteboardManagerHistoryDidChangeNotification
@@ -390,7 +380,10 @@ NS_ASSUME_NONNULL_END
     // chips highlight the active filter instead), so keep the stored filters and only take the
     // search text from the bar. Reading tokens back here would wipe the filters on every refresh.
     if ([self listViewControllerIsFavorites:listViewController]) {
-        return criteria;
+        return [KayokoSearchCriteria criteriaWithSearchText:[criteria searchText]
+                                              categoryValue:nil
+                                        appBundleIdentifier:nil
+                                                    tagUUID:nil];
     }
     NSArray<UISearchToken *> *tokens = [(UISearchTextField *)[searchBar searchTextField] tokens];
     BOOL hasCategoryToken = NO;
@@ -421,66 +414,6 @@ NS_ASSUME_NONNULL_END
                                                 tagUUID:tagUUID];
 }
 
-#pragma mark - Favorites Filter Panel
-
-- (void)setFavoritesFilterPanelVisible:(BOOL)favoritesFilterPanelVisible {
-    if (_favoritesFilterPanelVisible == favoritesFilterPanelVisible) {
-        [self updateSearchTokenHeaderHeights];
-        return;
-    }
-    _favoritesFilterPanelVisible = favoritesFilterPanelVisible;
-    [self persistFavoritesFilterPreferences];
-    if (favoritesFilterPanelVisible) {
-        [self bootstrapSearchTokenSourcesIfNeeded];
-    }
-    [self applyFavoritesFilterSectionVisibility];
-    [self updateAllTokenLists];
-    [self pruneFavoritesFilterCriteriaForHiddenSections];
-}
-
-- (void)toggleFavoritesFilterPanelVisible {
-    [self setFavoritesFilterPanelVisible:![self isFavoritesFilterPanelVisible]];
-}
-
-- (void)setFavoritesFilterShowsCategories:(BOOL)showsCategories {
-    if (_favoritesFilterShowsCategories == showsCategories) {
-        return;
-    }
-    _favoritesFilterShowsCategories = showsCategories;
-    [self persistFavoritesFilterPreferences];
-    [self applyFavoritesFilterSectionVisibility];
-    [self updateAllTokenLists];
-    [self pruneFavoritesFilterCriteriaForHiddenSections];
-}
-
-- (void)setFavoritesFilterShowsTags:(BOOL)showsTags {
-    if (_favoritesFilterShowsTags == showsTags) {
-        return;
-    }
-    _favoritesFilterShowsTags = showsTags;
-    [self persistFavoritesFilterPreferences];
-    if (showsTags) {
-        [self bootstrapSearchTokenSourcesIfNeeded];
-    }
-    [self applyFavoritesFilterSectionVisibility];
-    [self updateAllTokenLists];
-    [self pruneFavoritesFilterCriteriaForHiddenSections];
-}
-
-- (void)setFavoritesFilterShowsApps:(BOOL)showsApps {
-    if (_favoritesFilterShowsApps == showsApps) {
-        return;
-    }
-    _favoritesFilterShowsApps = showsApps;
-    [self persistFavoritesFilterPreferences];
-    if (showsApps) {
-        [self bootstrapSearchTokenSourcesIfNeeded];
-    }
-    [self applyFavoritesFilterSectionVisibility];
-    [self updateAllTokenLists];
-    [self pruneFavoritesFilterCriteriaForHiddenSections];
-}
-
 #pragma mark - Layout
 
 - (void)layout {
@@ -501,83 +434,9 @@ NS_ASSUME_NONNULL_END
            [[listViewController historyKey] isEqualToString:kKayokoHistoryKeyFavorites];
 }
 
-- (void)loadFavoritesFilterPreferences {
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    id panelVisible = [defaults objectForKey:kKayokoPreferenceKeyFavoritesFilterPanelVisible];
-    if (panelVisible != nil) {
-        _favoritesFilterPanelVisible = [panelVisible boolValue];
-    }
-    id showsCategories = [defaults objectForKey:kKayokoPreferenceKeyFavoritesFilterShowsCategories];
-    if (showsCategories != nil) {
-        _favoritesFilterShowsCategories = [showsCategories boolValue];
-    }
-    id showsTags = [defaults objectForKey:kKayokoPreferenceKeyFavoritesFilterShowsTags];
-    if (showsTags != nil) {
-        _favoritesFilterShowsTags = [showsTags boolValue];
-    }
-    id showsApps = [defaults objectForKey:kKayokoPreferenceKeyFavoritesFilterShowsApps];
-    if (showsApps != nil) {
-        _favoritesFilterShowsApps = [showsApps boolValue];
-    }
-}
-
-- (void)persistFavoritesFilterPreferences {
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    [defaults setBool:[self isFavoritesFilterPanelVisible] forKey:kKayokoPreferenceKeyFavoritesFilterPanelVisible];
-    [defaults setBool:[self favoritesFilterShowsCategories] forKey:kKayokoPreferenceKeyFavoritesFilterShowsCategories];
-    [defaults setBool:[self favoritesFilterShowsTags] forKey:kKayokoPreferenceKeyFavoritesFilterShowsTags];
-    [defaults setBool:[self favoritesFilterShowsApps] forKey:kKayokoPreferenceKeyFavoritesFilterShowsApps];
-}
-
-- (void)applyFavoritesFilterSectionVisibility {
-    [[self historyTokenListViewController] setShowsCategorySectionEnabled:NO];
-    [[self historyTokenListViewController] setShowsTagSectionEnabled:NO];
-    [[self historyTokenListViewController] setShowsAppSectionEnabled:NO];
-    [[self favoritesTokenListViewController] setShowsCategorySectionEnabled:[self favoritesFilterShowsCategories]];
-    [[self favoritesTokenListViewController] setShowsTagSectionEnabled:[self favoritesFilterShowsTags]];
-    [[self favoritesTokenListViewController] setShowsAppSectionEnabled:[self favoritesFilterShowsApps]];
-}
-
-// When a favorites filter section is hidden (its eye toggle turned off, or the whole panel closed),
-// a selection made in that section would keep filtering the list silently even though the chip is
-// gone. Drop any now-hidden selection so hiding a section restores the corresponding content.
-- (void)pruneFavoritesFilterCriteriaForHiddenSections {
-    KayokoHistoryListViewController *favoritesListViewController = [self favoritesListViewController];
-    if (!favoritesListViewController) {
-        return;
-    }
-    KayokoSearchCriteria *criteria = [favoritesListViewController searchCriteria];
-    BOOL panelVisible = [self isFavoritesFilterPanelVisible];
-    NSString *categoryValue =
-        (panelVisible && [self favoritesFilterShowsCategories]) ? [criteria categoryValue] : nil;
-    NSString *tagUUID = (panelVisible && [self favoritesFilterShowsTags]) ? [criteria tagUUID] : nil;
-    NSString *appBundleIdentifier =
-        (panelVisible && [self favoritesFilterShowsApps]) ? [criteria appBundleIdentifier] : nil;
-    KayokoSearchCriteria *prunedCriteria = [KayokoSearchCriteria criteriaWithSearchText:[criteria searchText]
-                                                                          categoryValue:categoryValue
-                                                                    appBundleIdentifier:appBundleIdentifier
-                                                                                tagUUID:tagUUID];
-    if ([prunedCriteria isEqualToCriteria:criteria]) {
-        return;
-    }
-    [self applySearchCriteria:prunedCriteria toListViewController:favoritesListViewController];
-}
-
 - (BOOL)shouldShowTokenListForListViewController:(KayokoHistoryListViewController *)listViewController {
-    // Filters are favorites-only. They stay available during search so remaining categories
-    // can be stacked; each section hides itself once its own token is already selected.
-    // While a search is being torn down (cancel/x), keep them hidden so they never flash during
-    // the exit animation before settling into the final browse state.
-    if ([self isEndingSearchTransition]) {
-        return NO;
-    }
-    if (![self listViewControllerIsFavorites:listViewController]) {
-        return NO;
-    }
-    if (![self isFavoritesFilterPanelVisible]) {
-        return NO;
-    }
-    return [self favoritesFilterShowsCategories] || [self favoritesFilterShowsTags] || [self favoritesFilterShowsApps];
+    (void)listViewController;
+    return NO;
 }
 
 - (void)updateSearchTokenHeaderHeights {
@@ -600,15 +459,9 @@ NS_ASSUME_NONNULL_END
 - (void)updateTokenListForListViewController:(KayokoHistoryListViewController *)listViewController {
     KayokoSearchTokenListViewController *tokenListController =
         [self tokenListViewControllerForListViewController:listViewController];
-    if ([self listViewControllerIsFavorites:listViewController]) {
-        [tokenListController setShowsCategorySectionEnabled:[self favoritesFilterShowsCategories]];
-        [tokenListController setShowsTagSectionEnabled:[self favoritesFilterShowsTags]];
-        [tokenListController setShowsAppSectionEnabled:[self favoritesFilterShowsApps]];
-    } else {
-        [tokenListController setShowsCategorySectionEnabled:NO];
-        [tokenListController setShowsTagSectionEnabled:NO];
-        [tokenListController setShowsAppSectionEnabled:NO];
-    }
+    [tokenListController setShowsCategorySectionEnabled:NO];
+    [tokenListController setShowsTagSectionEnabled:NO];
+    [tokenListController setShowsAppSectionEnabled:NO];
     [tokenListController updateWithSearchCriteria:[listViewController searchCriteria]
                                         tagTokens:[self tagTokens]
                                         appTokens:[self appTokens]];
@@ -928,10 +781,6 @@ NS_ASSUME_NONNULL_END
     [self attachToListViewController:listViewController hidesSearchBar:![self isSearchActive]];
     if ([self isSearchActive]) {
         [self reloadTagTokens];
-    } else if ([self listViewControllerIsFavorites:listViewController] && [self isFavoritesFilterPanelVisible] &&
-               ([self favoritesFilterShowsTags] || [self favoritesFilterShowsApps])) {
-        // Browsing favorites with dynamic filters enabled needs tag/app sources loaded up front.
-        [self bootstrapSearchTokenSourcesIfNeeded];
     }
     [self syncSearchBarForListViewController:listViewController];
     [self updateTokenListForListViewController:listViewController];

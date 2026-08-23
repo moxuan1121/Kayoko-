@@ -8,8 +8,6 @@
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoTableViewCellContent.h"
-#import "KayokoTag.h"
-#import "KayokoTagCatalog.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -103,16 +101,13 @@ NS_ASSUME_NONNULL_END
 }
 
 - (KayokoTableViewCellContent *)cellContentForItem:(KayokoPasteboardItem *)item
-                                  previewLineCount:(NSUInteger)previewLineCount
                                    itemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode {
     return [self cellContentForItem:item
-                   previewLineCount:previewLineCount
                     itemDetailsMode:itemDetailsMode
                          searchText:nil];
 }
 
 - (KayokoTableViewCellContent *)cellContentForItem:(KayokoPasteboardItem *)item
-                                  previewLineCount:(NSUInteger)previewLineCount
                                    itemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode
                                         searchText:(nullable NSString *)searchText {
     KayokoTableViewCellContent *content = [[KayokoTableViewCellContent alloc] init];
@@ -127,8 +122,6 @@ NS_ASSUME_NONNULL_END
     [content setAttributedDisplayName:[[item note] length] > 0 ? [self attributedTextForText:displayName
                                                                                   searchText:searchText]
                                                                : nil];
-    KayokoTag *tag = [[KayokoTagCatalog sharedCatalog] tagForUUID:[item tagUUID]];
-    [content setTagHexColor:[tag hexColor]];
     [content setContentText:contentText];
     [content setAttributedContentText:[self attributedTextForText:contentText searchText:searchText]];
     BOOL showsDetail =
@@ -177,7 +170,6 @@ NS_ASSUME_NONNULL_END
         [content setAttributedDetailText:attributedDetailText];
     }
     [content setThumbnailImageName:[item imageName]];
-    [content setPreviewLineCount:previewLineCount];
     return content;
 }
 

@@ -9,8 +9,6 @@
 #import "KayokoNoteEditorView.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
-#import "KayokoTagCatalog.h"
-#import "KayokoTagChipBarView.h"
 #import "KayokoTableViewCell.h"
 
 @interface UIPeripheralHost : NSObject
@@ -45,7 +43,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSString *sourceDisplayName;
 @property(nonatomic, assign, getter=isSaving) BOOL saving;
 @property(nonatomic, assign) CGFloat currentKeyboardBottomInset;
-@property(nonatomic, copy, nullable) NSString *selectedTagUUID;
 
 @end
 
@@ -107,28 +104,6 @@ NS_ASSUME_NONNULL_BEGIN
     [headerLabel setText:displayName];
 }
 
-- (void)setSelectedTagUUIDAndUpdateTagBar:(NSString *)tagUUID {
-    NSString *normalizedTagUUID = [tagUUID length] > 0 ? tagUUID : nil;
-    [self setSelectedTagUUID:normalizedTagUUID];
-    [[[self noteEditorView] tagChipBarView] setSelectedTagUUID:normalizedTagUUID];
-}
-
-- (void)configureTagBarForItem:(KayokoPasteboardItem *)item {
-    [self setSelectedTagUUIDAndUpdateTagBar:[item tagUUID]];
-
-    __weak typeof(self) weakSelf = self;
-    [[self noteEditorView] configureTagBarWithTags:[[KayokoTagCatalog sharedCatalog] reloadTags]
-                                 selectedTagUUID:[self selectedTagUUID]
-                                selectionHandler:^(NSString *tagUUID) {
-                                  __strong typeof(weakSelf) strongSelf = weakSelf;
-                                  if (!strongSelf || [strongSelf isSaving]) {
-                                      return;
-                                  }
-                                  [strongSelf setSelectedTagUUIDAndUpdateTagBar:tagUUID];
-                                  [[strongSelf delegate] noteEditorViewController:strongSelf didSelectTagUUID:tagUUID];
-                                }];
-}
-
 - (void)restorePreviewToSavedState {
     NSString *savedNote = [[[self item] note]
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -138,7 +113,6 @@ NS_ASSUME_NONNULL_BEGIN
     [headerLabel setText:displayName];
     // Keep the text field in sync so a cancelled editor does not flash dirty text again.
     [[[self noteEditorView] textField] setText:[[self item] note] ?: @""];
-    [self setSelectedTagUUIDAndUpdateTagBar:[[self item] tagUUID]];
 }
 
 - (void)prepareForItem:(KayokoPasteboardItem *)item
@@ -151,7 +125,6 @@ NS_ASSUME_NONNULL_BEGIN
     [[[self noteEditorView] textField] setText:[item note] ?: @""];
     [[self noteEditorView] setPreviewCellHeight:cellHeight];
     [[self noteEditorView] setPreviewCell:presentationCell];
-    [self configureTagBarForItem:item];
     // The editor card itself is lifted above the keyboard. Keep the form compact and top-anchored
     // inside that card instead of giving the editor a keyboard-height spacer of its own.
     [self setCurrentKeyboardBottomInset:MAX(keyboardBottomInset, 0)];
@@ -231,7 +204,6 @@ NS_ASSUME_NONNULL_BEGIN
     [[[self noteEditorView] saveButton] setAlpha:saving ? 0.55 : 1.0];
     [[[self noteEditorView] cancelButton] setEnabled:!saving];
     [[[self noteEditorView] cancelButton] setAlpha:saving ? 0.55 : 1.0];
-    [[[self noteEditorView] tagChipBarView] setUserInteractionEnabled:!saving];
 }
 
 - (void)reset {
@@ -239,9 +211,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self setSaving:NO];
     [self setItem:nil];
     [self setSourceDisplayName:@""];
-    [self setSelectedTagUUID:nil];
     [[[self noteEditorView] textField] setText:@""];
-    [[self noteEditorView] configureTagBarWithTags:@[] selectedTagUUID:nil selectionHandler:nil];
     [self setCurrentKeyboardBottomInset:0];
     [[self noteEditorView] setKeyboardBottomInset:0];
     [[self noteEditorView] setAnchorsEditingContentToTop:NO];
@@ -258,9 +228,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     [self setSaving:YES];
-    [[self delegate] noteEditorViewController:self
-                           didRequestSaveNote:[self normalizedNote]
-                                    tagUUID:[self selectedTagUUID]];
+    [[self delegate] noteEditorViewController:self didRequestSaveNote:[self normalizedNote]];
 }
 
 - (void)handleSaveButtonPressed {

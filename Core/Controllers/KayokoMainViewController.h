@@ -27,7 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) KayokoInitialViewMode initialViewMode;
 @property(nonatomic, assign) BOOL alwaysScrollToTop;
 @property(nonatomic, assign) KayokoClearButtonMode clearButtonMode;
-@property(nonatomic, assign) NSUInteger previewLineCount;
 @property(nonatomic, assign) KayokoItemDetailsMode itemDetailsMode;
 @property(nonatomic, assign) BOOL shouldPlayFeedback;
 @property(nonatomic, assign) KayokoPanelPresentationMode presentationMode;

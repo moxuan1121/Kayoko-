@@ -10,9 +10,7 @@
 #import "KayokoPasteboardManager.h"
 
 static CGFloat const kKayokoHistoryListViewBaseRowHeight = 46;
-static CGFloat const kKayokoHistoryListViewAdditionalPreviewLineHeight = 18;
 static CGFloat const kKayokoHistoryListViewDetailLineHeight = 15;
-static NSUInteger const kKayokoHistoryListViewMaximumPreviewLineCount = 3;
 static CGFloat const kKayokoHistoryListViewHiddenHeaderInsetPadding = 1;
 static CGFloat const kKayokoNoSearchResultsPlaceholderMinimumHeight = 96;
 static NSTimeInterval const kKayokoHistoryListViewTransientContentOffsetPreservationDuration = 1.0;
@@ -416,20 +414,13 @@ NS_ASSUME_NONNULL_END
         // first and last visible rows look unnecessarily blurred.
         [self setEdgeFadeEnabled:NO];
         _itemDetailsMode = kKayokoItemDetailsModeImagesOnly;
-        [self setPreviewLineCount:1];
+        [self updateRowHeightForCurrentDisplayOptions];
     }
 
     return self;
 }
 
 #pragma mark - Configuration
-
-- (void)setPreviewLineCount:(NSUInteger)previewLineCount {
-    NSUInteger lineCount = MIN(MAX(previewLineCount, 1), kKayokoHistoryListViewMaximumPreviewLineCount);
-    _previewLineCount = lineCount;
-    [self updateRowHeightForCurrentDisplayOptions];
-    [self reloadData];
-}
 
 - (void)setItemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode {
     if (itemDetailsMode != kKayokoItemDetailsModeOff && itemDetailsMode != kKayokoItemDetailsModeImagesOnly &&
@@ -444,9 +435,7 @@ NS_ASSUME_NONNULL_END
 - (void)updateRowHeightForCurrentDisplayOptions {
     CGFloat detailHeight =
         [self itemDetailsMode] == kKayokoItemDetailsModeAll ? kKayokoHistoryListViewDetailLineHeight : 0;
-    [self setRowHeight:kKayokoHistoryListViewBaseRowHeight +
-                       ([self previewLineCount] - 1) * kKayokoHistoryListViewAdditionalPreviewLineHeight +
-                       detailHeight];
+    [self setRowHeight:kKayokoHistoryListViewBaseRowHeight + detailHeight];
 }
 
 @end

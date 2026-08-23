@@ -5,7 +5,6 @@
 
 #import "KayokoNoteEditorView.h"
 
-#import "KayokoTagChipBarView.h"
 #import "KayokoTableViewCell.h"
 
 static CGFloat const kKayokoNoteEditorDefaultCellHeight = 65;
@@ -14,8 +13,6 @@ static CGFloat const kKayokoNoteEditorHorizontalInset = 24;
 static CGFloat const kKayokoNoteEditorPreviewTopSpacing = 10;
 static CGFloat const kKayokoNoteEditorInputTopSpacing = 12;
 static CGFloat const kKayokoNoteEditorInputBottomSpacing = 16;
-static CGFloat const kKayokoNoteEditorTagBarTopSpacing = 6;
-static CGFloat const kKayokoNoteEditorTagBarBottomSpacing = 10;
 static CGFloat const kKayokoNoteEditorTextLeadingInset = 14;
 static CGFloat const kKayokoNoteEditorTextTrailingInset = 6;
 static CGFloat const kKayokoNoteEditorMinimumButtonWidth = 68;
@@ -23,8 +20,6 @@ static CGFloat const kKayokoNoteEditorSeparatorVerticalInset = 9;
 static CGFloat const kKayokoNoteEditorCompactPreviewTopSpacing = 8;
 static CGFloat const kKayokoNoteEditorCompactInputTopSpacing = 8;
 static CGFloat const kKayokoNoteEditorCompactInputHeight = 40;
-static CGFloat const kKayokoNoteEditorCompactTagBarTopSpacing = 4;
-static CGFloat const kKayokoNoteEditorCompactTagBarHeight = 44;
 static CGFloat const kKayokoNoteEditorCompactInputBottomSpacing = 10;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -35,7 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, readwrite) UITextField *textField;
 @property(nonatomic, strong, readwrite) UIButton *saveButton;
 @property(nonatomic, strong, readwrite) UIButton *cancelButton;
-@property(nonatomic, strong, readwrite) KayokoTagChipBarView *tagChipBarView;
 @property(nonatomic, strong, readwrite, nullable) KayokoTableViewCell *previewCell;
 @property(nonatomic, strong) UIView *keyboardSpacerView;
 @property(nonatomic, strong) UIView *saveSeparatorView;
@@ -100,10 +94,6 @@ NS_ASSUME_NONNULL_BEGIN
         [[_cancelButton titleLabel] setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightRegular]];
         [_inputRowView addSubview:_cancelButton];
 
-        _tagChipBarView = [[KayokoTagChipBarView alloc] initWithFrame:CGRectZero];
-        [_tagChipBarView setBottomMaterialExtension:0];
-        [_tagChipBarView setSettled:YES animated:NO];
-        [self addSubview:_tagChipBarView];
     }
     return self;
 }
@@ -163,37 +153,11 @@ NS_ASSUME_NONNULL_BEGIN
     return [self usesCompactLayout] ? kKayokoNoteEditorCompactInputHeight : kKayokoNoteEditorInputHeight;
 }
 
-- (CGFloat)tagBarTopSpacing {
-    return [self usesCompactLayout] ? kKayokoNoteEditorCompactTagBarTopSpacing : kKayokoNoteEditorTagBarTopSpacing;
-}
-
-- (CGFloat)visibleTagBarHeight {
-    if ([[self tagChipBarView] isHidden]) {
-        return 0;
-    }
-    return [self usesCompactLayout] ? kKayokoNoteEditorCompactTagBarHeight : [KayokoTagChipBarView preferredHeight];
-}
-
 - (CGFloat)editingContentHeight {
-    CGFloat tagBarHeight = [self visibleTagBarHeight];
-    CGFloat inputBottomSpacing = tagBarHeight > 0
-                                     ? [self tagBarTopSpacing] + tagBarHeight +
-                                           ([self usesCompactLayout] ? kKayokoNoteEditorCompactInputBottomSpacing
-                                                                     : kKayokoNoteEditorTagBarBottomSpacing)
-                                     : ([self usesCompactLayout] ? kKayokoNoteEditorCompactInputBottomSpacing
-                                                                 : kKayokoNoteEditorInputBottomSpacing);
+    CGFloat inputBottomSpacing =
+        [self usesCompactLayout] ? kKayokoNoteEditorCompactInputBottomSpacing : kKayokoNoteEditorInputBottomSpacing;
     return [self previewTopSpacing] + [self previewCellHeight] + [self inputTopSpacing] + [self inputHeight] +
            inputBottomSpacing;
-}
-
-- (void)configureTagBarWithTags:(NSArray<KayokoTag *> *)tags
-                selectedTagUUID:(nullable NSString *)selectedTagUUID
-               selectionHandler:(nullable void (^)(NSString *_Nullable tagUUID))selectionHandler {
-    [[self tagChipBarView] setSelectionHandler:selectionHandler];
-    [[self tagChipBarView] configureWithTags:tags ?: @[] selectedTagUUID:selectedTagUUID];
-    [[self tagChipBarView] setBottomMaterialExtension:0];
-    [[self tagChipBarView] setSettled:YES animated:NO];
-    [self setNeedsLayout];
 }
 
 - (CGRect)targetPreviewCellFrame {
@@ -252,15 +216,6 @@ NS_ASSUME_NONNULL_BEGIN
     [[self cancelButton]
         setFrame:CGRectMake(cancelOriginX + separatorWidth, 0, MAX(cancelButtonWidth - separatorWidth, 0),
                             inputHeight)];
-
-    CGFloat tagBarHeight = [self visibleTagBarHeight];
-    if (tagBarHeight > 0) {
-        CGFloat tagBarY = CGRectGetMaxY([[self inputRowView] frame]) + [self tagBarTopSpacing];
-        [[self tagChipBarView] setFrame:CGRectMake(leadingInset, tagBarY, availableWidth, tagBarHeight)];
-        [[self tagChipBarView] layoutIfNeeded];
-    } else {
-        [[self tagChipBarView] setFrame:CGRectZero];
-    }
 
     CGFloat spacerHeight = MIN([self keyboardBottomInset], CGRectGetHeight(bounds));
     [[self keyboardSpacerView]

@@ -15,11 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol KayokoNoteEditorViewControllerDelegate <NSObject>
 
 - (void)noteEditorViewController:(KayokoNoteEditorViewController *)controller
-              didRequestSaveNote:(nullable NSString *)note
-                       tagUUID:(nullable NSString *)tagUUID;
+              didRequestSaveNote:(nullable NSString *)note;
 - (void)noteEditorViewControllerDidRequestCancel:(KayokoNoteEditorViewController *)controller;
-- (void)noteEditorViewController:(KayokoNoteEditorViewController *)controller
-                 didSelectTagUUID:(nullable NSString *)tagUUID;
 - (void)noteEditorViewController:(KayokoNoteEditorViewController *)controller
     didUpdateKeyboardBottomInset:(CGFloat)keyboardBottomInset
                animationDuration:(NSTimeInterval)animationDuration

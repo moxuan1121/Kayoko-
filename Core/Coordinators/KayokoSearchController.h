@@ -33,7 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) KayokoPanelPresentationMode presentationMode;
 @property(nonatomic, assign, readonly, getter=isSearchActive) BOOL searchActive;
 @property(nonatomic, assign, readonly) CGFloat keyboardBottomInset;
-@property(nonatomic, assign, readonly, getter=isFavoritesFilterPanelVisible) BOOL favoritesFilterPanelVisible;
 
 - (instancetype)initWithContainerView:(UIView *)containerView
                            headerView:(KayokoHeaderView *)headerView
@@ -42,14 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
                  panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer;
 
 - (void)layout;
-- (void)setFavoritesFilterPanelVisible:(BOOL)favoritesFilterPanelVisible;
-- (void)toggleFavoritesFilterPanelVisible;
-- (void)setFavoritesFilterShowsCategories:(BOOL)showsCategories;
-- (void)setFavoritesFilterShowsTags:(BOOL)showsTags;
-- (void)setFavoritesFilterShowsApps:(BOOL)showsApps;
-- (BOOL)favoritesFilterShowsCategories;
-- (BOOL)favoritesFilterShowsTags;
-- (BOOL)favoritesFilterShowsApps;
 - (void)attachToListViewController:(KayokoHistoryListViewController *)listViewController
                     hidesSearchBar:(BOOL)hidesSearchBar;
 - (void)refreshForListViewController:(KayokoHistoryListViewController *)listViewController;

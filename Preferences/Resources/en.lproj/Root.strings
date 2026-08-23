@@ -10,15 +10,12 @@
 "Auto Promote" = "Auto Promote";
 "Automatically Paste" = "Automatically Paste";
 "Behaviors" = "Behaviors";
-"CUSTOM_TAGS" = "Custom Tags…";
 "Cancel" = "Cancel";
-"Choose how much text each clipboard item shows in the list. More lines make items easier to identify, but show fewer items at once." = "Choose how much text each clipboard item shows in the list. More lines make items easier to identify, but show fewer items at once.";
 "Choose when a tapped item moves to the top. “History Only” keeps Favorites in your chosen order while still surfacing recently used history items." = "Choose when a tapped item moves to the top. “History Only” keeps Favorites in your chosen order while still surfacing recently used history items.";
 "Choose which list Kayoko opens when it is shown. “Previous” keeps the list you last used." = "Choose which list Kayoko opens when it is shown. “Previous” keeps the list you last used.";
 "Credits" = "Credits";
 "Default View" = "Default View";
 "Disable Paste Tips" = "Disable Paste Tips";
-"Double Line" = "Double Line";
 "Enable Kayoko" = "Enable Kayoko";
 "Favorites" = "Favorites";
 "Feature-rich clipboard manager for iOS." = "Feature-rich clipboard manager for iOS.";
@@ -48,7 +45,6 @@
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in" = "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → tap My Account in the top-right corner → make sure Kayoko is in your purchases" = "Please check the following: open Zebra → select the Sources tab → tap Havoc → tap My Account in the top-right corner → make sure Kayoko is in your purchases";
 "Preview" = "Preview";
-"Preview Lines" = "Preview Lines";
 "Previous" = "Previous";
 "Purchase Kayoko on Havoc Marketplace to support ongoing OwnGoal Studio maintenance." = "Purchase Kayoko on Havoc Marketplace to support ongoing OwnGoal Studio maintenance.";
 "Respring" = "Respring";
@@ -60,7 +56,6 @@
 "Server returned an invalid response. Tap the screen to retry: %@" = "Server returned an invalid response. Tap the screen to retry: %@";
 "Sharing some tweaks and apps I use myself." = "Sharing some tweaks and apps I use myself.";
 "Show Kayoko" = "Show Kayoko";
-"Single Line" = "Single Line";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko.";
 "The network request failed." = "The network request failed.";
 "Choose whether a one-finger swipe up opens Kayoko." = "Choose whether a one-finger swipe up opens Kayoko.";
@@ -68,7 +63,6 @@
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "This option requires restarting SpringBoard to apply. Do you want to restart now?";
 "Tools" = "Tools";
 "Touch Outside to Dismiss" = "Touch Outside to Dismiss";
-"Triple Line" = "Triple Line";
 "Try out your changes by typing, copying and pasting text." = "Try out your changes by typing, copying and pasting text.";
 "Custom" = "Custom";
 "Maximum" = "Maximum";

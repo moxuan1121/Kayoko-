@@ -46,7 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign, readonly, getter=isBrowsingSearchTokens) BOOL browsingSearchTokens;
 @property(nonatomic, assign, readonly) BOOL hasActiveSearch;
 @property(nonatomic, assign) BOOL automaticallyPaste;
-@property(nonatomic, assign) NSUInteger previewLineCount;
 @property(nonatomic, assign) KayokoItemDetailsMode itemDetailsMode;
 
 - (instancetype)initWithName:(NSString *)name historyKey:(NSString *)historyKey NS_DESIGNATED_INITIALIZER;
@@ -73,7 +72,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeItemDictionary:(NSDictionary<NSString *, id> *)dictionary;
 - (void)removeItemAtIndexPath:(NSIndexPath *)indexPath completion:(nullable void (^)(BOOL success))completion;
 - (void)updateNote:(nullable NSString *)note
-            tagUUID:(nullable NSString *)tagUUID
             forItem:(KayokoPasteboardItem *)item
          completion:(nullable void (^)(void))completion;
 - (KayokoTableViewCell *)presentationCellForItem:(KayokoPasteboardItem *)item;

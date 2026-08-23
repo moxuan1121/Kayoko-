@@ -76,15 +76,10 @@ static NSString *const kKayokoPreferenceKeyDisablePasteTips = @"DisablePasteTips
 static NSString *const kKayokoPreferenceKeyIgnoreRemoteReplication = @"IgnoreRemoteReplication";
 static NSString *const kKayokoPreferenceKeyPlaySoundEffects = @"PlaySoundEffects";
 static NSString *const kKayokoPreferenceKeyPlayHapticFeedback = @"PlayHapticFeedback";
-static NSString *const kKayokoPreferenceKeyPreviewLineCount = @"PreviewLineCount";
 static NSString *const kKayokoPreferenceKeyItemDetailsMode = @"ItemDetailsMode";
 static NSString *const kKayokoPreferenceKeyHeightInPoints = @"HeightInPoints";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevelMode = @"OverlayWindowLevelMode";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevel = @"OverlayWindowLevel";
-static NSString *const kKayokoPreferenceKeyFavoritesFilterPanelVisible = @"FavoritesFilterPanelVisible";
-static NSString *const kKayokoPreferenceKeyFavoritesFilterShowsCategories = @"FavoritesFilterShowsCategories";
-static NSString *const kKayokoPreferenceKeyFavoritesFilterShowsTags = @"FavoritesFilterShowsTags";
-static NSString *const kKayokoPreferenceKeyFavoritesFilterShowsApps = @"FavoritesFilterShowsApps";
 
 static BOOL const kKayokoPreferenceKeyEnabledDefaultValue = YES;
 static NSUInteger const kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue = 200;
@@ -107,7 +102,6 @@ static BOOL const kKayokoPreferenceKeyDisablePasteTipsDefaultValue = NO;
 static BOOL const kKayokoPreferenceKeyIgnoreRemoteReplicationDefaultValue = NO;
 static BOOL const kKayokoPreferenceKeyPlaySoundEffectsDefaultValue = YES;
 static BOOL const kKayokoPreferenceKeyPlayHapticFeedbackDefaultValue = YES;
-static NSUInteger const kKayokoPreferenceKeyPreviewLineCountDefaultValue = 1;
 static KayokoItemDetailsMode const kKayokoPreferenceKeyItemDetailsModeDefaultValue = kKayokoItemDetailsModeImagesOnly;
 static CGFloat const kKayokoPreferenceKeyHeightInPointsDefaultValue = 420;
 static KayokoOverlayWindowLevelMode const kKayokoPreferenceKeyOverlayWindowLevelModeDefaultValue =
@@ -115,8 +109,3 @@ static KayokoOverlayWindowLevelMode const kKayokoPreferenceKeyOverlayWindowLevel
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelDefaultValue = 998;
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelMinimumValue = 10;
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelMaximumValue = 2000;
-
-static BOOL const kKayokoPreferenceKeyFavoritesFilterPanelVisibleDefaultValue = YES;
-static BOOL const kKayokoPreferenceKeyFavoritesFilterShowsCategoriesDefaultValue = YES;
-static BOOL const kKayokoPreferenceKeyFavoritesFilterShowsTagsDefaultValue = NO;
-static BOOL const kKayokoPreferenceKeyFavoritesFilterShowsAppsDefaultValue = NO;

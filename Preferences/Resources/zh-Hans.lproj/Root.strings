@@ -10,15 +10,12 @@
 "Auto Promote" = "自动置顶";
 "Automatically Paste" = "自动粘贴";
 "Behaviors" = "行为";
-"CUSTOM_TAGS" = "自定义标签…";
 "Cancel" = "取消";
-"Choose how much text each clipboard item shows in the list. More lines make items easier to identify, but show fewer items at once." = "选择列表中每个剪贴板条目显示多少文字。行数越多越容易辨认内容，但同屏可见的条目会更少。";
 "Choose when a tapped item moves to the top. “History Only” keeps Favorites in your chosen order while still surfacing recently used history items." = "选择点选条目后何时将它移到顶部。“仅历史记录” 会保留收藏夹的现有顺序，同时让最近使用的历史记录浮到前面。";
 "Choose which list Kayoko opens when it is shown. “Previous” keeps the list you last used." = "选择唤醒 Kayoko 时打开哪个列表。“先前的选择” 会保留上次使用的列表。";
 "Credits" = "致谢";
 "Default View" = "默认界面";
 "Disable Paste Tips" = "禁用粘贴提示";
-"Double Line" = "双行";
 "Enable Kayoko" = "启用 Kayoko";
 "Favorites" = "收藏夹";
 "Feature-rich clipboard manager for iOS." = "功能丰富的 iOS 剪贴板管理器。";
@@ -48,7 +45,6 @@
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in" = "请按如下步骤检查：打开 Zebra → 选择 “软件源” 标签页 → 点选 “Havoc” → 检查是否处于已登录状态";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → tap My Account in the top-right corner → make sure Kayoko is in your purchases" = "请按如下步骤检查：打开 Zebra → 选择 “软件源” 标签页 → 点选 “Havoc” → 点选界面右上角 “我的帐户” → 检查已购列表中是否有 Kayoko";
 "Preview" = "预览";
-"Preview Lines" = "预览行数";
 "Previous" = "先前的选择";
 "Purchase Kayoko on Havoc Marketplace to support ongoing OwnGoal Studio maintenance." = "在浩劫商店购买 Kayoko，支持乌龙工作室版后续的维护";
 "Respring" = "注销";
@@ -60,7 +56,6 @@
 "Server returned an invalid response. Tap the screen to retry: %@" = "服务器返回了无效的响应，轻点屏幕以重试：%@";
 "Sharing some tweaks and apps I use myself." = "个人源 · 收录我常用的工具";
 "Show Kayoko" = "显示 Kayoko";
-"Single Line" = "单行";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "数据已成功导入。你需要立即重启 SpringBoard，才能完成导入并继续使用 Kayoko。";
 "The network request failed." = "网络请求失败。";
 "Choose whether a one-finger swipe up opens Kayoko." = "选择是否使用单指上划打开 Kayoko。";
@@ -68,7 +63,6 @@
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "此选项需要重新启动 SpringBoard 才能生效。你现在要重新启动吗？";
 "Tools" = "工具";
 "Touch Outside to Dismiss" = "触摸外部收起";
-"Triple Line" = "三行";
 "Try out your changes by typing, copying and pasting text." = "尝试输入、拷贝和粘贴文本以查看效果。";
 "Custom" = "自定义";
 "Maximum" = "至高无上";
