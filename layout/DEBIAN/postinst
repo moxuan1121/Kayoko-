@@ -1,4 +1,15 @@
-#!/bin/bash
+#!/bin/sh
+
+# Transitional repair for upgrades from packages that incorrectly listed the
+# ElleKit compatibility symlink as their own directory. Never replace an
+# existing object: a real directory requires manual migration, not force.
+ELLEKIT_LINK="/Library/MobileSubstrate/DynamicLibraries"
+ELLEKIT_TARGET="/usr/lib/TweakInject"
+if [ ! -e "$ELLEKIT_LINK" ] && [ ! -L "$ELLEKIT_LINK" ] && \
+   [ -d "$ELLEKIT_TARGET" ] && [ -e "/usr/lib/libellekit.dylib" ]; then
+    mkdir -p "/Library/MobileSubstrate" &&
+        ln -s "$ELLEKIT_TARGET" "$ELLEKIT_LINK" >/dev/null 2>&1 || true
+fi
 
 UPDATER="/usr/local/libexec/kayoko_updater"
 if command -v jbroot >/dev/null 2>&1; then

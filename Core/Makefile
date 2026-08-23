@@ -41,6 +41,13 @@ ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
 KayokoCore_LIBRARIES += roothide
 endif
 
+# ElleKit owns /Library/MobileSubstrate/DynamicLibraries as a compatibility
+# symlink. Installing into its real directory prevents dpkg from claiming and
+# later unlinking that shared symlink when this package is removed.
+ifneq ($(filter rootless roothide,$(THEOS_PACKAGE_SCHEME)),)
+KayokoCore_INSTALL_PATH := /usr/lib/TweakInject
+endif
+
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/aggregate.mk
 include $(THEOS_MAKE_PATH)/tweak.mk

@@ -93,7 +93,7 @@ targets:
         CODE_SIGNING_ALLOWED: NO
         CODE_SIGNING_REQUIRED: NO
         CODE_SIGN_IDENTITY: ""
-        DYLIB_INSTALL_NAME_BASE: "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries"
+        DYLIB_INSTALL_NAME_BASE: "@loader_path/.jbroot/usr/lib/TweakInject"
         EXECUTABLE_PREFIX: ""
         HEADER_SEARCH_PATHS:
           - "$(inherited)"
@@ -109,8 +109,8 @@ targets:
           - "$(SRCROOT)/Helper"
           - "$(SRCROOT)/Shared/Tags"
           - "$(SRCROOT)/Preferences"
-        INSTALL_PATH: /Library/MobileSubstrate/DynamicLibraries
-        LD_DYLIB_INSTALL_NAME: "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoCore.dylib"
+        INSTALL_PATH: /usr/lib/TweakInject
+        LD_DYLIB_INSTALL_NAME: "@loader_path/.jbroot/usr/lib/TweakInject/KayokoCore.dylib"
         LD_RUNPATH_SEARCH_PATHS: ""
         MACH_O_TYPE: mh_dylib
         OTHER_LDFLAGS:
@@ -160,14 +160,14 @@ targets:
         CODE_SIGNING_ALLOWED: NO
         CODE_SIGNING_REQUIRED: NO
         CODE_SIGN_IDENTITY: ""
-        DYLIB_INSTALL_NAME_BASE: "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries"
+        DYLIB_INSTALL_NAME_BASE: "@loader_path/.jbroot/usr/lib/TweakInject"
         EXECUTABLE_PREFIX: ""
         HEADER_SEARCH_PATHS:
           - "$(inherited)"
           - "$(SRCROOT)/Helper"
           - "$(SRCROOT)/Preferences"
-        INSTALL_PATH: /Library/MobileSubstrate/DynamicLibraries
-        LD_DYLIB_INSTALL_NAME: "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoHelper.dylib"
+        INSTALL_PATH: /usr/lib/TweakInject
+        LD_DYLIB_INSTALL_NAME: "@loader_path/.jbroot/usr/lib/TweakInject/KayokoHelper.dylib"
         LD_RUNPATH_SEARCH_PATHS: ""
         MACH_O_TYPE: mh_dylib
         OTHER_LDFLAGS:

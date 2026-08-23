@@ -39,7 +39,7 @@ jobs:
       - name: Install iOS SDK and build dependencies
         run: |
           "${THEOS}/bin/install-sdk" iPhoneOS16.5
-          brew install ldid xz
+          brew install dpkg ldid xz fakeroot
           echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
           echo "${THEOS}/bin" >> "$GITHUB_PATH"
         env:
@@ -49,6 +49,38 @@ jobs:
         run: |
           chmod +x build.sh
           ./build.sh roothide
+
+      - name: Audit RootHide package lifecycle safety
+        run: |
+          set -euo pipefail
+          package="$(find packages -maxdepth 1 -name '*.deb' -print -quit)"
+          test -n "$package"
+          test "$(dpkg-deb -f "$package" Architecture)" = "iphoneos-arm64e"
+
+          contents="$(mktemp)"
+          dpkg-deb --fsys-tarfile "$package" | tar --numeric-owner -tvf - > "$contents"
+
+          if grep -Eq ' Library/MobileSubstrate(/DynamicLibraries)?/?$' "$contents"; then
+            echo "error: package claims ElleKit's shared compatibility path" >&2
+            exit 1
+          fi
+          if grep -Eq '(^|[[:space:]])501/20([[:space:]]|$)|(^|[[:space:]])501:20([[:space:]]|$)' "$contents"; then
+            echo "error: package data is owned by mobile instead of root" >&2
+            exit 1
+          fi
+          grep -Eq ' usr/lib/TweakInject/KayokoCore\.dylib$' "$contents"
+          grep -Eq ' usr/lib/TweakInject/KayokoHelper\.dylib$' "$contents"
+
+          scripts="$(mktemp -d)"
+          dpkg-deb -e "$package" "$scripts"
+          for script in postinst postrm; do
+            test -x "$scripts/$script"
+            head -n 1 "$scripts/$script" | grep -Fx '#!/bin/sh'
+            if LC_ALL=C grep -q $'\r' "$scripts/$script"; then
+              echo "error: $script contains CRLF line endings" >&2
+              exit 1
+            fi
+          done
 
       - name: Upload RootHide package
         uses: actions/upload-artifact@v4

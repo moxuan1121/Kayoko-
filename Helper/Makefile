@@ -24,6 +24,10 @@ ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
 KayokoHelper_LIBRARIES += roothide
 endif
 
+ifneq ($(filter rootless roothide,$(THEOS_PACKAGE_SCHEME)),)
+KayokoHelper_INSTALL_PATH := /usr/lib/TweakInject
+endif
+
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/aggregate.mk
 include $(THEOS_MAKE_PATH)/tweak.mk
