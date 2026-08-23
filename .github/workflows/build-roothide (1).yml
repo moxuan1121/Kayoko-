@@ -70,7 +70,7 @@ jobs:
           contents="$(mktemp)"
           dpkg-deb --fsys-tarfile "$package" | tar --numeric-owner -tvf - > "$contents"
 
-          if grep -Eq ' Library/MobileSubstrate(/DynamicLibraries)?/?$' "$contents"; then
+          if grep -Eq ' ([.]/)?Library/MobileSubstrate(/DynamicLibraries)?/?$' "$contents"; then
             echo "error: package claims ElleKit's shared compatibility path" >&2
             exit 1
           fi
@@ -78,8 +78,8 @@ jobs:
             echo "error: package data is owned by mobile instead of root" >&2
             exit 1
           fi
-          grep -Eq ' usr/lib/TweakInject/KayokoCore\.dylib$' "$contents"
-          grep -Eq ' usr/lib/TweakInject/KayokoHelper\.dylib$' "$contents"
+          grep -Eq ' ([.]/)?usr/lib/TweakInject/KayokoCore\.dylib$' "$contents"
+          grep -Eq ' ([.]/)?usr/lib/TweakInject/KayokoHelper\.dylib$' "$contents"
 
           scripts="$(mktemp -d)"
           dpkg-deb -e "$package" "$scripts"
