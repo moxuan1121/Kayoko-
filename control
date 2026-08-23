@@ -1,4 +1,4 @@
-Package: com.mlgm.kayoko
+Package: com.moxuan.kayoko
 Name: Kayoko
 Version: 4.7.3
 Architecture: iphoneos-arm
@@ -8,5 +8,5 @@ Author: mlgm
 Section: Tweaks
 Icon: https://mlgm66.github.io/icon/kayoko.png
 Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
-Conflicts: codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
-Replaces: codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
+Conflicts: com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
+Replaces: com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
