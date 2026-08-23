@@ -39,7 +39,7 @@ jobs:
       - name: Install iOS SDK and build dependencies
         run: |
           "${THEOS}/bin/install-sdk" iPhoneOS16.5
-          brew install dpkg ldid xz fakeroot
+          brew install dpkg ldid xz
           echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
           echo "${THEOS}/bin" >> "$GITHUB_PATH"
         env:
@@ -49,6 +49,16 @@ jobs:
         run: |
           chmod +x build.sh
           ./build.sh roothide
+
+      - name: Normalize package ownership
+        run: |
+          set -euo pipefail
+          package="$(find packages -maxdepth 1 -name '*.deb' -print -quit)"
+          test -n "$package"
+          work="$(mktemp -d)"
+          dpkg-deb -R "$package" "$work/root"
+          dpkg-deb --root-owner-group -Zxz -b "$work/root" "$work/package.deb"
+          mv "$work/package.deb" "$package"
 
       - name: Audit RootHide package lifecycle safety
         run: |

@@ -46,7 +46,7 @@ jobs:
       - name: Install iOS SDK and build dependencies
         run: |
           "${THEOS}/bin/install-sdk" iPhoneOS16.5
-          brew install dpkg ldid xz fakeroot
+          brew install dpkg ldid xz
           echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
           echo "${THEOS}/bin" >> "$GITHUB_PATH"
         env:
@@ -54,10 +54,15 @@ jobs:
 
       - name: Build ${{ matrix.variant }} package
         run: |
+          set -euo pipefail
           chmod +x build.sh
           ./build.sh "${{ matrix.variant }}"
           mkdir -p artifacts
           for package in packages/*.deb; do
+            work="$(mktemp -d)"
+            dpkg-deb -R "$package" "$work/root"
+            dpkg-deb --root-owner-group -Zxz -b "$work/root" "$work/package.deb"
+            mv "$work/package.deb" "$package"
             name="$(basename "$package" .deb)"
             cp "$package" "artifacts/${name}-${{ matrix.variant }}.deb"
           done
