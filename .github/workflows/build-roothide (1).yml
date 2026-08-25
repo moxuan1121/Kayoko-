@@ -87,6 +87,10 @@ jobs:
           for script in postinst postrm; do
             test -x "$scripts/$script"
             head -n 1 "$scripts/$script" | grep -Fx '#!/bin/sh'
+            if grep -Eq '/var/jb|MobileSubstrate|[Ee]lle[Kk]it|PreferenceLoader|preferenceloader|rm[[:space:]]+-rf|rm[[:space:]].*[*]' "$scripts/$script"; then
+              echo "error: $script touches a foreign/shared path or uses unsafe removal" >&2
+              exit 1
+            fi
             if LC_ALL=C grep -q $'\r' "$scripts/$script"; then
               echo "error: $script contains CRLF line endings" >&2
               exit 1

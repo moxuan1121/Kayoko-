@@ -1,18 +1,6 @@
 #!/bin/sh
 
-# During an upgrade from the legacy package, dpkg may remove ElleKit's
-# compatibility symlink while cleaning the old file list. Restore only a
-# missing link with an intact ElleKit target; never overwrite anything.
 case "${1:-}" in
-    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-        ELLEKIT_LINK="/Library/MobileSubstrate/DynamicLibraries"
-        ELLEKIT_TARGET="/usr/lib/TweakInject"
-        if [ ! -e "$ELLEKIT_LINK" ] && [ ! -L "$ELLEKIT_LINK" ] && \
-           [ -d "$ELLEKIT_TARGET" ] && [ -e "/usr/lib/libellekit.dylib" ]; then
-            mkdir -p "/Library/MobileSubstrate" &&
-                ln -s "$ELLEKIT_TARGET" "$ELLEKIT_LINK" >/dev/null 2>&1 || true
-        fi
-        ;;
     remove|purge)
         # Quietly restart paste-related daemons after an actual removal only.
         killall -9 druid pasted >/dev/null 2>&1 || true

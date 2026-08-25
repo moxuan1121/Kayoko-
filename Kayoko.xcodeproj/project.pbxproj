@@ -1445,7 +1445,7 @@
 				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries";
+				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/usr/lib/TweakInject";
 				EXECUTABLE_EXTENSION = dylib;
 				EXECUTABLE_NAME = KayokoCore;
 				EXECUTABLE_PREFIX = "";
@@ -1464,9 +1464,9 @@
 					"$(SRCROOT)/Shared/Tags",
 					"$(SRCROOT)/Preferences",
 				);
-				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				INSTALL_PATH = /usr/lib/TweakInject;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoCore.dylib";
+				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoCore.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
@@ -1535,7 +1535,7 @@
 				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries";
+				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/usr/lib/TweakInject";
 				EXECUTABLE_EXTENSION = dylib;
 				EXECUTABLE_NAME = KayokoHelper;
 				EXECUTABLE_PREFIX = "";
@@ -1544,9 +1544,9 @@
 					"$(SRCROOT)/Helper",
 					"$(SRCROOT)/Preferences",
 				);
-				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				INSTALL_PATH = /usr/lib/TweakInject;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoHelper.dylib";
+				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoHelper.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
@@ -1612,7 +1612,7 @@
 				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries";
+				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/usr/lib/TweakInject";
 				EXECUTABLE_EXTENSION = dylib;
 				EXECUTABLE_NAME = KayokoHelper;
 				EXECUTABLE_PREFIX = "";
@@ -1621,9 +1621,9 @@
 					"$(SRCROOT)/Helper",
 					"$(SRCROOT)/Preferences",
 				);
-				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				INSTALL_PATH = /usr/lib/TweakInject;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoHelper.dylib";
+				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoHelper.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
@@ -1647,7 +1647,7 @@
 				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries";
+				DYLIB_INSTALL_NAME_BASE = "@loader_path/.jbroot/usr/lib/TweakInject";
 				EXECUTABLE_EXTENSION = dylib;
 				EXECUTABLE_NAME = KayokoCore;
 				EXECUTABLE_PREFIX = "";
@@ -1666,9 +1666,9 @@
 					"$(SRCROOT)/Shared/Tags",
 					"$(SRCROOT)/Preferences",
 				);
-				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				INSTALL_PATH = /usr/lib/TweakInject;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/MobileSubstrate/DynamicLibraries/KayokoCore.dylib";
+				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoCore.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
