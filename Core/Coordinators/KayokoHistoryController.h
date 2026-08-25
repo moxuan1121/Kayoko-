@@ -41,7 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)markAllHistoryKeysForScrollToTopBeforeNextDisplay;
 - (BOOL)consumeScrollToTopBeforeNextDisplayForHistoryKey:(NSString *)historyKey;
 - (void)handleHistoryChanged;
-- (void)preloadHistoryWithCompletion:(nullable void (^)(void))completion;
 - (void)reloadTableViewForHistoryKey:(NSString *)historyKey
               animatingTopInsertions:(BOOL)animatingTopInsertions
                           completion:(nullable void (^)(KayokoHistoryListView *tableView))completion;

@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadHeightPreference;
 
 - (void)installPanelInStatusBarWindow:(UIWindow *)window;
-- (void)preloadInitialHistory;
 - (void)startLockStateObserver;
+- (void)startMemoryWarningObserver;
 
 - (void)show;
 - (void)hide;

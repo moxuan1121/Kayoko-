@@ -254,13 +254,6 @@ NS_ASSUME_NONNULL_END
                                                object:_pasteboard];
 }
 
-- (void)warmUpHistoryAccess {
-    if (_maintenanceMode) {
-        return;
-    }
-    [_historyRepository prepareStore];
-}
-
 - (void)enterMaintenanceModeUntilProcessExit {
     _maintenanceMode = YES;
     [_historyRepository closeStore];

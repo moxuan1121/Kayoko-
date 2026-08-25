@@ -41,7 +41,6 @@ static NSString *const kKayokoPasteboardManagerHistoryChangeTypeClear = @"clear"
 
 + (instancetype)sharedInstance;
 - (instancetype)init NS_UNAVAILABLE;
-- (void)warmUpHistoryAccess;
 - (void)enterMaintenanceModeUntilProcessExit;
 - (void)resetThumbnailMemoryCache;
 

@@ -183,7 +183,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) UIWindow *overlayWindow;
 @property(nonatomic, assign) KayokoPanelPresentationMode activePresentationMode;
 @property(nonatomic, assign) BOOL pendingHeightPreferenceApply;
-@property(nonatomic, assign) BOOL didRequestInitialHistoryPreload;
 
 #pragma mark - Preferences
 
@@ -220,6 +219,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign) int lockStateToken;
 @property(nonatomic, assign, getter=isPackageMaintenanceMode) BOOL packageMaintenanceMode;
+@property(nonatomic, assign) BOOL observingMemoryWarnings;
 
 #pragma mark - Panel Host
 
@@ -343,9 +343,6 @@ NS_ASSUME_NONNULL_END
     self.mainViewController = [[KayokoMainViewController alloc] initWithFrame:initialFrame];
     [self.mainViewController setDelegate:self];
     [self applyPreferencesToView];
-    if (self.didRequestInitialHistoryPreload) {
-        [self.mainViewController preloadHistoryIfNeeded];
-    }
 }
 
 - (void)installPanelInStatusBarWindow:(UIWindow *)window {
@@ -354,7 +351,9 @@ NS_ASSUME_NONNULL_END
     }
 
     self.statusBarWindow = window;
-    [self createMainViewControllerIfNeeded];
+    if (!self.mainViewController) {
+        return;
+    }
 
     if (![self.mainViewController isHidden]) {
         // The status-bar window can be recreated when SpringBoard changes scenes. Rebind
@@ -541,21 +540,6 @@ NS_ASSUME_NONNULL_END
     }
 
     return [self preparePortraitHost];
-}
-
-- (void)preloadInitialHistory {
-    if ([self isPackageMaintenanceMode]) {
-        return;
-    }
-
-    self.didRequestInitialHistoryPreload = YES;
-
-    KayokoPasteboardManager *pasteboardManager = [KayokoPasteboardManager sharedInstance];
-    [pasteboardManager warmUpHistoryAccess];
-
-    if (self.mainViewController) {
-        [self.mainViewController preloadHistoryIfNeeded];
-    }
 }
 
 - (void)applyHeightPreferenceToViewApplyingWhenHidden:(BOOL)applyWhenHidden {
@@ -960,6 +944,38 @@ NS_ASSUME_NONNULL_END
     }
 }
 
+- (void)startMemoryWarningObserver {
+    if (self.observingMemoryWarnings) {
+        return;
+    }
+
+    self.observingMemoryWarnings = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleMemoryWarning:)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+}
+
+- (void)handleMemoryWarning:(NSNotification *)notification {
+    (void)notification;
+    if (self.mainViewController) {
+        [[KayokoPasteboardManager sharedInstance] resetThumbnailMemoryCache];
+    }
+    self.clipboardFeedbackSoundPlayer = nil;
+    self.pasteFeedbackSoundPlayer = nil;
+
+    if ([self panelVisible] || (self.overlayWindow && ![self.overlayWindow isHidden])) {
+        return;
+    }
+
+    [self tearDownOverlayWindowHost];
+    [self.portraitOutsideDismissOverlayView removeFromSuperview];
+    self.portraitOutsideDismissOverlayView = nil;
+    [self.mainViewController setDelegate:nil];
+    self.mainViewController = nil;
+    self.overlayWindow = nil;
+}
+
 - (void)handleLockStateNotification {
     BOOL locked = NO;
     if (![self readUILocked:&locked] || !locked) {
@@ -1075,6 +1091,7 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
+    [self createMainViewControllerIfNeeded];
     if (!self.mainViewController || ![self.mainViewController isHidden]) {
         return;
     }

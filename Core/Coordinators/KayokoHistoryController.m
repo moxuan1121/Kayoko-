@@ -271,22 +271,6 @@ NS_ASSUME_NONNULL_END
     [self reloadTableViewForHistoryKey:historyKey animatingTopInsertions:NO completion:completion];
 }
 
-- (void)preloadHistoryWithCompletion:(void (^)(void))completion {
-    [self loadTableViewForHistoryKey:kKayokoHistoryKeyHistory
-              animatingTopInsertions:NO
-                    notifiesDelegate:NO
-                          completion:^(__unused KayokoHistoryListView *historyTableView) {
-                            [self loadTableViewForHistoryKey:kKayokoHistoryKeyFavorites
-                                      animatingTopInsertions:NO
-                                            notifiesDelegate:NO
-                                                  completion:^(__unused KayokoHistoryListView *favoritesTableView) {
-                                                    if (completion) {
-                                                        completion();
-                                                    }
-                                                  }];
-                          }];
-}
-
 #pragma mark - Moves
 
 - (void)handlePasteboardItemDictionary:(NSDictionary<NSString *, id> *)dictionary

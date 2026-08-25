@@ -1896,10 +1896,6 @@ NS_ASSUME_NONNULL_END
                             }];
 }
 
-- (void)preloadHistoryIfNeeded {
-    [[self historyController] preloadHistoryWithCompletion:nil];
-}
-
 - (void)show {
     if ([[self panelPresentationController] isAnimating] || [self preparingToShow]) {
         return;

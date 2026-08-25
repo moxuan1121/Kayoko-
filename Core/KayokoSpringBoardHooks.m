@@ -17,7 +17,6 @@
 #import "KayokoSpringBoardHooks.h"
 #import "KayokoSwipeUpGestureRecognizer.h"
 
-CHDeclareClass(SpringBoard);
 CHDeclareClass(FBScene);
 CHDeclareClass(UIStatusBarWindow);
 CHDeclareClass(UIWindowScene);
@@ -31,10 +30,6 @@ CHDeclareClass(SBMainSwitcherViewController);
 CHDeclareClass(SBMainSwitcherControllerCoordinator);
 CHDeclareClass(SBApplicationController);
 CHDeclareClass(_UISystemGestureWindow);
-
-@interface SpringBoard : UIApplication
-- (void)applicationDidFinishLaunching:(id)application;
-@end
 
 @interface UIStatusBarWindow : UIWindow
 @end
@@ -285,13 +280,6 @@ CHOptimizedMethod1(self, id, UIStatusBarWindow, initWithFrame, CGRect, frame) {
     UIStatusBarWindow *window = CHSuper1(UIStatusBarWindow, initWithFrame, frame);
     [KayokoSpringBoardHookInstaller installPanelIfNeededInStatusBarWindow:window];
     return window;
-}
-
-#pragma mark - SpringBoard Hooks
-
-CHOptimizedMethod1(self, void, SpringBoard, applicationDidFinishLaunching, id, application) {
-    CHSuper1(SpringBoard, applicationDidFinishLaunching, application);
-    [[KayokoCoreRuntime sharedRuntime] preloadInitialHistory];
 }
 
 #pragma mark - Visibility Hooks
@@ -704,8 +692,6 @@ CHOptimizedMethod3(self, void, FBScene, updateSettings, UIApplicationSceneSettin
 + (void)installHooks {
     [self installStatusBarHooks];
 
-    CHLoadClass_(&SpringBoard$, NSClassFromString(@"SpringBoard"));
-    CHHook1(SpringBoard, applicationDidFinishLaunching);
 
     [self installHomeScreenHooks];
     [self installAppSwitcherHooks];

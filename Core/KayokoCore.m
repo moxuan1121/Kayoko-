@@ -255,6 +255,7 @@ static void kayokoCorePasteTipPreferencesReloadCallback(CFNotificationCenterRef 
     [KayokoPasteTipHookInstaller installHooks];
     [KayokoSpringBoardHookInstaller installHooks];
     [runtime startLockStateObserver];
+    [runtime startMemoryWarningObserver];
 
     [self addDarwinObserverForName:CFSTR("com.apple.pasteboard.notify.changed")
                           callback:kayokoCorePasteboardChangedCallback];
