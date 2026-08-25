@@ -36,10 +36,8 @@
 "None" = "无";
 "Not Now" = "稍后";
 "Off" = "关闭";
-"One-Finger Swipe Up" = "单指上划";
 "OwnGoal Studio Kayoko" = "乌龙工作室版Kayoko";
 "Play Haptic Feedback" = "播放触觉反馈";
-"Play Sound Effects" = "播放声音效果";
 "Please check the following: open Sileo → tap the avatar in the top-right corner → make sure the Havoc payment provider is signed in" = "请按如下步骤检查：打开 Sileo → 点选右上角头像 → 检查付款服务提供商 Havoc 是否处于已登录状态";
 "Please check the following: open Sileo → tap the avatar in the top-right corner → tap Havoc → make sure Kayoko is in your purchases" = "请按如下步骤检查：打开 Sileo → 点选右上角头像 → 点选 Havoc → 检查已购列表中是否有 Kayoko";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in" = "请按如下步骤检查：打开 Zebra → 选择 “软件源” 标签页 → 点选 “Havoc” → 检查是否处于已登录状态";
@@ -58,7 +56,6 @@
 "Show Kayoko" = "显示 Kayoko";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "数据已成功导入。你需要立即重启 SpringBoard，才能完成导入并继续使用 Kayoko。";
 "The network request failed." = "网络请求失败。";
-"Choose whether a one-finger swipe up opens Kayoko." = "选择是否使用单指上划打开 Kayoko。";
 "This build was modified by mlgm based on the OwnGoal Studio edition." = "当前版本由 mlgm 基于「乌龙工作室」版进行二次修改";
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "此选项需要重新启动 SpringBoard 才能生效。你现在要重新启动吗？";
 "Tools" = "工具";

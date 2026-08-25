@@ -24,7 +24,6 @@
 
 static NSTimeInterval const kKayokoPasteboardWriteConfirmationTimeout = 0.25;
 static NSTimeInterval const kKayokoSimulatedAutomaticPasteDelay = 0.2;
-static NSString *const kKayokoRemoteClipboardPasteboardType = @"com.apple.is-remote-clipboard";
 static NSString *const kKayokoPasteboardManagerErrorDomain = @"com.mlgm.kayoko.pasteboard-manager";
 
 @interface SBApplication : NSObject
@@ -486,22 +485,11 @@ NS_ASSUME_NONNULL_END
     [self resolvePendingPasteboardWriteForToken:[_pendingPasteboardWrite token] didExpire:NO];
 }
 
-- (BOOL)shouldIgnoreCurrentPasteboardChangeFromSourceBundleIdentifier:(NSString *)sourceBundleIdentifier {
-    if ([self ignoreRemoteReplication] && [self pasteboardContainsType:kKayokoRemoteClipboardPasteboardType]) {
-        return YES;
-    }
-
+- (BOOL)shouldIgnoreCurrentPasteboardChange {
     return [self pasteboardContainsType:@"com.apple.icns"];
 }
 
 - (NSString *)sourceApplicationBundleIdentifierForCurrentPasteboardChangeOnMain {
-    if ([self pasteboardContainsType:kKayokoRemoteClipboardPasteboardType]) {
-        HBLogDebug(@"Kayoko: pasteboard source app using Continuity for remote clipboard change "
-                   @"pasteboardType=%@ finalBundleIdentifier=%@",
-                   kKayokoRemoteClipboardPasteboardType, kKayokoContinuityBundleIdentifier);
-        return kKayokoContinuityBundleIdentifier;
-    }
-
     KayokoKeyboardHostContext *hostContext =
         [[KayokoKeyboardHostResolver sharedResolver] keyboardHostContextForSourceAttribution];
     if ([[hostContext bundleIdentifier] length] > 0) {
@@ -535,7 +523,7 @@ NS_ASSUME_NONNULL_END
 
     _lastChangeCount = currentChangeCount;
 
-    if ([self shouldIgnoreCurrentPasteboardChangeFromSourceBundleIdentifier:sourceBundleIdentifier]) {
+    if ([self shouldIgnoreCurrentPasteboardChange]) {
         return @[];
     }
 

@@ -12,7 +12,6 @@
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
 
-#import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <HBLog.h>
@@ -171,8 +170,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Runtime Configuration
 
 @property(nonatomic, assign, readwrite, getter=isEnabled) BOOL enabled;
-@property(nonatomic, assign, readwrite) NSUInteger activationMethod;
-@property(nonatomic, assign, readwrite) KayokoGestureRecognizerMode gestureRecognizerMode;
 @property(nonatomic, assign, readwrite) BOOL pasteTipsDisabled;
 
 #pragma mark - View State
@@ -197,7 +194,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL alwaysScrollToTop;
 @property(nonatomic, assign) KayokoClearButtonMode clearButtonMode;
 @property(nonatomic, assign) BOOL dismissOnOutsideTouch;
-@property(nonatomic, assign) BOOL playSoundEffects;
 @property(nonatomic, assign) BOOL playHapticFeedback;
 @property(nonatomic, assign) KayokoItemDetailsMode itemDetailsMode;
 @property(nonatomic, assign) CGFloat heightInPoints;
@@ -206,8 +202,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Feedback
 
-@property(nonatomic, strong, nullable) AVAudioPlayer *clipboardFeedbackSoundPlayer;
-@property(nonatomic, strong, nullable) AVAudioPlayer *pasteFeedbackSoundPlayer;
 @property(nonatomic, assign) NSTimeInterval lastPasteFeedbackOccurred;
 @property(nonatomic, assign) NSTimeInterval lastCopyFeedbackOccurred;
 
@@ -643,8 +637,6 @@ NS_ASSUME_NONNULL_END
     self.preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
     [self.preferences registerDefaults:@{
         kKayokoPreferenceKeyEnabled : @(kKayokoPreferenceKeyEnabledDefaultValue),
-        kKayokoPreferenceKeyActivationMethod : @(kKayokoPreferenceKeyActivationMethodDefaultValue),
-        kKayokoPreferenceKeyGestureRecognizerMode : @(kKayokoPreferenceKeyGestureRecognizerModeDefaultValue),
         kKayokoPreferenceKeyMaximumHistoryAmount : @(kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue),
         kKayokoPreferenceKeySaveText : @(kKayokoPreferenceKeySaveTextDefaultValue),
         kKayokoPreferenceKeySaveImages : @(kKayokoPreferenceKeySaveImagesDefaultValue),
@@ -656,8 +648,6 @@ NS_ASSUME_NONNULL_END
         kKayokoPreferenceKeyClearButtonMode : @(kKayokoPreferenceKeyClearButtonModeDefaultValue),
         kKayokoPreferenceKeyDismissOnOutsideTouch : @(kKayokoPreferenceKeyDismissOnOutsideTouchDefaultValue),
         kKayokoPreferenceKeyDisablePasteTips : @(kKayokoPreferenceKeyDisablePasteTipsDefaultValue),
-        kKayokoPreferenceKeyIgnoreRemoteReplication : @(kKayokoPreferenceKeyIgnoreRemoteReplicationDefaultValue),
-        kKayokoPreferenceKeyPlaySoundEffects : @(kKayokoPreferenceKeyPlaySoundEffectsDefaultValue),
         kKayokoPreferenceKeyPlayHapticFeedback : @(kKayokoPreferenceKeyPlayHapticFeedbackDefaultValue),
         kKayokoPreferenceKeyItemDetailsMode : @(kKayokoPreferenceKeyItemDetailsModeDefaultValue),
         kKayokoPreferenceKeyHeightInPoints : @(kKayokoPreferenceKeyHeightInPointsDefaultValue),
@@ -666,14 +656,6 @@ NS_ASSUME_NONNULL_END
     }];
 
     [self readPasteTipPreferencesFromPreferences:self.preferences];
-    self.activationMethod = KayokoNormalizedActivationMethod(
-        [[self.preferences objectForKey:kKayokoPreferenceKeyActivationMethod] unsignedIntegerValue]);
-    self.gestureRecognizerMode =
-        [[self.preferences objectForKey:kKayokoPreferenceKeyGestureRecognizerMode] unsignedIntegerValue];
-    if (self.gestureRecognizerMode != kKayokoGestureRecognizerModeClassic &&
-        self.gestureRecognizerMode != kKayokoGestureRecognizerModeSystem) {
-        self.gestureRecognizerMode = kKayokoPreferenceKeyGestureRecognizerModeDefaultValue;
-    }
     self.maximumHistoryAmount = [KayokoPasteboardManager
         normalizedMaximumHistoryAmountForValue:[[self.preferences objectForKey:kKayokoPreferenceKeyMaximumHistoryAmount]
                                                    unsignedIntegerValue]];
@@ -708,9 +690,6 @@ NS_ASSUME_NONNULL_END
         self.clearButtonMode = kKayokoPreferenceKeyClearButtonModeDefaultValue;
     }
     self.dismissOnOutsideTouch = [[self.preferences objectForKey:kKayokoPreferenceKeyDismissOnOutsideTouch] boolValue];
-    BOOL ignoreRemoteReplication =
-        [[self.preferences objectForKey:kKayokoPreferenceKeyIgnoreRemoteReplication] boolValue];
-    self.playSoundEffects = [[self.preferences objectForKey:kKayokoPreferenceKeyPlaySoundEffects] boolValue];
     self.playHapticFeedback = [[self.preferences objectForKey:kKayokoPreferenceKeyPlayHapticFeedback] boolValue];
     self.itemDetailsMode = [[self.preferences objectForKey:kKayokoPreferenceKeyItemDetailsMode] unsignedIntegerValue];
     if (self.itemDetailsMode != kKayokoItemDetailsModeOff && self.itemDetailsMode != kKayokoItemDetailsModeImagesOnly &&
@@ -752,9 +731,6 @@ NS_ASSUME_NONNULL_END
     }
     if ([pasteboardManager automaticPromotionMode] != self.automaticPromotionMode) {
         [pasteboardManager setAutomaticPromotionMode:self.automaticPromotionMode];
-    }
-    if ([pasteboardManager ignoreRemoteReplication] != ignoreRemoteReplication) {
-        [pasteboardManager setIgnoreRemoteReplication:ignoreRemoteReplication];
     }
     [self applyPreferencesToView];
 }
@@ -961,9 +937,6 @@ NS_ASSUME_NONNULL_END
     if (self.mainViewController) {
         [[KayokoPasteboardManager sharedInstance] resetThumbnailMemoryCache];
     }
-    self.clipboardFeedbackSoundPlayer = nil;
-    self.pasteFeedbackSoundPlayer = nil;
-
     if ([self panelVisible] || (self.overlayWindow && ![self.overlayWindow isHidden])) {
         return;
     }
@@ -987,40 +960,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Feedback
 
-- (AVAudioPlayer *)audioPlayerForSound:(NSString *)soundName {
-    NSError *error = nil;
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
-                                     withOptions:AVAudioSessionCategoryOptionMixWithOthers
-                                           error:&error];
-    if (error) {
-        HBLogDebug(@"Kayoko: Failed to configure audio session: %@", error);
-    }
-
-    NSString *relativeSoundPath =
-        [NSString stringWithFormat:@"/Library/PreferenceBundles/KayokoPreferences.bundle/%@.aiff", soundName];
-    NSString *soundPath = jbroot(relativeSoundPath);
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:soundPath]
-                                                                   error:&error];
-    if (error) {
-        HBLogDebug(@"Kayoko: Failed to load %@ sound: %@", soundName, error);
-        return nil;
-    }
-
-    [player prepareToPlay];
-    return player;
-}
-
-- (nullable AVAudioPlayer *)playFeedbackSoundWithPlayer:(nullable AVAudioPlayer *)player
-                                              soundName:(NSString *)soundName {
-    if (!player) {
-        player = [self audioPlayerForSound:soundName];
-    }
-
-    [player setCurrentTime:0];
-    [player play];
-    return player;
-}
-
 - (void)playSuccessHapticFeedbackIfNeeded {
     if (self.playHapticFeedback) {
         AudioServicesPlaySystemSound(1519);
@@ -1039,10 +978,6 @@ NS_ASSUME_NONNULL_END
         return;
     }
     self.lastPasteFeedbackOccurred = now;
-    if (self.playSoundEffects) {
-        self.pasteFeedbackSoundPlayer = [self playFeedbackSoundWithPlayer:self.pasteFeedbackSoundPlayer
-                                                                soundName:@"Paste"];
-    }
     [self playSuccessHapticFeedbackIfNeeded];
 }
 
@@ -1076,10 +1011,6 @@ NS_ASSUME_NONNULL_END
           return;
       }
       self.lastCopyFeedbackOccurred = now;
-      if (self.playSoundEffects) {
-          self.clipboardFeedbackSoundPlayer = [self playFeedbackSoundWithPlayer:self.clipboardFeedbackSoundPlayer
-                                                                      soundName:@"Copy"];
-      }
       [self playSuccessHapticFeedbackIfNeeded];
     }];
 }

@@ -36,10 +36,8 @@
 "None" = "None";
 "Not Now" = "Not Now";
 "Off" = "Off";
-"One-Finger Swipe Up" = "One-Finger Swipe Up";
 "OwnGoal Studio Kayoko" = "OwnGoal Studio Kayoko";
 "Play Haptic Feedback" = "Play Haptic Feedback";
-"Play Sound Effects" = "Play Sound Effects";
 "Please check the following: open Sileo → tap the avatar in the top-right corner → make sure the Havoc payment provider is signed in" = "Please check the following: open Sileo → tap the avatar in the top-right corner → make sure the Havoc payment provider is signed in";
 "Please check the following: open Sileo → tap the avatar in the top-right corner → tap Havoc → make sure Kayoko is in your purchases" = "Please check the following: open Sileo → tap the avatar in the top-right corner → tap Havoc → make sure Kayoko is in your purchases";
 "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in" = "Please check the following: open Zebra → select the Sources tab → tap Havoc → make sure it is signed in";
@@ -58,7 +56,6 @@
 "Show Kayoko" = "Show Kayoko";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko.";
 "The network request failed." = "The network request failed.";
-"Choose whether a one-finger swipe up opens Kayoko." = "Choose whether a one-finger swipe up opens Kayoko.";
 "This build was modified by mlgm based on the OwnGoal Studio edition." = "This build was modified by mlgm based on the OwnGoal Studio edition.";
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "This option requires restarting SpringBoard to apply. Do you want to restart now?";
 "Tools" = "Tools";

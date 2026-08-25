@@ -77,17 +77,6 @@ static NSString *const kKayokoCopyVaultDataDirectoryPath = @"/var/mobile/Documen
     return _specifiers;
 }
 
-#pragma mark - Preference Writing
-
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    [super setPreferenceValue:value specifier:specifier];
-
-    NSString *key = [specifier propertyForKey:@"key"];
-    if ([key isEqualToString:kKayokoPreferenceKeyGestureRecognizerMode]) {
-        [self promptToRespring];
-    }
-}
-
 #pragma mark - Prompts
 
 - (void)resetPrompt {

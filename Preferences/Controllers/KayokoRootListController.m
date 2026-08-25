@@ -27,7 +27,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoRootListController () <UISearchResultsUpdating>
-- (void)migrateActivationMethodPreferenceIfNeeded;
 - (void)presentExternalImportRestartReminderIfNeeded;
 - (void)updateOverlayWindowLevelSpecifierAvailability;
 @end
@@ -36,8 +35,6 @@ NS_ASSUME_NONNULL_END
 
 
 @implementation KayokoRootListController {
-    ActivationMethod _lastActivationMethod;
-    BOOL _hasActivationMethodSnapshot;
     UISearchController *_testInputSearchController;
     BOOL _externalImportRestartReminderPending;
     BOOL _externalImportRestartReminderSucceeded;
@@ -47,7 +44,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Lifecycle
 
 - (void)viewDidLoad {
-    [self migrateActivationMethodPreferenceIfNeeded];
     [super viewDidLoad];
 
     [self configureTestInputSearchController];
@@ -65,19 +61,6 @@ NS_ASSUME_NONNULL_END
                                              selector:@selector(externalImportRequiresRestart:)
                                                  name:kKayokoNotificationKeyExternalImportRequiresRestart
                                                object:nil];
-}
-
-- (void)migrateActivationMethodPreferenceIfNeeded {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    id storedValue = [userDefaults objectForKey:kKayokoPreferenceKeyActivationMethod];
-    if (!storedValue) {
-        return;
-    }
-
-    ActivationMethod normalizedValue = KayokoNormalizedActivationMethod([storedValue unsignedIntegerValue]);
-    if ([storedValue unsignedIntegerValue] != normalizedValue) {
-        [userDefaults setInteger:normalizedValue forKey:kKayokoPreferenceKeyActivationMethod];
-    }
 }
 
 - (void)dealloc {
@@ -151,17 +134,6 @@ NS_ASSUME_NONNULL_END
         [[self navigationController] setToolbarHidden:YES animated:animated];
     }
 
-    ActivationMethod currentActivationMethod = [self currentActivationMethod];
-    if (!_hasActivationMethodSnapshot) {
-        _lastActivationMethod = currentActivationMethod;
-        _hasActivationMethodSnapshot = YES;
-        return;
-    }
-
-    if (currentActivationMethod != _lastActivationMethod) {
-        _lastActivationMethod = currentActivationMethod;
-        [self promptToRespring];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -219,15 +191,6 @@ NS_ASSUME_NONNULL_END
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (ActivationMethod)currentActivationMethod {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    id storedValue = [userDefaults objectForKey:kKayokoPreferenceKeyActivationMethod];
-    if (!storedValue) {
-        return kKayokoPreferenceKeyActivationMethodDefaultValue;
-    }
-    return KayokoNormalizedActivationMethod([storedValue unsignedIntegerValue]);
-}
-
 - (void)updateOverlayWindowLevelSpecifierAvailability {
     PSSpecifier *levelSpecifier = nil;
     for (PSSpecifier *specifier in _specifiers) {
@@ -265,12 +228,7 @@ NS_ASSUME_NONNULL_END
 
     // Prompt to respring for options that require one to apply changes.
     if ([[specifier propertyForKey:@"key"] isEqualToString:kKayokoPreferenceKeyEnabled] ||
-        [[specifier propertyForKey:@"key"] isEqualToString:kKayokoPreferenceKeyActivationMethod] ||
         [[specifier propertyForKey:@"key"] isEqualToString:kKayokoPreferenceKeyAutomaticallyPaste]) {
-        if ([[specifier propertyForKey:@"key"] isEqualToString:kKayokoPreferenceKeyActivationMethod]) {
-            _lastActivationMethod = [self currentActivationMethod];
-            _hasActivationMethodSnapshot = YES;
-        }
         [self promptToRespring];
     }
 }

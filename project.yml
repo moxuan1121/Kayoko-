@@ -80,10 +80,6 @@ targets:
         excludes:
           - "Makefile"
           - "**/*.plist"
-      - path: Helper/KayokoSwipeUpGestureRecognizer.m
-      - path: Helper/KayokoSwipeUpGestureRecognizer.h
-        buildPhase: headers
-        headerVisibility: project
       - path: Shared/Tags
     settings:
       base:
@@ -126,7 +122,6 @@ targets:
         SKIP_INSTALL: YES
     dependencies:
       - sdk: AudioToolbox.framework
-      - sdk: AVFoundation.framework
       - sdk: CoreGraphics.framework
       - sdk: ImageIO.framework
       - sdk: IOKit.framework
