@@ -1368,7 +1368,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_INCLUDE)";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				KAYOKO_PACKAGE_SCHEME = roothide;
 				KAYOKO_ROOTHIDE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
 				KAYOKO_SUBSTRATE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
@@ -1429,7 +1429,7 @@
 					"$(SRCROOT)/Preferences",
 				);
 				INSTALL_PATH = /usr/lib/TweakInject;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoCore.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
@@ -1466,7 +1466,7 @@
 				);
 				INFOPLIST_FILE = Preferences/Resources/Info.plist;
 				INSTALL_PATH = /Library/PreferenceBundles;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/PreferenceBundles/KayokoPreferences.bundle/KayokoPreferences";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1509,7 +1509,7 @@
 					"$(SRCROOT)/Preferences",
 				);
 				INSTALL_PATH = /usr/lib/TweakInject;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoHelper.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
@@ -1543,7 +1543,7 @@
 				);
 				INFOPLIST_FILE = Preferences/Resources/Info.plist;
 				INSTALL_PATH = /Library/PreferenceBundles;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/Library/PreferenceBundles/KayokoPreferences.bundle/KayokoPreferences";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1586,7 +1586,7 @@
 					"$(SRCROOT)/Preferences",
 				);
 				INSTALL_PATH = /usr/lib/TweakInject;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoHelper.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
@@ -1631,7 +1631,7 @@
 					"$(SRCROOT)/Preferences",
 				);
 				INSTALL_PATH = /usr/lib/TweakInject;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_DYLIB_INSTALL_NAME = "@loader_path/.jbroot/usr/lib/TweakInject/KayokoCore.dylib";
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
@@ -1715,7 +1715,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(KAYOKO_THEOS_INCLUDE)";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				KAYOKO_PACKAGE_SCHEME = roothide;
 				KAYOKO_ROOTHIDE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
 				KAYOKO_SUBSTRATE_LIB_DIR = "$(THEOS)/vendor/lib/iphone/roothide";
@@ -1764,7 +1764,7 @@
 					"$(SRCROOT)/Shared/Tags",
 				);
 				INSTALL_PATH = /usr/local/libexec;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1799,7 +1799,7 @@
 					"$(SRCROOT)/Shared/Tags",
 				);
 				INSTALL_PATH = /usr/local/libexec;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

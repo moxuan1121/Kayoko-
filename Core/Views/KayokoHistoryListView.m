@@ -406,9 +406,7 @@ NS_ASSUME_NONNULL_END
         [self setClipsToBounds:YES];
         [self setAlwaysBounceVertical:YES];
         // Keep scroll indicators inside the rounded floating card.
-        if (@available(iOS 11.1, *)) {
-            [self setVerticalScrollIndicatorInsets:UIEdgeInsetsMake(4, 0, 8, 2)];
-        }
+        [self setVerticalScrollIndicatorInsets:UIEdgeInsetsMake(4, 0, 8, 2)];
         // Keep list rows fully opaque at both edges. The panel already clips the
         // table to its rounded chrome, so an additional vertical fade makes the
         // first and last visible rows look unnecessarily blurred.

@@ -1,7 +1,7 @@
 export ARCHS := arm64 arm64e
-export TARGET := iphone:clang:16.5:14.0
+export TARGET := iphone:clang:16.5:15.0
 
-INSTALL_TARGET_PROCESSES := backboardd druid pasted
+INSTALL_TARGET_PROCESSES := backboardd druid
 
 SUBPROJECTS += Core
 SUBPROJECTS += Helper

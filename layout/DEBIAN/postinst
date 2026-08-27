@@ -11,5 +11,5 @@ fi
 
 # Quietly restart paste-related daemons when present.
 # "No matching processes were found" is not an install failure.
-killall -9 druid pasted >/dev/null 2>&1 || true
+killall -9 druid >/dev/null 2>&1 || true
 exit 0

@@ -1170,20 +1170,6 @@ NS_ASSUME_NONNULL_END
     [[self panelPresentationController] triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleMedium];
 }
 
-- (void)dismissLeadingButtonMenu {
-    // Best-effort dismissal of the native UIButton menu when the panel hides. -dismissMenu is
-    // iOS 16+, so call it via the runtime to keep building against older SDKs.
-    UIButton *leadingButton = [[[self mainView] headerView] leadingButton];
-    SEL dismissMenuSelector = NSSelectorFromString(@"dismissMenu");
-    if ([leadingButton respondsToSelector:dismissMenuSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [leadingButton performSelector:dismissMenuSelector];
-#pragma clang diagnostic pop
-    }
-}
-
-
 - (void)restoreHistoryHeaderIconForHistoryKey:(NSString *)historyKey {
     UIButton *favoritesButton = [[[self mainView] headerView] leadingButton];
     [favoritesButton setHidden:NO];
@@ -2004,7 +1990,6 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
-    [self dismissLeadingButtonMenu];
 
     [self clearExternalHideCoordinator];
     [self setDismissingPanel:YES];
@@ -2051,7 +2036,6 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
-    [self dismissLeadingButtonMenu];
     [self clearExternalHideCoordinator];
     [self setDismissingPanel:YES];
     BOOL wasShowingTransientContent = [self isPreviewActive] || [self isNoteEditing];

@@ -3,7 +3,7 @@
 case "${1:-}" in
     remove|purge)
         # Quietly restart paste-related daemons after an actual removal only.
-        killall -9 druid pasted >/dev/null 2>&1 || true
+        killall -9 druid >/dev/null 2>&1 || true
         ;;
 esac
 exit 0

@@ -65,9 +65,7 @@
         [[self layer] setShadowOffset:CGSizeMake(0, 1)];
         [[self layer] setShadowRadius:8];
         [[self layer] setShadowOpacity:0.28];
-        if (@available(iOS 13.0, *)) {
-            [[self layer] setCornerCurve:kCACornerCurveContinuous];
-        }
+        [[self layer] setCornerCurve:kCACornerCurveContinuous];
         [[self layer] setCornerRadius:kKayokoPanelCornerRadiusFallback];
         [self setClipsToBounds:NO];
 
@@ -80,9 +78,7 @@
         [[self chromeClipView] setBackgroundColor:[UIColor clearColor]];
         [[self chromeClipView] setOpaque:NO];
         [[self chromeClipView] setClipsToBounds:YES];
-        if (@available(iOS 13.0, *)) {
-            [[[self chromeClipView] layer] setCornerCurve:kCACornerCurveContinuous];
-        }
+        [[[self chromeClipView] layer] setCornerCurve:kCACornerCurveContinuous];
         [[[self chromeClipView] layer] setCornerRadius:kKayokoPanelCornerRadiusFallback];
         [self addSubview:[self chromeClipView]];
         [[self chromeClipView] setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -99,9 +95,7 @@
         [[[self blurEffectView] contentView] setBackgroundColor:[UIColor clearColor]];
         [[[self blurEffectView] contentView] setOpaque:NO];
         [[[self blurEffectView] layer] setMasksToBounds:YES];
-        if (@available(iOS 13.0, *)) {
-            [[[self blurEffectView] layer] setCornerCurve:kCACornerCurveContinuous];
-        }
+        [[[self blurEffectView] layer] setCornerCurve:kCACornerCurveContinuous];
         [[[self blurEffectView] layer] setCornerRadius:kKayokoPanelCornerRadiusFallback];
         [[self chromeClipView] addSubview:[self blurEffectView]];
 
@@ -717,13 +711,11 @@
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
-    if (@available(iOS 13.0, *)) {
-        UIUserInterfaceStyle previousStyle =
-            previousTraitCollection ? previousTraitCollection.userInterfaceStyle : UIUserInterfaceStyleUnspecified;
-        UIUserInterfaceStyle currentStyle = self.traitCollection.userInterfaceStyle;
-        if (previousStyle != currentStyle) {
-            [self applyMaterialAppearance];
-        }
+    UIUserInterfaceStyle previousStyle =
+        previousTraitCollection ? previousTraitCollection.userInterfaceStyle : UIUserInterfaceStyleUnspecified;
+    UIUserInterfaceStyle currentStyle = self.traitCollection.userInterfaceStyle;
+    if (previousStyle != currentStyle) {
+        [self applyMaterialAppearance];
     }
     [self updateFloatingChromeAppearanceForcingRadiusResolution:YES];
 }
@@ -731,19 +723,13 @@
 
 
 - (BOOL)prefersDarkPanelMaterial {
-    if (@available(iOS 13.0, *)) {
-        return self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
-    }
-    return NO;
+    return self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
 }
 
 - (UIBlurEffectStyle)preferredPanelBlurStyle {
-    if (@available(iOS 13.0, *)) {
-        // Thin material keeps glass translucent while remaining brighter than ultra-thin gray fills.
-        return [self prefersDarkPanelMaterial] ? UIBlurEffectStyleSystemThinMaterialDark
-                                               : UIBlurEffectStyleSystemThinMaterialLight;
-    }
-    return UIBlurEffectStyleRegular;
+    // Thin material keeps glass translucent while remaining brighter than ultra-thin gray fills.
+    return [self prefersDarkPanelMaterial] ? UIBlurEffectStyleSystemThinMaterialDark
+                                           : UIBlurEffectStyleSystemThinMaterialLight;
 }
 
 - (UIColor *)preferredMaterialTintColor {
@@ -788,22 +774,18 @@
         return;
     }
 
-    if (@available(iOS 13.0, *)) {
-        [[self layer] setCornerCurve:kCACornerCurveContinuous];
-        [[[self chromeClipView] layer] setCornerCurve:kCACornerCurveContinuous];
-        [[[self blurEffectView] layer] setCornerCurve:kCACornerCurveContinuous];
-    }
+    [[self layer] setCornerCurve:kCACornerCurveContinuous];
+    [[[self chromeClipView] layer] setCornerCurve:kCACornerCurveContinuous];
+    [[[self blurEffectView] layer] setCornerCurve:kCACornerCurveContinuous];
 
     // Outer view keeps radius for shadow path; clip view actually clips children.
     CACornerMask cornerMask = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
     [[self layer] setCornerRadius:radius];
     [[[self chromeClipView] layer] setCornerRadius:radius];
     [[[self blurEffectView] layer] setCornerRadius:radius];
-    if (@available(iOS 11.0, *)) {
-        [[self layer] setMaskedCorners:cornerMask];
-        [[[self chromeClipView] layer] setMaskedCorners:cornerMask];
-        [[[self blurEffectView] layer] setMaskedCorners:cornerMask];
-    }
+    [[self layer] setMaskedCorners:cornerMask];
+    [[[self chromeClipView] layer] setMaskedCorners:cornerMask];
+    [[[self blurEffectView] layer] setMaskedCorners:cornerMask];
     [[self layer] setMasksToBounds:NO];
     [[[self chromeClipView] layer] setMasksToBounds:YES];
     [[[self blurEffectView] layer] setMasksToBounds:YES];

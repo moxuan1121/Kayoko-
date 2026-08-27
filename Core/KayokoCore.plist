@@ -1,1 +1,1 @@
-{ Filter = { Bundles = ( "com.apple.springboard" ); Executables = ( "druid", "pasted" ); }; }
+{ Filter = { Bundles = ( "com.apple.springboard" ); Executables = ( "druid" ); }; }

@@ -15,7 +15,6 @@
 #import "KayokoSpringBoardHooks.h"
 
 CHDeclareClass(FBScene);
-CHDeclareClass(UIStatusBarWindow);
 CHDeclareClass(UIWindowScene);
 CHDeclareClass(UIViewController);
 CHDeclareClass(SBCoverSheetPrimarySlidingViewController);
@@ -26,9 +25,6 @@ CHDeclareClass(SBMainDisplaySystemGestureManager);
 CHDeclareClass(SBMainSwitcherViewController);
 CHDeclareClass(SBMainSwitcherControllerCoordinator);
 CHDeclareClass(SBApplicationController);
-
-@interface UIStatusBarWindow : UIWindow
-@end
 
 @class FBSSceneTransitionContext;
 @class UIApplicationSceneSettings;
@@ -116,12 +112,6 @@ NS_ASSUME_NONNULL_END
 CHOptimizedMethod1(self, void, UIWindowScene, _delegate_windowDidBecomeVisible, UIWindow *, window) {
     CHSuper1(UIWindowScene, _delegate_windowDidBecomeVisible, window);
     [KayokoSpringBoardHookInstaller installPanelIfNeededInStatusBarWindow:window];
-}
-
-CHOptimizedMethod1(self, id, UIStatusBarWindow, initWithFrame, CGRect, frame) {
-    UIStatusBarWindow *window = CHSuper1(UIStatusBarWindow, initWithFrame, frame);
-    [KayokoSpringBoardHookInstaller installPanelIfNeededInStatusBarWindow:window];
-    return window;
 }
 
 #pragma mark - Visibility Hooks
@@ -337,21 +327,6 @@ CHOptimizedMethod3(self, void, FBScene, updateSettings, UIApplicationSceneSettin
         return;
     }
 
-    Class statusBarWindowClass = NSClassFromString(@"UIStatusBarWindow");
-    if (!statusBarWindowClass) {
-        statusBarWindowClass = NSClassFromString(@"SBStatusBarWindow");
-    }
-    if (!statusBarWindowClass) {
-        return;
-    }
-
-    if (@available(iOS 15.0, *)) {
-    } else {
-        CHLoadClass_(&UIStatusBarWindow$, statusBarWindowClass);
-        if ([statusBarWindowClass instancesRespondToSelector:@selector(initWithFrame:)]) {
-            CHHook1(UIStatusBarWindow, initWithFrame);
-        }
-    }
 }
 
 + (void)installHomeScreenHooks {

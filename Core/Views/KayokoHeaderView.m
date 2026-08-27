@@ -74,9 +74,7 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
         [_historySegmentedControl setSelectedSegmentIndex:0];
         // Compact system-like control: soft gray track + bright selected pill.
         [_historySegmentedControl setBackgroundColor:[UIColor colorWithWhite:0.55 alpha:0.22]];
-        if (@available(iOS 13.0, *)) {
-            [_historySegmentedControl setSelectedSegmentTintColor:[UIColor colorWithWhite:1.0 alpha:1.0]];
-        }
+        [_historySegmentedControl setSelectedSegmentTintColor:[UIColor colorWithWhite:1.0 alpha:1.0]];
         UIFont *normalFont = [UIFont systemFontOfSize:12.5 weight:UIFontWeightMedium];
         UIFont *selectedFont = [UIFont systemFontOfSize:12.5 weight:UIFontWeightSemibold];
         [_historySegmentedControl setTitleTextAttributes:@{

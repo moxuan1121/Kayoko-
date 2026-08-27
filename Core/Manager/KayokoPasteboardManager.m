@@ -130,7 +130,6 @@ NS_ASSUME_NONNULL_END
     NSUInteger _lastChangeCount;
     NSFileManager *_fileManager;
 
-    dispatch_queue_t _pasteboardQueue;
     KayokoThumbnailCache *_thumbnailCache;
 
     BOOL _isWritingPasteboardItem;
@@ -218,10 +217,6 @@ NS_ASSUME_NONNULL_END
     self = [super init];
     if (self) {
         _fileManager = [NSFileManager defaultManager];
-        if (@available(iOS 16, *)) {
-            _pasteboardQueue = dispatch_queue_create("com.mlgm.kayoko.queue.pasteboard",
-                                                     DISPATCH_QUEUE_SERIAL_WITH_AUTORELEASE_POOL);
-        }
         _thumbnailCache = [[KayokoThumbnailCache alloc] init];
         _automaticPromotionMode = kKayokoPreferenceKeyAutomaticPromotionModeDefaultValue;
         _pendingPasteboardWrite = [[KayokoPasteboardPendingWrite alloc] init];
@@ -233,13 +228,7 @@ NS_ASSUME_NONNULL_END
                                                       return [weakSelf limitForHistoryKey:historyKey];
                                                     }];
         _historyChangeNotifier = [[KayokoHistoryChangeNotifier alloc] init];
-        if (@available(iOS 15, *)) {
-            [self prepareGeneralPasteboard];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-              [self prepareGeneralPasteboard];
-            });
-        }
+        [self prepareGeneralPasteboard];
     }
     return self;
 }
@@ -449,13 +438,6 @@ NS_ASSUME_NONNULL_END
 
     NSString *sourceBundleIdentifier = [self sourceApplicationBundleIdentifierForCurrentPasteboardChangeOnMain];
 
-    if (@available(iOS 16, *)) {
-        dispatch_async(_pasteboardQueue, ^{
-          complete([self _reallyPullPasteboardChangesWithSourceBundleIdentifier:sourceBundleIdentifier]);
-        });
-        return;
-    }
-
     NSArray<KayokoPasteboardItem *> *items =
         [self pasteboardItemsForCurrentChangeWithSourceBundleIdentifier:sourceBundleIdentifier];
     [self savePasteboardItems:items
@@ -475,13 +457,6 @@ NS_ASSUME_NONNULL_END
         HBLogDebug(@"Kayoko: pending pasteboard write observed changed notification token=%lu changeCount=%lu",
                    (unsigned long)[_pendingPasteboardWrite token], (unsigned long)[_pasteboard changeCount]);
     }
-    if (@available(iOS 16, *)) {
-        dispatch_async(_pasteboardQueue, ^{
-          [self resolvePendingPasteboardWriteForToken:[_pendingPasteboardWrite token] didExpire:NO];
-        });
-        return;
-    }
-
     [self resolvePendingPasteboardWriteForToken:[_pendingPasteboardWrite token] didExpire:NO];
 }
 
@@ -902,17 +877,6 @@ forPasteboardItem:(KayokoPasteboardItem *)item
     BOOL performsAutomaticPaste = [self automaticallyPaste] && allowsAutomaticPaste;
     KayokoAutomaticPasteMode automaticPasteMode =
         performsAutomaticPaste ? [self resolvedAutomaticPasteMode] : kKayokoAutomaticPasteModeClassic;
-    if (@available(iOS 16, *)) {
-        dispatch_async(_pasteboardQueue, ^{
-          [self _reallyWritePasteboardItem:pasteboardItem
-                         sourceHistoryItem:sourceHistoryItem
-                        fromHistoryWithKey:historyKey
-                           shouldAutoPaste:performsAutomaticPaste
-                        automaticPasteMode:automaticPasteMode];
-        });
-        return;
-    }
-
     [self _reallyWritePasteboardItem:pasteboardItem
                    sourceHistoryItem:sourceHistoryItem
                   fromHistoryWithKey:historyKey
@@ -921,14 +885,6 @@ forPasteboardItem:(KayokoPasteboardItem *)item
 }
 
 - (BOOL)copyPasteboardItemToPasteboard:(KayokoPasteboardItem *)item {
-    if (@available(iOS 16, *)) {
-        __block BOOL didUpdatePasteboard = NO;
-        dispatch_sync(_pasteboardQueue, ^{
-          didUpdatePasteboard = [self _reallyCopyPasteboardItemToPasteboard:item];
-        });
-        return didUpdatePasteboard;
-    }
-
     return [self _reallyCopyPasteboardItemToPasteboard:item];
 }
 
@@ -1001,9 +957,6 @@ forPasteboardItem:(KayokoPasteboardItem *)item
                (unsigned long)token, (unsigned long)previousChangeCount, shouldAutoPaste ? @"YES" : @"NO",
                (unsigned long)automaticPasteMode);
     dispatch_queue_t timeoutQueue = dispatch_get_main_queue();
-    if (@available(iOS 16, *)) {
-        timeoutQueue = _pasteboardQueue;
-    }
     __weak typeof(self) weakSelf = self;
     [_pendingPasteboardWrite scheduleExpirationOnQueue:timeoutQueue
                                             afterDelay:kKayokoPasteboardWriteConfirmationTimeout

@@ -15,7 +15,7 @@
 typedef NS_ENUM(NSUInteger, KayokoCoreProcessKind) {
     KayokoCoreProcessKindUnsupported = 0,
     KayokoCoreProcessKindSpringBoard,
-    KayokoCoreProcessKindDruidOrPasted,
+    KayokoCoreProcessKindDruid,
 };
 
 @interface KayokoCoreProcessContext : NSObject
@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, KayokoCoreProcessKind) {
 @interface KayokoCoreBootstrap : NSObject
 
 + (void)installForSpringBoard;
-+ (void)installForDruidOrPasted;
++ (void)installForDruid;
 
 @end
 
@@ -51,9 +51,9 @@ typedef NS_ENUM(NSUInteger, KayokoCoreProcessKind) {
     NSString *executablePath = [args firstObject];
     BOOL isSystemExecutable =
         [executablePath hasPrefix:@"/System/Library/"] || [executablePath hasPrefix:@"/usr/libexec/"];
-    BOOL isPasteTipProcess = [processName isEqualToString:@"druid"] || [processName isEqualToString:@"pasted"];
+    BOOL isPasteTipProcess = [processName isEqualToString:@"druid"];
     if (isSystemExecutable && isPasteTipProcess) {
-        return [[self alloc] initWithKind:KayokoCoreProcessKindDruidOrPasted];
+        return [[self alloc] initWithKind:KayokoCoreProcessKindDruid];
     }
 
     return [[self alloc] initWithKind:KayokoCoreProcessKindUnsupported];
@@ -281,7 +281,7 @@ static void kayokoCorePasteTipPreferencesReloadCallback(CFNotificationCenterRef 
                           callback:kayokoCorePasteWillStartCallback];
 }
 
-+ (void)installForDruidOrPasted {
++ (void)installForDruid {
     BOOL shouldInstallPasteTipHooks = [[KayokoCoreRuntime sharedRuntime] refreshPasteTipPreferences];
     if (!shouldInstallPasteTipHooks) {
         return;
@@ -301,8 +301,8 @@ __attribute((constructor)) static void initialize() {
     case KayokoCoreProcessKindSpringBoard:
         [KayokoCoreBootstrap installForSpringBoard];
         return;
-    case KayokoCoreProcessKindDruidOrPasted:
-        [KayokoCoreBootstrap installForDruidOrPasted];
+    case KayokoCoreProcessKindDruid:
+        [KayokoCoreBootstrap installForDruid];
         return;
     case KayokoCoreProcessKindUnsupported:
         return;

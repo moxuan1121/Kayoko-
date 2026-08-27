@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: com.mlgm
   createIntermediateGroups: true
   deploymentTarget:
-    iOS: "14.0"
+    iOS: "15.0"
   developmentLanguage: en
   groupSortPosition: top
   minimumXcodeGenVersion: "2.40.0"
@@ -24,7 +24,7 @@ settings:
     ENABLE_STRICT_OBJC_MSGSEND: YES
     GCC_C_LANGUAGE_STANDARD: gnu11
     GCC_NO_COMMON_BLOCKS: YES
-    IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
     ONLY_ACTIVE_ARCH: NO
     PRODUCT_NAME: "$(TARGET_NAME)"
     SDKROOT: iphoneos
@@ -74,7 +74,7 @@ targets:
   KayokoCore:
     type: library.dynamic
     platform: iOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Core
         excludes:
@@ -141,7 +141,7 @@ targets:
   KayokoHelper:
     type: library.dynamic
     platform: iOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Helper
         excludes:
@@ -191,7 +191,7 @@ targets:
   KayokoPreferences:
     type: bundle
     platform: iOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Preferences
         excludes:
@@ -243,7 +243,7 @@ targets:
   kayoko_updater:
     type: tool
     platform: iOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Updater
         excludes:
