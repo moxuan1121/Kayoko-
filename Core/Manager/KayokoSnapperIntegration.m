@@ -34,31 +34,23 @@ typedef void (*KayokoSnapperFloatInvocation)(id target, SEL selector, CGRect rec
     return NSClassFromString(kKayokoSnapperWindowClassName);
 }
 
++ (NSArray<UIWindow *> *)sceneWindows {
+    NSMutableArray<UIWindow *> *windows = [[NSMutableArray alloc] init];
+    for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
+        if ([scene isKindOfClass:[UIWindowScene class]]) {
+            [windows addObjectsFromArray:[(UIWindowScene *)scene windows]];
+        }
+    }
+    return windows;
+}
+
 + (nullable UIWindow *)snapperWindow {
     Class snapperWindowClass = [self snapperWindowClass];
     if (!snapperWindowClass) {
         return nil;
     }
 
-    NSMutableOrderedSet<UIWindow *> *windows = [[NSMutableOrderedSet alloc] init];
-    NSArray<UIWindow *> *applicationWindows = [[UIApplication sharedApplication] windows];
-    if (applicationWindows) {
-        [windows addObjectsFromArray:applicationWindows];
-    }
-
-    // SpringBoard has used scenes since iOS 13. Include scene windows as a fallback because
-    // -windows can omit windows belonging to a background scene during a transition.
-    for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
-        if (![scene isKindOfClass:[UIWindowScene class]]) {
-            continue;
-        }
-        NSArray<UIWindow *> *sceneWindows = [(UIWindowScene *)scene windows];
-        if (sceneWindows) {
-            [windows addObjectsFromArray:sceneWindows];
-        }
-    }
-
-    for (UIWindow *window in windows) {
+    for (UIWindow *window in [self sceneWindows]) {
         if ([window isKindOfClass:snapperWindowClass]) {
             return window;
         }
@@ -188,20 +180,7 @@ typedef void (*KayokoSnapperFloatInvocation)(id target, SEL selector, CGRect rec
     // briefly be zero, while an application scene still has the correct device inset.
     // Take the largest valid inset from windows on the same screen as a conservative fallback.
     UIScreen *screen = [window screen];
-    NSMutableOrderedSet<UIWindow *> *windows = [[NSMutableOrderedSet alloc] init];
-    NSArray<UIWindow *> *applicationWindows = [[UIApplication sharedApplication] windows];
-    if (applicationWindows) {
-        [windows addObjectsFromArray:applicationWindows];
-    }
-    for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
-        if ([scene isKindOfClass:[UIWindowScene class]]) {
-            NSArray<UIWindow *> *sceneWindows = [(UIWindowScene *)scene windows];
-            if (sceneWindows) {
-                [windows addObjectsFromArray:sceneWindows];
-            }
-        }
-    }
-    for (UIWindow *candidate in windows) {
+    for (UIWindow *candidate in [self sceneWindows]) {
         if (screen && [candidate screen] != screen) {
             continue;
         }
