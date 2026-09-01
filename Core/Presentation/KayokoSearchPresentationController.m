@@ -56,8 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak) UISearchBar *historySearchBar;
 @property(nonatomic, weak) UISearchBar *favoritesSearchBar;
-@property(nonatomic, weak) UIView *historySearchTokenView;
-@property(nonatomic, weak) UIView *favoritesSearchTokenView;
 @property(nonatomic, strong) UIView *historySearchHeaderView;
 @property(nonatomic, strong) UIView *favoritesSearchHeaderView;
 
@@ -93,8 +91,6 @@ NS_ASSUME_NONNULL_END
                            headerView:(KayokoHeaderView *)headerView
                      historySearchBar:(UISearchBar *)historySearchBar
                    favoritesSearchBar:(UISearchBar *)favoritesSearchBar
-               historySearchTokenView:(UIView *)historySearchTokenView
-             favoritesSearchTokenView:(UIView *)favoritesSearchTokenView
                      historyTableView:(KayokoHistoryListView *)historyTableView
                    favoritesTableView:(KayokoHistoryListView *)favoritesTableView
                  panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
@@ -105,8 +101,6 @@ NS_ASSUME_NONNULL_END
         _headerView = headerView;
         _historySearchBar = historySearchBar;
         _favoritesSearchBar = favoritesSearchBar;
-        _historySearchTokenView = historySearchTokenView;
-        _favoritesSearchTokenView = favoritesSearchTokenView;
         _historyTableView = historyTableView;
         _favoritesTableView = favoritesTableView;
         _panGestureRecognizer = panGestureRecognizer;
@@ -141,10 +135,6 @@ NS_ASSUME_NONNULL_END
     [self applyBottomInsetsToTableViews];
 }
 
-- (void)updateSearchTokenViews {
-    [self layout];
-}
-
 - (void)layoutSearchBarForTableView:(KayokoHistoryListView *)tableView {
     [tableView updateNoSearchResultsPlaceholderLayout];
     [tableView setSearchBarSnapHeight:kKayokoSearchHeaderHeight];
@@ -156,17 +146,12 @@ NS_ASSUME_NONNULL_END
     }
 
     CGFloat width = CGRectGetWidth([tableView bounds]);
-    UIView *tokenView = [self searchTokenViewForTableView:tableView];
-    CGFloat tokenHeight = (tokenView && ![tokenView isHidden]) ? CGRectGetHeight([tokenView frame]) : 0;
-    CGFloat headerHeight = kKayokoSearchHeaderHeight + tokenHeight;
-    CGRect headerFrame = CGRectMake(0, 0, width, headerHeight);
+    CGRect headerFrame = CGRectMake(0, 0, width, kKayokoSearchHeaderHeight);
     CGRect searchBarFrame = CGRectMake(0, 0, width, kKayokoSearchHeaderHeight);
-    CGRect tokenFrame = CGRectMake(0, kKayokoSearchHeaderHeight, width, tokenHeight);
 
     BOOL needsTableHeaderUpdate = !CGRectEqualToRect([headerView frame], headerFrame);
     [headerView setFrame:headerFrame];
     [searchBar setFrame:searchBarFrame];
-    [tokenView setFrame:tokenFrame];
     if (needsTableHeaderUpdate) {
         [tableView setTableHeaderView:headerView];
     }
@@ -176,10 +161,6 @@ NS_ASSUME_NONNULL_END
 
 - (UISearchBar *)searchBarForTableView:(KayokoHistoryListView *)tableView {
     return tableView == [self favoritesTableView] ? [self favoritesSearchBar] : [self historySearchBar];
-}
-
-- (UIView *)searchTokenViewForTableView:(KayokoHistoryListView *)tableView {
-    return tableView == [self favoritesTableView] ? [self favoritesSearchTokenView] : [self historySearchTokenView];
 }
 
 - (UIView *)searchHeaderViewForTableView:(KayokoHistoryListView *)tableView {
@@ -201,7 +182,6 @@ NS_ASSUME_NONNULL_END
 
     UISearchBar *searchBar = [self searchBarForTableView:tableView];
     UIView *headerView = [self searchHeaderViewForTableView:tableView];
-    UIView *tokenView = [self searchTokenViewForTableView:tableView];
 
     if ([searchBar respondsToSelector:@selector(setKayokoHorizontalFrameInset:)]) {
         [(KayokoSearchBar *)searchBar setKayokoHorizontalFrameInset:kKayokoSearchBarHorizontalInset];
@@ -216,10 +196,6 @@ NS_ASSUME_NONNULL_END
     if ([searchBar superview] != headerView) {
         [searchBar removeFromSuperview];
         [headerView addSubview:searchBar];
-    }
-    if (tokenView && [tokenView superview] != headerView) {
-        [tokenView removeFromSuperview];
-        [headerView addSubview:tokenView];
     }
     if ([tableView tableHeaderView] != headerView) {
         [tableView setTableHeaderView:headerView];

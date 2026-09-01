@@ -80,7 +80,6 @@ targets:
         excludes:
           - "Makefile"
           - "**/*.plist"
-      - path: Shared/Tags
     settings:
       base:
         DEFINES_MODULE: NO
