@@ -447,10 +447,6 @@ NS_ASSUME_NONNULL_END
                    }];
 }
 
-- (BOOL)pasteboardContainsType:(NSString *)pasteboardType {
-    return [_pasteboard containsPasteboardTypes:@[ pasteboardType ]];
-}
-
 - (void)generalPasteboardDidChange:(NSNotification *)notification {
     (void)notification;
     if ([_pendingPasteboardWrite isActive]) {
@@ -461,7 +457,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (BOOL)shouldIgnoreCurrentPasteboardChange {
-    return [self pasteboardContainsType:@"com.apple.icns"];
+    return [_pasteboard containsPasteboardTypes:@[ @"com.apple.icns" ]];
 }
 
 - (NSString *)sourceApplicationBundleIdentifierForCurrentPasteboardChangeOnMain {

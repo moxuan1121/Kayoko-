@@ -32,17 +32,12 @@ CHOptimizedMethod1(self, void, DRPasteAnnouncer, announcePaste, id, arg1) {
 
 @implementation KayokoPasteTipHookInstaller
 
-+ (void)installDruidUIHooks {
-    CHLoadClass_(&DRPasteAnnouncer$, NSClassFromString(@"DRPasteAnnouncer"));
-
-    CHHook0(DRPasteAnnouncer, announceDeniedPaste);
-    CHHook1(DRPasteAnnouncer, announcePaste);
-}
-
 + (void)installHooks {
     static dispatch_once_t sOnceToken;
     dispatch_once(&sOnceToken, ^{
-      [self installDruidUIHooks];
+      CHLoadClass_(&DRPasteAnnouncer$, NSClassFromString(@"DRPasteAnnouncer"));
+      CHHook0(DRPasteAnnouncer, announceDeniedPaste);
+      CHHook1(DRPasteAnnouncer, announcePaste);
     });
 }
 
