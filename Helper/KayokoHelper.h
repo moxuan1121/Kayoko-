@@ -6,5 +6,4 @@
 //
 
 #import "KayokoHelperConfiguration.h"
-#import "KayokoHelperProcessContext.h"
 #import "KayokoHelperRuntime.h"

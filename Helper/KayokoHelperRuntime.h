@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)sharedRuntime;
 
-- (void)installApplicationRuntimeWithConfiguration:(KayokoHelperConfiguration *)configuration;
 - (void)installSpringBoardRuntimeWithConfiguration:(KayokoHelperConfiguration *)configuration;
 
 - (BOOL)activateKayokoAfterCapturingCurrentFocus;

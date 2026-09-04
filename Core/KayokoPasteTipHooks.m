@@ -35,9 +35,17 @@ CHOptimizedMethod1(self, void, DRPasteAnnouncer, announcePaste, id, arg1) {
 + (void)installHooks {
     static dispatch_once_t sOnceToken;
     dispatch_once(&sOnceToken, ^{
-      CHLoadClass_(&DRPasteAnnouncer$, NSClassFromString(@"DRPasteAnnouncer"));
-      CHHook0(DRPasteAnnouncer, announceDeniedPaste);
-      CHHook1(DRPasteAnnouncer, announcePaste);
+      Class announcerClass = NSClassFromString(@"DRPasteAnnouncer");
+      if (!announcerClass) {
+          return;
+      }
+      CHLoadClass_(&DRPasteAnnouncer$, announcerClass);
+      if ([announcerClass instancesRespondToSelector:@selector(announceDeniedPaste)]) {
+          CHHook0(DRPasteAnnouncer, announceDeniedPaste);
+      }
+      if ([announcerClass instancesRespondToSelector:@selector(announcePaste:)]) {
+          CHHook1(DRPasteAnnouncer, announcePaste);
+      }
     });
 }
 

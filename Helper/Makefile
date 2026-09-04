@@ -4,7 +4,6 @@ KayokoHelper_USE_MODULES := 0
 
 KayokoHelper_FILES += KayokoHelper.m
 KayokoHelper_FILES += KayokoHelperConfiguration.m
-KayokoHelper_FILES += KayokoHelperProcessContext.m
 KayokoHelper_FILES += KayokoHelperLocalization.m
 KayokoHelper_FILES += KayokoHelperRuntime.m
 
