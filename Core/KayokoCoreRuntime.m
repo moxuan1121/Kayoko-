@@ -6,6 +6,8 @@
 #import "KayokoCoreRuntime.h"
 #import "KayokoKeyboardHostResolver.h"
 #import "KayokoMainViewController.h"
+#import "KayokoWordSelectionViewController.h"
+#import "KayokoAnchoredMenuView.h"
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoNotificationKeys.h"
 #import "KayokoPanelPresentationMode.h"
@@ -224,6 +226,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) KayokoPasteboardItem *wordSelectionPromptItem;
 @property(nonatomic, strong, nullable) KayokoPasteboardItem *pendingWordSelectionPromptItem;
 @property(nonatomic, copy, nullable) dispatch_block_t wordSelectionPromptHideBlock;
+@property(nonatomic, strong, nullable) KayokoAnchoredMenuView *wordSelectionPromptSearchMenu;
 
 #pragma mark - Preferences
 
@@ -267,6 +270,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (KayokoPanelPresentationMode)currentPresentationMode;
 - (void)hideWordSelectionPrompt;
 - (void)showWordSelectionPromptForItem:(KayokoPasteboardItem *)item;
+- (void)handleWordSelectionPromptLongPress:(UILongPressGestureRecognizer *)gesture;
 
 @end
 
@@ -1054,6 +1058,7 @@ NS_ASSUME_NONNULL_END
     [self.wordSelectionPromptWindow setHidden:YES];
     self.wordSelectionPromptWindow = nil;
     self.wordSelectionPromptItem = nil;
+    self.wordSelectionPromptSearchMenu = nil;
 }
 
 - (void)handleWordSelectionPromptPressed {
@@ -1065,6 +1070,44 @@ NS_ASSUME_NONNULL_END
     [self createMainViewControllerIfNeeded];
     [self.mainViewController presentWordSelectionForItemWhenShown:item];
     [self show];
+}
+
+- (void)handleWordSelectionPromptLongPress:(UILongPressGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        NSArray<NSDictionary<NSString *, NSString *> *> *entries = [KayokoWordSelectionViewController searchEntries];
+        KayokoPasteboardItem *item = self.wordSelectionPromptItem;
+        if (![item.content length] || ![entries count]) {
+            return;
+        }
+        if (self.wordSelectionPromptHideBlock) {
+            dispatch_block_cancel(self.wordSelectionPromptHideBlock);
+            self.wordSelectionPromptHideBlock = nil;
+        }
+
+        KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
+        menu.menuWidth = 150.0;
+        menu.centersTitles = YES;
+        menu.presentsBelowSource = YES;
+        __weak typeof(self) weakSelf = self;
+        for (NSDictionary<NSString *, NSString *> *entry in entries) {
+            [menu addItemWithTitle:entry[@"name"] image:nil destructive:NO handler:^{
+              __strong typeof(weakSelf) self = weakSelf;
+              NSString *text = self.wordSelectionPromptItem.content;
+              [self hideWordSelectionPrompt];
+              [KayokoWordSelectionViewController openSearchEntry:entry forText:text];
+            }];
+        }
+        self.wordSelectionPromptSearchMenu = menu;
+        self.wordSelectionPromptWindow.interactiveView = menu;
+        [menu presentFromView:gesture.view inView:self.wordSelectionPromptWindow.rootViewController.view];
+        [self playSuccessHapticFeedbackIfNeeded];
+    }
+
+    [self.wordSelectionPromptSearchMenu trackGestureRecognizer:gesture];
+    if (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled ||
+        gesture.state == UIGestureRecognizerStateFailed) {
+        [self hideWordSelectionPrompt];
+    }
 }
 
 - (void)showWordSelectionPromptForItem:(KayokoPasteboardItem *)item {
@@ -1131,6 +1174,9 @@ NS_ASSUME_NONNULL_END
         button.gradientLayer = gradientLayer;
     }
     [button addTarget:self action:@selector(handleWordSelectionPromptPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
+                                     initWithTarget:self
+                                             action:@selector(handleWordSelectionPromptLongPress:)]];
     [controller.view addSubview:button];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
     [NSLayoutConstraint activateConstraints:@[

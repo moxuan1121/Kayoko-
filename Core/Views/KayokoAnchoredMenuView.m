@@ -119,11 +119,13 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     CGFloat width = MIN(self.menuWidth, CGRectGetWidth(hostView.bounds) - kKayokoAnchoredMenuMargin * 2.0);
     CGFloat x = MIN(MAX(CGRectGetMidX(sourceFrame) - width / 2.0, kKayokoAnchoredMenuMargin),
                     CGRectGetWidth(hostView.bounds) - width - kKayokoAnchoredMenuMargin);
-    CGFloat y = CGRectGetMinY(sourceFrame) - height - 6.0;
-    if (y < kKayokoAnchoredMenuMargin) {
+    CGFloat y = self.presentsBelowSource ? CGRectGetMaxY(sourceFrame) + 6.0
+                                         : CGRectGetMinY(sourceFrame) - height - 6.0;
+    if (!self.presentsBelowSource && y < kKayokoAnchoredMenuMargin) {
         y = MIN(CGRectGetMaxY(sourceFrame) + 6.0,
                 CGRectGetHeight(hostView.bounds) - height - kKayokoAnchoredMenuMargin);
     }
+    y = MIN(y, CGRectGetHeight(hostView.bounds) - height - kKayokoAnchoredMenuMargin);
     self.cardView.frame = CGRectMake(x, y, width, height);
     self.stackView.frame = self.cardView.bounds;
     self.alpha = 0;

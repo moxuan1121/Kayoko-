@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoWordSelectionViewController : UIViewController
 
++ (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries;
++ (void)openSearchEntry:(NSDictionary<NSString *, NSString *> *)entry forText:(NSString *)text;
+
 @property(nonatomic, weak, nullable) id<KayokoWordSelectionViewControllerDelegate> delegate;
 @property(nonatomic, strong, readonly) KayokoWordSelectionView *wordSelectionView;
 @property(nonatomic, copy, readonly) NSString *name;

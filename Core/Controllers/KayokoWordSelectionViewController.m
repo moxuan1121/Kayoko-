@@ -217,7 +217,7 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries {
++ (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries {
     NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
     [preferences synchronize];
     NSMutableArray *entries = [[NSMutableArray alloc] init];
@@ -231,8 +231,7 @@ NS_ASSUME_NONNULL_END
     return entries;
 }
 
-- (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry {
-    NSString *text = [self selectedText];
++ (void)openSearchEntry:(NSDictionary<NSString *, NSString *> *)entry forText:(NSString *)text {
     if (![text length] || !entry) {
         return;
     }
@@ -243,8 +242,19 @@ NS_ASSUME_NONNULL_END
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
         [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-        [[self delegate] wordSelectionViewController:self didRequestHideContainerAfterDirectPaste:NO];
     }
+}
+
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries {
+    return [[self class] searchEntries];
+}
+
+- (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry {
+    if (!entry) {
+        return;
+    }
+    [[self class] openSearchEntry:entry forText:[self selectedText]];
+    [[self delegate] wordSelectionViewController:self didRequestHideContainerAfterDirectPaste:NO];
 }
 
 - (void)handleSearchButtonPressed {
