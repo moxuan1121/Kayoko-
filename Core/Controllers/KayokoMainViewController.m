@@ -46,8 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KayokoMainViewController () <KayokoClearConfirmationViewControllerDelegate, KayokoHistoryControllerDelegate,
                                         KayokoPanelPresentationControllerDelegate, KayokoSearchControllerDelegate,
                                         KayokoHistoryListViewControllerDelegate, KayokoNoteEditorViewControllerDelegate,
-                                        KayokoWordSelectionViewControllerDelegate, UIGestureRecognizerDelegate,
-                                        UIAdaptivePresentationControllerDelegate>
+                                        KayokoWordSelectionViewControllerDelegate, UIGestureRecognizerDelegate>
 #pragma mark - Views
 
 @property(nonatomic, strong) KayokoMainView *mainView;
@@ -1190,7 +1189,7 @@ NS_ASSUME_NONNULL_END
     [leadingButton setMenu:nil];
 }
 
-- (void)showClipboardClearMenu:(UIButton *)sender {
+- (void)showClipboardClearMenu:(__unused UIButton *)sender {
     if ([self isShowingClearConfirmation] || [self presentedViewController]) {
         return;
     }
@@ -1209,19 +1208,7 @@ NS_ASSUME_NONNULL_END
                                            handler:^(__unused UIAlertAction *action) {
                                              [weakSelf requestClearClipboardImagesOnly:NO];
                                            }]];
-    [menu setModalPresentationStyle:UIModalPresentationPopover];
-    UIPopoverPresentationController *popover = [menu popoverPresentationController];
-    UIView *window = [sender window];
-    [popover setSourceView:window ?: sender];
-    [popover setSourceRect:window ? [sender convertRect:[sender bounds] toView:window] : [sender bounds]];
-    [popover setPermittedArrowDirections:UIPopoverArrowDirectionAny];
-    [[menu presentationController] setDelegate:self];
     [self presentViewController:menu animated:YES completion:nil];
-}
-
-- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:
-    (UIPresentationController *)controller {
-    return UIModalPresentationNone;
 }
 
 - (void)requestClearClipboardImagesOnly:(BOOL)imagesOnly {
