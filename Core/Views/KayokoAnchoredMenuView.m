@@ -8,6 +8,7 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 @interface KayokoAnchoredMenuView ()
 @property(nonatomic, strong) UIStackView *stackView;
 @property(nonatomic, strong) NSMutableArray<dispatch_block_t> *handlers;
+@property(nonatomic, assign) NSInteger highlightedIndex;
 @end
 
 @implementation KayokoAnchoredMenuView
@@ -20,6 +21,7 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
         [self addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
 
         _handlers = [NSMutableArray array];
+        _highlightedIndex = NSNotFound;
         _stackView = [[UIStackView alloc] init];
         _stackView.axis = UILayoutConstraintAxisVertical;
         _stackView.distribution = UIStackViewDistributionFillEqually;
@@ -32,6 +34,11 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
         _stackView.layer.shadowRadius = 12.0;
         _stackView.layer.shadowOffset = CGSizeMake(0, 4);
         [self addSubview:_stackView];
+
+        UILongPressGestureRecognizer *slideGesture =
+            [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSlideGesture:)];
+        slideGesture.minimumPressDuration = 0.12;
+        [self addGestureRecognizer:slideGesture];
     }
     return self;
 }
@@ -84,11 +91,43 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 }
 
 - (void)handleItem:(UIButton *)sender {
-    dispatch_block_t handler = sender.tag < self.handlers.count ? self.handlers[sender.tag] : nil;
+    [self performItemAtIndex:sender.tag];
+}
+
+- (void)performItemAtIndex:(NSInteger)index {
+    dispatch_block_t handler = index >= 0 && index < (NSInteger)self.handlers.count ? self.handlers[index] : nil;
     [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight] impactOccurred];
     [self dismiss];
     if (handler) {
         handler();
+    }
+}
+
+- (void)handleSlideGesture:(UILongPressGestureRecognizer *)gesture {
+    CGPoint point = [gesture locationInView:self.stackView];
+    NSInteger index = CGRectContainsPoint(self.stackView.bounds, point)
+                          ? MIN((NSInteger)(point.y / kKayokoAnchoredMenuRowHeight),
+                                (NSInteger)self.handlers.count - 1)
+                          : NSNotFound;
+    if (index != self.highlightedIndex) {
+        if (index != NSNotFound) {
+            [[[UISelectionFeedbackGenerator alloc] init] selectionChanged];
+        }
+        self.highlightedIndex = index;
+        [self.stackView.arrangedSubviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger itemIndex, BOOL *stop) {
+          (void)stop;
+          [(UIButton *)view setHighlighted:(NSInteger)itemIndex == index];
+        }];
+    }
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        NSInteger selectedIndex = self.highlightedIndex;
+        self.highlightedIndex = NSNotFound;
+        if (selectedIndex != NSNotFound) {
+            [self performItemAtIndex:selectedIndex];
+        }
+    } else if (gesture.state == UIGestureRecognizerStateCancelled ||
+               gesture.state == UIGestureRecognizerStateFailed) {
+        self.highlightedIndex = NSNotFound;
     }
 }
 
