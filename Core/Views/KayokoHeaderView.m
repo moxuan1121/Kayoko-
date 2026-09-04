@@ -25,6 +25,9 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
 @property(nonatomic, strong, readwrite) UIButton *leadingButton;
 @property(nonatomic, strong) UIStackView *trailingButtonStack;
 @property(nonatomic, strong, readwrite) UIButton *trailingButton;
+@property(nonatomic, strong, readwrite) UIButton *alternateTrailingButton;
+@property(nonatomic, strong, readwrite) UIButton *selectionActionButton;
+@property(nonatomic, strong, readwrite) UIButton *translationButton;
 @property(nonatomic, strong, readwrite) UIButton *shareButton;
 @property(nonatomic, strong, readwrite) UISegmentedControl *historySegmentedControl;
 
@@ -103,6 +106,21 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
         [self addSubview:_trailingButtonStack];
         [_trailingButtonStack setTranslatesAutoresizingMaskIntoConstraints:NO];
 
+        _selectionActionButton = [[UIButton alloc] init];
+        [_selectionActionButton setHidden:YES];
+        [_trailingButtonStack addArrangedSubview:_selectionActionButton];
+        [_selectionActionButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+        _alternateTrailingButton = [[UIButton alloc] init];
+        [_alternateTrailingButton setHidden:YES];
+        [_trailingButtonStack addArrangedSubview:_alternateTrailingButton];
+        [_alternateTrailingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+        _translationButton = [[UIButton alloc] init];
+        [_translationButton setHidden:YES];
+        [_trailingButtonStack addArrangedSubview:_translationButton];
+        [_translationButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+
         _shareButton = [[UIButton alloc] init];
         [_shareButton setHidden:YES];
         [_trailingButtonStack addArrangedSubview:_shareButton];
@@ -141,6 +159,12 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
             [[_trailingButtonStack centerYAnchor] constraintEqualToAnchor:[_leadingButton centerYAnchor]],
             [[_trailingButtonStack trailingAnchor] constraintEqualToAnchor:[self trailingAnchor] constant:-16],
             [[_trailingButtonStack heightAnchor] constraintEqualToConstant:32],
+            [[_selectionActionButton widthAnchor] constraintEqualToConstant:32],
+            [[_selectionActionButton heightAnchor] constraintEqualToConstant:32],
+            [[_alternateTrailingButton widthAnchor] constraintEqualToConstant:32],
+            [[_alternateTrailingButton heightAnchor] constraintEqualToConstant:32],
+            [[_translationButton widthAnchor] constraintEqualToConstant:32],
+            [[_translationButton heightAnchor] constraintEqualToConstant:32],
             [[_shareButton widthAnchor] constraintEqualToConstant:32],
             [[_shareButton heightAnchor] constraintEqualToConstant:32],
             [[_trailingButton widthAnchor] constraintEqualToConstant:32],

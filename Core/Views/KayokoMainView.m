@@ -158,6 +158,11 @@
                                   withImageName:@"trash"
                                       imageSize:kKayokoClearButtonImageSize
                                       tintColor:[UIColor labelColor]];
+        [[self headerView] updateStyleForButton:[[self headerView] alternateTrailingButton]
+                                  withImageName:@"arrowshape.turn.up.backward"
+                                      imageSize:kKayokoBackButtonImageSize
+                                      tintColor:[UIColor labelColor]];
+
         [self setContentContainerView:[[UIView alloc] init]];
         [[self contentContainerView] setBackgroundColor:[UIColor clearColor]];
         [[self contentContainerView] setOpaque:NO];

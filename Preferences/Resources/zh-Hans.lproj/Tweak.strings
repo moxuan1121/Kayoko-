@@ -21,6 +21,7 @@
 "Clear History Confirmation" = "要清空历史记录吗？此操作不可撤销。";
 "Clear Images" = "清除图片";
 "Clear Images Confirmation" = "要清除所有图片吗？此操作不可撤销。";
+"Clear Selection" = "清空选择";
 "Clipboard" = "剪贴板";
 "Continue" = "继续";
 "Continuity" = "连续互通";
@@ -61,6 +62,8 @@
 "Save" = "保存";
 "Save to Photos" = "保存到照片";
 "Search" = "搜索";
+"Select All" = "全选";
+"Selection Order" = "选中顺序";
 "Share" = "分享";
 "Spotlight" = "聚焦";
 "SpringBoard" = "主屏幕";

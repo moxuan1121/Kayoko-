@@ -187,6 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) NSUInteger maximumHistoryAmount;
 @property(nonatomic, assign) BOOL saveText;
 @property(nonatomic, assign) BOOL saveImages;
+@property(nonatomic, assign) BOOL swipeToSelectWords;
 @property(nonatomic, assign) BOOL automaticallyPaste;
 @property(nonatomic, assign) KayokoAutomaticPasteMode automaticPasteMode;
 @property(nonatomic, assign) KayokoAutomaticPromotionMode automaticPromotionMode;
@@ -591,6 +592,12 @@ NS_ASSUME_NONNULL_END
     if ([self.mainViewController dismissOnOutsideTouch] != self.dismissOnOutsideTouch) {
         [self.mainViewController setDismissOnOutsideTouch:self.dismissOnOutsideTouch];
     }
+    if ([self.mainViewController swipeToSelectWords] != self.swipeToSelectWords) {
+        [self.mainViewController setSwipeToSelectWords:self.swipeToSelectWords];
+    }
+    if ([self.mainViewController previewLineCount] != self.previewLineCount) {
+        [self.mainViewController setPreviewLineCount:self.previewLineCount];
+    }
     if ([self.mainViewController itemDetailsMode] != self.itemDetailsMode) {
         [self.mainViewController setItemDetailsMode:self.itemDetailsMode];
     }
@@ -640,6 +647,7 @@ NS_ASSUME_NONNULL_END
         kKayokoPreferenceKeyMaximumHistoryAmount : @(kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue),
         kKayokoPreferenceKeySaveText : @(kKayokoPreferenceKeySaveTextDefaultValue),
         kKayokoPreferenceKeySaveImages : @(kKayokoPreferenceKeySaveImagesDefaultValue),
+        kKayokoPreferenceKeySwipeToSelectWords : @(kKayokoPreferenceKeySwipeToSelectWordsDefaultValue),
         kKayokoPreferenceKeyAutomaticallyPaste : @(kKayokoPreferenceKeyAutomaticallyPasteDefaultValue),
         kKayokoPreferenceKeyAutomaticPasteMode : @(kKayokoPreferenceKeyAutomaticPasteModeDefaultValue),
         kKayokoPreferenceKeyAutomaticPromotionMode : @(kKayokoPreferenceKeyAutomaticPromotionModeDefaultValue),
@@ -661,6 +669,7 @@ NS_ASSUME_NONNULL_END
                                                    unsignedIntegerValue]];
     self.saveText = [[self.preferences objectForKey:kKayokoPreferenceKeySaveText] boolValue];
     self.saveImages = [[self.preferences objectForKey:kKayokoPreferenceKeySaveImages] boolValue];
+    self.swipeToSelectWords = [[self.preferences objectForKey:kKayokoPreferenceKeySwipeToSelectWords] boolValue];
     self.automaticallyPaste = [[self.preferences objectForKey:kKayokoPreferenceKeyAutomaticallyPaste] boolValue];
     self.automaticPasteMode =
         [[self.preferences objectForKey:kKayokoPreferenceKeyAutomaticPasteMode] unsignedIntegerValue];
