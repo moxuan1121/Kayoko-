@@ -2,7 +2,7 @@
 
 static NSInteger const kKayokoAnchoredMenuTag = 0x4B4D4E55;
 static CGFloat const kKayokoAnchoredMenuWidth = 250.0;
-static CGFloat const kKayokoAnchoredMenuRowHeight = 44.0;
+static CGFloat const kKayokoAnchoredMenuRowHeight = 38.0;
 static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 
 @interface KayokoAnchoredMenuView ()
@@ -61,7 +61,7 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
           updatedButton.highlighted ? UIColor.tertiarySystemFillColor : UIColor.clearColor;
       updatedButton.configuration = updatedConfiguration;
     };
-    button.titleLabel.font = [UIFont systemFontOfSize:17.0];
+    button.titleLabel.font = [UIFont systemFontOfSize:16.0];
     [button setTitle:title forState:UIControlStateNormal];
     if (image) {
         [button setImage:image forState:UIControlStateNormal];
