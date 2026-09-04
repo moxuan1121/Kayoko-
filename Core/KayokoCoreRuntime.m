@@ -237,6 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) KayokoPanelPresentationMode activePresentationMode;
 @property(nonatomic, assign) BOOL pendingHeightPreferenceApply;
 @property(nonatomic, strong, nullable) KayokoWordSelectionPromptWindow *wordSelectionPromptWindow;
+@property(nonatomic, strong, nullable) KayokoWordSelectionPromptButton *wordSelectionPromptButton;
 @property(nonatomic, strong, nullable) KayokoPasteboardItem *wordSelectionPromptItem;
 @property(nonatomic, strong, nullable) KayokoPasteboardItem *pendingWordSelectionPromptItem;
 @property(nonatomic, copy, nullable) dispatch_block_t wordSelectionPromptHideBlock;
@@ -1070,19 +1071,25 @@ NS_ASSUME_NONNULL_END
         self.wordSelectionPromptHideBlock = nil;
     }
     KayokoWordSelectionPromptWindow *window = self.wordSelectionPromptWindow;
-    UIView *interactiveView = window.interactiveView;
+    KayokoWordSelectionPromptButton *button = self.wordSelectionPromptButton;
+    BOOL menuVisible = self.wordSelectionPromptSearchMenu != nil;
     self.wordSelectionPromptWindow = nil;
+    self.wordSelectionPromptButton = nil;
     self.wordSelectionPromptItem = nil;
     self.wordSelectionPromptSearchMenu = nil;
     if (!window || window.hidden) {
+        return;
+    }
+    if (menuVisible || !button) {
+        window.hidden = YES;
         return;
     }
     [UIView animateWithDuration:0.16
                           delay:0
                         options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                       window.alpha = 0;
-                       interactiveView.transform = CGAffineTransformMakeScale(0.96, 0.96);
+                       button.alpha = 0;
+                       button.transform = CGAffineTransformMakeScale(0.96, 0.96);
                      }
                      completion:^(__unused BOOL finished) {
                        window.hidden = YES;
@@ -1216,6 +1223,7 @@ NS_ASSUME_NONNULL_END
     ]];
     window.interactiveView = button;
     self.wordSelectionPromptWindow = window;
+    self.wordSelectionPromptButton = button;
     self.wordSelectionPromptItem = item;
     [window setHidden:NO];
 
