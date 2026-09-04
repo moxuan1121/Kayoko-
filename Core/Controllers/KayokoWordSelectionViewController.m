@@ -10,6 +10,7 @@
 #import "KayokoActivitySharePresenter.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
+#import "KayokoPreferenceKeys.h"
 #import "KayokoSystemTranslationPresenter.h"
 #import "KayokoWordSelectionView.h"
 
