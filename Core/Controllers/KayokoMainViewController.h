@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)mainViewControllerDidRequestFocusRestore:(KayokoMainViewController *)viewController;
 - (void)mainViewControllerDidHide:(KayokoMainViewController *)viewController;
+- (void)mainViewController:(KayokoMainViewController *)viewController
+    didActivatePasteboardItem:(KayokoPasteboardItem *)item;
 
 @end
 

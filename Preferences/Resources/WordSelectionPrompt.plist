@@ -75,6 +75,42 @@
 				<real>3</real>
 			</array>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Button Colors</string>
+			<key>footerText</key>
+			<string>When gradient is off, the start color is used as a solid button color.</string>
+		</dict>
+		<dict>
+			<key>cell</key><string>PSSwitchCell</string>
+			<key>default</key><true/>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptGradientEnabled</string>
+			<key>label</key><string>Gradient Button Color</string>
+		</dict>
+		<dict>
+			<key>cellClass</key><string>KayokoColorPickerCell</string>
+			<key>default</key><string>#FF8A4C</string>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptStartColor</string>
+			<key>label</key><string>Start Color</string>
+		</dict>
+		<dict>
+			<key>cellClass</key><string>KayokoColorPickerCell</string>
+			<key>default</key><string>#FF416C</string>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptMiddleColor</string>
+			<key>label</key><string>Middle Color</string>
+		</dict>
+		<dict>
+			<key>cellClass</key><string>KayokoColorPickerCell</string>
+			<key>default</key><string>#9B3FE5</string>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptEndColor</string>
+			<key>label</key><string>End Color</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>Word Selection Button</string>

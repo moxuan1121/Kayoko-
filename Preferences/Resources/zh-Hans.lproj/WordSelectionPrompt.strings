@@ -7,3 +7,9 @@
 "1 Second" = "1 秒";
 "2 Seconds" = "2 秒";
 "3 Seconds" = "3 秒";
+"Button Colors" = "按钮颜色";
+"When gradient is off, the start color is used as a solid button color." = "关闭渐变后，按钮将使用起始颜色作为纯色背景。";
+"Gradient Button Color" = "按钮渐变颜色";
+"Start Color" = "起始颜色";
+"Middle Color" = "中间颜色";
+"End Color" = "末尾颜色";

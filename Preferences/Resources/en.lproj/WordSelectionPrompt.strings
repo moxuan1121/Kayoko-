@@ -7,3 +7,9 @@
 "1 Second" = "1 Second";
 "2 Seconds" = "2 Seconds";
 "3 Seconds" = "3 Seconds";
+"Button Colors" = "Button Colors";
+"When gradient is off, the start color is used as a solid button color." = "When gradient is off, the start color is used as a solid button color.";
+"Gradient Button Color" = "Gradient Button Color";
+"Start Color" = "Start Color";
+"Middle Color" = "Middle Color";
+"End Color" = "End Color";

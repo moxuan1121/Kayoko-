@@ -699,9 +699,11 @@ NS_ASSUME_NONNULL_END
                             completion:^(BOOL success) {
                               if (success) {
                                   if ([self automaticallyPaste]) {
-                                      [[self delegate] historyListViewControllerDidRequestHideAfterDirectPaste:self];
+                                      [[self delegate] historyListViewController:self
+                                          didRequestHideAfterDirectlyPastingItem:item];
                                   } else {
-                                      [[self delegate] historyListViewControllerDidRequestHide:self];
+                                      [[self delegate] historyListViewController:self
+                                          didRequestHideAfterActivatingItem:item];
                                   }
                               }
                             }];

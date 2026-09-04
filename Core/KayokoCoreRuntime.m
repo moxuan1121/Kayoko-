@@ -67,6 +67,10 @@ static NSTimeInterval const kKayokoPasteSuppressionExpirationDelay = 1.0;
 @property(nonatomic, weak) UIView *interactiveView;
 @end
 
+@interface KayokoWordSelectionPromptButton : UIButton
+@property(nonatomic, strong) CAGradientLayer *gradientLayer;
+@end
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoPasteSuppressionState : NSObject
@@ -120,6 +124,28 @@ NS_ASSUME_NONNULL_END
 }
 
 @end
+
+@implementation KayokoWordSelectionPromptButton
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.gradientLayer.frame = self.bounds;
+    self.gradientLayer.cornerRadius = self.layer.cornerRadius;
+}
+
+@end
+
+static UIColor *KayokoPromptColorFromHex(NSString *hex, NSString *fallback) {
+    unsigned int rgb = 0;
+    NSString *value = [[hex ?: fallback stringByReplacingOccurrencesOfString:@"#" withString:@""] uppercaseString];
+    if ([value length] != 6 || ![[NSScanner scannerWithString:value] scanHexInt:&rgb]) {
+        return KayokoPromptColorFromHex(fallback, @"#5856D6");
+    }
+    return [UIColor colorWithRed:((rgb >> 16) & 0xFF) / 255.0
+                           green:((rgb >> 8) & 0xFF) / 255.0
+                            blue:(rgb & 0xFF) / 255.0
+                           alpha:1.0];
+}
 
 @implementation KayokoPasteSuppressionState
 
@@ -196,6 +222,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL pendingHeightPreferenceApply;
 @property(nonatomic, strong, nullable) KayokoWordSelectionPromptWindow *wordSelectionPromptWindow;
 @property(nonatomic, strong, nullable) KayokoPasteboardItem *wordSelectionPromptItem;
+@property(nonatomic, strong, nullable) KayokoPasteboardItem *pendingWordSelectionPromptItem;
 @property(nonatomic, copy, nullable) dispatch_block_t wordSelectionPromptHideBlock;
 
 #pragma mark - Preferences
@@ -476,7 +503,17 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
+    KayokoPasteboardItem *pendingPromptItem = self.pendingWordSelectionPromptItem;
+    self.pendingWordSelectionPromptItem = nil;
     [self handleMainPanelDidHide];
+    [self showWordSelectionPromptForItem:pendingPromptItem];
+}
+
+- (void)mainViewController:(KayokoMainViewController *)viewController
+    didActivatePasteboardItem:(KayokoPasteboardItem *)item {
+    if (viewController == self.mainViewController) {
+        self.pendingWordSelectionPromptItem = item;
+    }
 }
 
 - (BOOL)prepareCompactLandscapeHost {
@@ -1051,7 +1088,7 @@ NS_ASSUME_NONNULL_END
     [controller.view setBackgroundColor:[UIColor clearColor]];
     [window setRootViewController:controller];
 
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    KayokoWordSelectionPromptButton *button = [[KayokoWordSelectionPromptButton alloc] initWithFrame:CGRectZero];
     NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
     CGFloat sizePercent = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptSizePercent]
                               ? [preferences doubleForKey:kKayokoPreferenceKeyWordSelectionPromptSizePercent]
@@ -1064,11 +1101,33 @@ NS_ASSUME_NONNULL_END
                                          : kKayokoPreferenceKeyWordSelectionPromptDurationDefaultValue;
     CGFloat scale = MIN(MAX(sizePercent, 60), 160) / 100.0;
     CGFloat verticalPosition = MIN(MAX(heightPercent, 10), 90) / 100.0;
+    UIColor *startColor = KayokoPromptColorFromHex(
+        [preferences stringForKey:kKayokoPreferenceKeyWordSelectionPromptStartColor],
+        kKayokoPreferenceKeyWordSelectionPromptStartColorDefaultValue);
+    UIColor *middleColor = KayokoPromptColorFromHex(
+        [preferences stringForKey:kKayokoPreferenceKeyWordSelectionPromptMiddleColor],
+        kKayokoPreferenceKeyWordSelectionPromptMiddleColorDefaultValue);
+    UIColor *endColor = KayokoPromptColorFromHex(
+        [preferences stringForKey:kKayokoPreferenceKeyWordSelectionPromptEndColor],
+        kKayokoPreferenceKeyWordSelectionPromptEndColorDefaultValue);
+    BOOL gradientEnabled = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptGradientEnabled]
+                               ? [preferences boolForKey:kKayokoPreferenceKeyWordSelectionPromptGradientEnabled]
+                               : kKayokoPreferenceKeyWordSelectionPromptGradientEnabledDefaultValue;
     [button setTitle:@"✨ 分词" forState:UIControlStateNormal];
     [button.titleLabel setFont:[UIFont systemFontOfSize:16 * scale weight:UIFontWeightSemibold]];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button setBackgroundColor:[UIColor systemIndigoColor]];
+    [button setBackgroundColor:startColor];
     [button.layer setCornerRadius:22 * scale];
+    if (gradientEnabled) {
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.colors = @[ (__bridge id)startColor.CGColor, (__bridge id)middleColor.CGColor,
+                                  (__bridge id)endColor.CGColor ];
+        gradientLayer.locations = @[ @0, @0.5, @1 ];
+        gradientLayer.startPoint = CGPointMake(0, 0.5);
+        gradientLayer.endPoint = CGPointMake(1, 0.5);
+        [button.layer insertSublayer:gradientLayer atIndex:0];
+        button.gradientLayer = gradientLayer;
+    }
     [button addTarget:self action:@selector(handleWordSelectionPromptPressed) forControlEvents:UIControlEventTouchUpInside];
     [controller.view addSubview:button];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];

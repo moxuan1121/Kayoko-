@@ -574,12 +574,16 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - KayokoHistoryListViewControllerDelegate
 
-- (void)historyListViewControllerDidRequestHide:(KayokoHistoryListViewController *)controller {
+- (void)historyListViewController:(KayokoHistoryListViewController *)controller
+    didRequestHideAfterActivatingItem:(KayokoPasteboardItem *)item {
+    [[self delegate] mainViewController:self didActivatePasteboardItem:item];
     [[self panelPresentationController] prepareStandardDismissAnimation];
     [self hideRestoringFocus];
 }
 
-- (void)historyListViewControllerDidRequestHideAfterDirectPaste:(KayokoHistoryListViewController *)controller {
+- (void)historyListViewController:(KayokoHistoryListViewController *)controller
+    didRequestHideAfterDirectlyPastingItem:(KayokoPasteboardItem *)item {
+    [[self delegate] mainViewController:self didActivatePasteboardItem:item];
     [[self panelPresentationController] prepareStandardDismissAnimation];
     [self hideAfterDirectPaste];
 }
