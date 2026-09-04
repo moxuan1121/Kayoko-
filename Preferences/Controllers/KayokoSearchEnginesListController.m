@@ -1,8 +1,9 @@
 #import "KayokoPreferenceKeys.h"
 
+#import <Preferences/PSListController.h>
 #import <UIKit/UIKit.h>
 
-@interface KayokoSearchEnginesListController : UITableViewController
+@interface KayokoSearchEnginesListController : PSListController
 @property(nonatomic, strong) NSMutableArray<NSMutableDictionary<NSString *, NSString *> *> *engines;
 @end
 
@@ -10,7 +11,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"搜索引擎";
+    self.title = [[NSBundle bundleForClass:self.class] localizedStringForKey:@"Search Engines" value:nil table:@"Root"];
     NSArray *stored = [[[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier]
         arrayForKey:kKayokoPreferenceKeySearchEngines];
     self.engines = [[NSMutableArray alloc] init];
@@ -40,23 +41,27 @@
 
 - (void)editEngineAtIndex:(NSUInteger)index {
     NSDictionary *existing = index < self.engines.count ? self.engines[index] : nil;
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:(existing ? @"编辑搜索引擎" : @"添加搜索引擎")
-                                                                   message:@"引擎中使用 %@ 代表选中的文字"
+    NSBundle *bundle = [NSBundle bundleForClass:self.class];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:
+        [bundle localizedStringForKey:(existing ? @"Edit Search Engine" : @"Add Search Engine") value:nil table:@"Root"]
+                                                                   message:[bundle localizedStringForKey:@"Use %@ in the engine URL for the selected text." value:nil table:@"Root"]
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *field) {
-      field.placeholder = @"名称";
+      field.placeholder = [bundle localizedStringForKey:@"Name" value:nil table:@"Root"];
       field.text = existing[@"name"];
     }];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *field) {
-      field.placeholder = @"搜索引擎 URL";
+      field.placeholder = [bundle localizedStringForKey:@"Search Engine URL" value:nil table:@"Root"];
       field.text = existing[@"engine"];
       field.keyboardType = UIKeyboardTypeURL;
       field.autocapitalizationType = UITextAutocapitalizationTypeNone;
       field.autocorrectionType = UITextAutocorrectionTypeNo;
     }];
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Cancel" value:nil table:@"Root"]
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
     __weak typeof(self) weakSelf = self;
-    [alert addAction:[UIAlertAction actionWithTitle:@"保存"
+    [alert addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Save" value:nil table:@"Root"]
                                              style:UIAlertActionStyleDefault
                                            handler:^(__unused UIAlertAction *action) {
       NSString *name = [alert.textFields[0].text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
@@ -78,6 +83,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.engines.count;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

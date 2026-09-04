@@ -51,6 +51,15 @@
 "Restart Required" = "需要立即重启";
 "Save Images" = "保存图像";
 "Save Text" = "保存文本";
+"Word Selection Search" = "分词搜索";
+"Add, edit, delete, and reorder search engines. The first item is used when the search button is tapped." = "添加、编辑、删除和排序搜索引擎。轻点搜索按钮时使用第一项。";
+"Search Engines" = "搜索引擎";
+"Edit Search Engine" = "编辑搜索引擎";
+"Add Search Engine" = "添加搜索引擎";
+"Use %@ in the engine URL for the selected text." = "在引擎 URL 中使用 %@ 代表选中的文字。";
+"Name" = "名称";
+"Search Engine URL" = "搜索引擎 URL";
+"Save" = "保存";
 "Server returned an invalid response. Tap the screen to retry: %@" = "服务器返回了无效的响应，轻点屏幕以重试：%@";
 "Sharing some tweaks and apps I use myself." = "个人源 · 收录我常用的工具";
 "Show Kayoko" = "显示 Kayoko";

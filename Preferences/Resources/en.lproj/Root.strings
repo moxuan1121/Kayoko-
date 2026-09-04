@@ -51,6 +51,15 @@
 "Restart Required" = "Restart Required";
 "Save Images" = "Save Images";
 "Save Text" = "Save Text";
+"Word Selection Search" = "Word Selection Search";
+"Add, edit, delete, and reorder search engines. The first item is used when the search button is tapped." = "Add, edit, delete, and reorder search engines. The first item is used when the search button is tapped.";
+"Search Engines" = "Search Engines";
+"Edit Search Engine" = "Edit Search Engine";
+"Add Search Engine" = "Add Search Engine";
+"Use %@ in the engine URL for the selected text." = "Use %@ in the engine URL for the selected text.";
+"Name" = "Name";
+"Search Engine URL" = "Search Engine URL";
+"Save" = "Save";
 "Server returned an invalid response. Tap the screen to retry: %@" = "Server returned an invalid response. Tap the screen to retry: %@";
 "Sharing some tweaks and apps I use myself." = "Sharing some tweaks and apps I use myself.";
 "Show Kayoko" = "Show Kayoko";
