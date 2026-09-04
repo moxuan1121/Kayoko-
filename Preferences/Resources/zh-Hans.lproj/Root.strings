@@ -52,6 +52,15 @@
 "Save Images" = "保存图像";
 "Save Text" = "保存文本";
 "Word Selection Search" = "分词搜索";
+"Word Selection Button" = "分词按钮";
+"Adjust the temporary button shown after copying text. Changes apply the next time the button appears." = "调整复制文字后短暂显示的分词按钮；设置会在按钮下次出现时生效。";
+"Display Size (%)" = "显示大小（%）";
+"Height Position (%)" = "高度位置（%）";
+"Hide Delay" = "隐藏时长";
+"0.5 Seconds" = "0.5 秒";
+"1 Second" = "1 秒";
+"2 Seconds" = "2 秒";
+"3 Seconds" = "3 秒";
 "Add, edit, delete, and reorder search engines. The first item is used when the search button is tapped." = "添加、编辑、删除和排序搜索引擎。轻点搜索按钮时使用第一项。";
 "Search Engines" = "搜索引擎";
 "Edit Search Engine" = "编辑搜索引擎";

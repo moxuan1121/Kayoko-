@@ -417,6 +417,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Word Selection Button</string>
+			<key>detail</key>
+			<string>KayokoWordSelectionPromptListController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Search Engines</string>
 			<key>detail</key>
 			<string>KayokoSearchEnginesListController</string>

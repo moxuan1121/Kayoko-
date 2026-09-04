@@ -63,6 +63,9 @@ static NSString *const kKayokoPreferenceKeyHeightInPoints = @"HeightInPoints";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevelMode = @"OverlayWindowLevelMode";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevel = @"OverlayWindowLevel";
 static NSString *const kKayokoPreferenceKeySearchEngines = @"SearchEngines";
+static NSString *const kKayokoPreferenceKeyWordSelectionPromptSizePercent = @"WordSelectionPromptSizePercent";
+static NSString *const kKayokoPreferenceKeyWordSelectionPromptHeightPercent = @"WordSelectionPromptHeightPercent";
+static NSString *const kKayokoPreferenceKeyWordSelectionPromptDuration = @"WordSelectionPromptDuration";
 
 static BOOL const kKayokoPreferenceKeyEnabledDefaultValue = YES;
 static NSUInteger const kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue = 200;
@@ -88,3 +91,6 @@ static KayokoOverlayWindowLevelMode const kKayokoPreferenceKeyOverlayWindowLevel
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelDefaultValue = 998;
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelMinimumValue = 10;
 static CGFloat const kKayokoPreferenceKeyOverlayWindowLevelMaximumValue = 2000;
+static CGFloat const kKayokoPreferenceKeyWordSelectionPromptSizePercentDefaultValue = 100;
+static CGFloat const kKayokoPreferenceKeyWordSelectionPromptHeightPercentDefaultValue = 50;
+static NSTimeInterval const kKayokoPreferenceKeyWordSelectionPromptDurationDefaultValue = 3.0;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Word Selection Button</string>
+			<key>footerText</key>
+			<string>Adjust the temporary button shown after copying text. Changes apply the next time the button appears.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Display Size (%)</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>KayokoSliderCell</string>
+			<key>default</key><real>100</real>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptSizePercent</string>
+			<key>min</key><real>60</real>
+			<key>max</key><real>160</real>
+			<key>showValue</key><true/>
+			<key>isContinuous</key><true/>
+			<key>valueLabelWidth</key><integer>48</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Height Position (%)</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>KayokoSliderCell</string>
+			<key>default</key><real>50</real>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptHeightPercent</string>
+			<key>min</key><real>10</real>
+			<key>max</key><real>90</real>
+			<key>showValue</key><true/>
+			<key>isContinuous</key><true/>
+			<key>valueLabelWidth</key><integer>48</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Hide Delay</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key><real>3</real>
+			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
+			<key>key</key><string>WordSelectionPromptDuration</string>
+			<key>validTitles</key>
+			<array>
+				<string>0.5 Seconds</string>
+				<string>1 Second</string>
+				<string>2 Seconds</string>
+				<string>3 Seconds</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<real>0.5</real>
+				<real>1</real>
+				<real>2</real>
+				<real>3</real>
+			</array>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Word Selection Button</string>
+</dict>
+</plist>

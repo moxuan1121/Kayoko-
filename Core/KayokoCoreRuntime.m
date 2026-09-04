@@ -1052,19 +1052,32 @@ NS_ASSUME_NONNULL_END
     [window setRootViewController:controller];
 
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
+    CGFloat sizePercent = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptSizePercent]
+                              ? [preferences doubleForKey:kKayokoPreferenceKeyWordSelectionPromptSizePercent]
+                              : kKayokoPreferenceKeyWordSelectionPromptSizePercentDefaultValue;
+    CGFloat heightPercent = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptHeightPercent]
+                                ? [preferences doubleForKey:kKayokoPreferenceKeyWordSelectionPromptHeightPercent]
+                                : kKayokoPreferenceKeyWordSelectionPromptHeightPercentDefaultValue;
+    NSTimeInterval displayDuration = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptDuration]
+                                         ? [preferences doubleForKey:kKayokoPreferenceKeyWordSelectionPromptDuration]
+                                         : kKayokoPreferenceKeyWordSelectionPromptDurationDefaultValue;
+    CGFloat scale = MIN(MAX(sizePercent, 60), 160) / 100.0;
+    CGFloat verticalPosition = MIN(MAX(heightPercent, 10), 90) / 100.0;
     [button setTitle:@"✨ 分词" forState:UIControlStateNormal];
-    [button.titleLabel setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightSemibold]];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:16 * scale weight:UIFontWeightSemibold]];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button setBackgroundColor:[UIColor systemIndigoColor]];
-    [button.layer setCornerRadius:22];
+    [button.layer setCornerRadius:22 * scale];
     [button addTarget:self action:@selector(handleWordSelectionPromptPressed) forControlEvents:UIControlEventTouchUpInside];
     [controller.view addSubview:button];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
     [NSLayoutConstraint activateConstraints:@[
         [[button trailingAnchor] constraintEqualToAnchor:[controller.view safeAreaLayoutGuide].trailingAnchor constant:-16],
-        [[button centerYAnchor] constraintEqualToAnchor:[controller.view centerYAnchor]],
-        [[button widthAnchor] constraintEqualToConstant:92],
-        [[button heightAnchor] constraintEqualToConstant:44],
+        [[button centerYAnchor] constraintEqualToAnchor:[controller.view topAnchor]
+                                                constant:CGRectGetHeight(window.bounds) * verticalPosition],
+        [[button widthAnchor] constraintEqualToConstant:92 * scale],
+        [[button heightAnchor] constraintEqualToConstant:44 * scale],
     ]];
     window.interactiveView = button;
     self.wordSelectionPromptWindow = window;
@@ -1074,7 +1087,9 @@ NS_ASSUME_NONNULL_END
     __weak typeof(self) weakSelf = self;
     dispatch_block_t hideBlock = dispatch_block_create(0, ^{ [weakSelf hideWordSelectionPrompt]; });
     self.wordSelectionPromptHideBlock = hideBlock;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), hideBlock);
+    displayDuration = MIN(MAX(displayDuration, 0.5), 3.0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(displayDuration * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), hideBlock);
 }
 
 - (void)markPasteWillStart {
