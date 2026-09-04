@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setClearButtonEnabledForItemCount:(NSUInteger)itemCount;
 - (UIEdgeInsets)effectiveContentSafeAreaInsets;
 - (CGFloat)safeAreaBottomInsetForContentView:(nullable UIView *)contentView;
+- (UIColor *)preferredMaterialTintColor;
 - (void)installContentView:(UIView *)contentView hidden:(BOOL)hidden;
 - (void)installFullContentView:(UIView *)contentView headerView:(KayokoHeaderView *)headerView hidden:(BOOL)hidden;
 - (void)showContentView:(UIView *)viewToShow

@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
                    image:(nullable UIImage *)image
              destructive:(BOOL)destructive
                  handler:(dispatch_block_t)handler;
+- (void)useBackgroundEffect:(UIBlurEffect *)effect tintColor:(UIColor *)tintColor;
 - (void)presentFromView:(UIView *)sourceView inView:(UIView *)hostView;
 - (void)trackGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 - (void)dismiss;

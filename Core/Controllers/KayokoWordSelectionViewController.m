@@ -8,6 +8,7 @@
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoHeaderView.h"
 #import "KayokoAnchoredMenuView.h"
+#import "KayokoMainView.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
@@ -258,6 +259,14 @@ NS_ASSUME_NONNULL_END
         KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
         menu.menuWidth = 150.0;
         menu.centersTitles = YES;
+        UIView *ancestor = self.view;
+        while (ancestor && ![ancestor isKindOfClass:[KayokoMainView class]]) {
+            ancestor = ancestor.superview;
+        }
+        KayokoMainView *mainView = (KayokoMainView *)ancestor;
+        if (mainView) {
+            [menu useBackgroundEffect:mainView.blurEffect tintColor:[mainView preferredMaterialTintColor]];
+        }
         __weak typeof(self) weakSelf = self;
         for (NSDictionary<NSString *, NSString *> *entry in [self searchEntries]) {
             [menu addItemWithTitle:entry[@"name"] image:nil destructive:NO handler:^{
@@ -266,6 +275,7 @@ NS_ASSUME_NONNULL_END
         }
         [self setSearchMenu:menu];
         [menu presentFromView:gesture.view inView:self.view.window ?: self.view];
+        [[self delegate] wordSelectionViewController:self triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleLight];
     }
 
     [[self searchMenu] trackGestureRecognizer:gesture];

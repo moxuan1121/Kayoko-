@@ -92,6 +92,22 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     [self.stackView addArrangedSubview:button];
 }
 
+- (void)useBackgroundEffect:(UIBlurEffect *)effect tintColor:(UIColor *)tintColor {
+    self.stackView.backgroundColor = UIColor.clearColor;
+    UIVisualEffectView *materialView = [[UIVisualEffectView alloc] initWithEffect:effect];
+    materialView.userInteractionEnabled = NO;
+    materialView.backgroundColor = UIColor.clearColor;
+    materialView.contentView.backgroundColor = tintColor;
+    [self.stackView insertSubview:materialView atIndex:0];
+    materialView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [materialView.topAnchor constraintEqualToAnchor:self.stackView.topAnchor],
+        [materialView.leadingAnchor constraintEqualToAnchor:self.stackView.leadingAnchor],
+        [materialView.trailingAnchor constraintEqualToAnchor:self.stackView.trailingAnchor],
+        [materialView.bottomAnchor constraintEqualToAnchor:self.stackView.bottomAnchor]
+    ]];
+}
+
 - (void)presentFromView:(UIView *)sourceView inView:(UIView *)hostView {
     [[hostView viewWithTag:kKayokoAnchoredMenuTag] removeFromSuperview];
     self.frame = hostView.bounds;
