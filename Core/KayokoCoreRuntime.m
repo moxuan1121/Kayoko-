@@ -132,33 +132,16 @@ NS_ASSUME_NONNULL_END
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction;
-    if (!highlighted) {
-        [UIView animateWithDuration:0.34
-                              delay:0
-             usingSpringWithDamping:0.52
-              initialSpringVelocity:0.8
-                            options:options
-                         animations:^{ self.transform = CGAffineTransformIdentity; }
-                         completion:nil];
-        return;
-    }
-
-    [UIView animateWithDuration:0.1
+    [UIView animateWithDuration:highlighted ? 0.42 : 0.38
                           delay:0
-                        options:options | UIViewAnimationOptionCurveEaseOut
-                     animations:^{ self.transform = CGAffineTransformMakeScale(0.91, 0.91); }
-                     completion:^(__unused BOOL finished) {
-                       if (!self.highlighted) {
-                           return;
-                       }
-                       [UIView animateWithDuration:0.32
-                                             delay:0
-                            usingSpringWithDamping:0.48
-                             initialSpringVelocity:0.9
-                                           options:options
-                                        animations:^{ self.transform = CGAffineTransformMakeScale(0.98, 0.98); }
-                                        completion:nil];
-                     }];
+         usingSpringWithDamping:highlighted ? 0.58 : 0.64
+          initialSpringVelocity:highlighted ? 3.0 : 1.2
+                        options:options
+                     animations:^{
+                       self.transform = highlighted ? CGAffineTransformMakeScale(0.94, 0.94)
+                                                    : CGAffineTransformIdentity;
+                     }
+                     completion:nil];
 }
 
 - (void)layoutSubviews {
