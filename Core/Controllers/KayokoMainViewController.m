@@ -46,7 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KayokoMainViewController () <KayokoClearConfirmationViewControllerDelegate, KayokoHistoryControllerDelegate,
                                         KayokoPanelPresentationControllerDelegate, KayokoSearchControllerDelegate,
                                         KayokoHistoryListViewControllerDelegate, KayokoNoteEditorViewControllerDelegate,
-                                        KayokoWordSelectionViewControllerDelegate, UIGestureRecognizerDelegate>
+                                        KayokoWordSelectionViewControllerDelegate, UIGestureRecognizerDelegate,
+                                        UIAdaptivePresentationControllerDelegate>
 #pragma mark - Views
 
 @property(nonatomic, strong) KayokoMainView *mainView;
@@ -153,7 +154,9 @@ NS_ASSUME_NONNULL_END
      forControlEvents:UIControlEventValueChanged];
         // Keep leading button available for future actions / transient screens.
         [[[_mainView headerView] leadingButton] setHidden:NO];
-        [[[_mainView headerView] leadingButton] setShowsMenuAsPrimaryAction:YES];
+        [[[_mainView headerView] leadingButton] addTarget:self
+                                                   action:@selector(showClipboardClearMenu:)
+                                         forControlEvents:UIControlEventTouchUpInside];
         [[[_mainView headerView] trailingButton] addTarget:self
                                                     action:@selector(handleClearButtonPressed)
                                           forControlEvents:UIControlEventTouchUpInside];
@@ -1183,34 +1186,42 @@ NS_ASSUME_NONNULL_END
                        withImageName:@"list.bullet"
                            imageSize:kKayokoFavoritesButtonImageSize
                            tintColor:[UIColor labelColor]];
-    [leadingButton setShowsMenuAsPrimaryAction:YES];
-    [leadingButton setMenu:showingFavorites ? nil : [self clipboardClearMenu]];
+    [leadingButton setShowsMenuAsPrimaryAction:NO];
+    [leadingButton setMenu:nil];
 }
 
-- (UIMenu *)clipboardClearMenu {
+- (void)showClipboardClearMenu:(UIButton *)sender {
+    if ([self isShowingClearConfirmation] || [self presentedViewController]) {
+        return;
+    }
     NSBundle *bundle = [KayokoPasteboardManager localizationBundle];
     __weak typeof(self) weakSelf = self;
+    UIAlertController *menu = [UIAlertController alertControllerWithTitle:nil
+                                                                  message:nil
+                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Clear Images" value:nil table:@"Tweak"]
+                                             style:UIAlertActionStyleDefault
+                                           handler:^(__unused UIAlertAction *action) {
+                                             [weakSelf requestClearClipboardImagesOnly:YES];
+                                           }]];
+    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Clear Clipboard" value:nil table:@"Tweak"]
+                                             style:UIAlertActionStyleDestructive
+                                           handler:^(__unused UIAlertAction *action) {
+                                             [weakSelf requestClearClipboardImagesOnly:NO];
+                                           }]];
+    [menu setModalPresentationStyle:UIModalPresentationPopover];
+    UIPopoverPresentationController *popover = [menu popoverPresentationController];
+    UIView *window = [sender window];
+    [popover setSourceView:window ?: sender];
+    [popover setSourceRect:window ? [sender convertRect:[sender bounds] toView:window] : [sender bounds]];
+    [popover setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+    [[menu presentationController] setDelegate:self];
+    [self presentViewController:menu animated:YES completion:nil];
+}
 
-    UIAction *clearClipboard =
-        [UIAction actionWithTitle:[bundle localizedStringForKey:@"Clear Clipboard" value:nil table:@"Tweak"]
-                            image:[UIImage systemImageNamed:@"trash"]
-                       identifier:nil
-                          handler:^(__kindof UIAction *_Nonnull unusedAction) {
-                            (void)unusedAction;
-                            [weakSelf requestClearClipboardImagesOnly:NO];
-                          }];
-    [clearClipboard setAttributes:UIMenuElementAttributesDestructive];
-
-    UIAction *clearImages =
-        [UIAction actionWithTitle:[bundle localizedStringForKey:@"Clear Images" value:nil table:@"Tweak"]
-                            image:[UIImage systemImageNamed:@"photo"]
-                       identifier:nil
-                          handler:^(__kindof UIAction *_Nonnull unusedAction) {
-                            (void)unusedAction;
-                            [weakSelf requestClearClipboardImagesOnly:YES];
-                          }];
-
-    return [UIMenu menuWithTitle:@"" children:@[ clearClipboard, clearImages ]];
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:
+    (UIPresentationController *)controller {
+    return UIModalPresentationNone;
 }
 
 - (void)requestClearClipboardImagesOnly:(BOOL)imagesOnly {
