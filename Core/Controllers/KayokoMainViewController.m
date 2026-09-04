@@ -1197,7 +1197,7 @@ NS_ASSUME_NONNULL_END
     __weak typeof(self) weakSelf = self;
     UIAlertController *menu = [UIAlertController alertControllerWithTitle:nil
                                                                   message:nil
-                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+                                                           preferredStyle:UIAlertControllerStyleAlert];
     [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Clear Images" value:nil table:@"Tweak"]
                                              style:UIAlertActionStyleDefault
                                            handler:^(__unused UIAlertAction *action) {
@@ -1208,6 +1208,9 @@ NS_ASSUME_NONNULL_END
                                            handler:^(__unused UIAlertAction *action) {
                                              [weakSelf requestClearClipboardImagesOnly:NO];
                                            }]];
+    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Cancel" value:nil table:@"Tweak"]
+                                             style:UIAlertActionStyleCancel
+                                           handler:nil]];
     [self presentViewController:menu animated:YES completion:nil];
 }
 
