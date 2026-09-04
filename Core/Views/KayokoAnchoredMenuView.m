@@ -48,6 +48,12 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     configuration.imagePadding = 12;
     configuration.baseForegroundColor = destructive ? UIColor.systemRedColor : UIColor.labelColor;
     button.configuration = configuration;
+    button.configurationUpdateHandler = ^(UIButton *updatedButton) {
+      UIButtonConfiguration *updatedConfiguration = updatedButton.configuration;
+      updatedConfiguration.background.backgroundColor =
+          updatedButton.highlighted ? UIColor.tertiarySystemFillColor : UIColor.clearColor;
+      updatedButton.configuration = updatedConfiguration;
+    };
     button.titleLabel.font = [UIFont systemFontOfSize:17.0];
     [button setTitle:title forState:UIControlStateNormal];
     if (image) {
@@ -69,15 +75,17 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     CGFloat width = MIN(kKayokoAnchoredMenuWidth, CGRectGetWidth(hostView.bounds) - kKayokoAnchoredMenuMargin * 2.0);
     CGFloat x = MIN(MAX(CGRectGetMidX(sourceFrame) - width / 2.0, kKayokoAnchoredMenuMargin),
                     CGRectGetWidth(hostView.bounds) - width - kKayokoAnchoredMenuMargin);
-    CGFloat y = CGRectGetMaxY(sourceFrame) + 6.0;
-    if (y + height > CGRectGetHeight(hostView.bounds) - kKayokoAnchoredMenuMargin) {
-        y = MAX(CGRectGetMinY(sourceFrame) - height - 6.0, kKayokoAnchoredMenuMargin);
+    CGFloat y = CGRectGetMinY(sourceFrame) - height - 6.0;
+    if (y < kKayokoAnchoredMenuMargin) {
+        y = MIN(CGRectGetMaxY(sourceFrame) + 6.0,
+                CGRectGetHeight(hostView.bounds) - height - kKayokoAnchoredMenuMargin);
     }
     self.stackView.frame = CGRectMake(x, y, width, height);
 }
 
 - (void)handleItem:(UIButton *)sender {
     dispatch_block_t handler = sender.tag < self.handlers.count ? self.handlers[sender.tag] : nil;
+    [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight] impactOccurred];
     [self dismiss];
     if (handler) {
         handler();

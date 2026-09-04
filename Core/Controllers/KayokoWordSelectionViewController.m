@@ -261,7 +261,7 @@ NS_ASSUME_NONNULL_END
                    destructive:NO
                        handler:^{ [weakSelf openSearchEntry:entry]; }];
     }
-    [menu presentFromView:gesture.view inView:self.view];
+    [menu presentFromView:gesture.view inView:self.view.window ?: self.view];
 }
 
 #pragma mark - State

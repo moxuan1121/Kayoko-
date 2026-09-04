@@ -1205,7 +1205,7 @@ NS_ASSUME_NONNULL_END
                      image:[UIImage systemImageNamed:@"trash"]
                destructive:YES
                    handler:^{ [weakSelf requestClearClipboardImagesOnly:NO]; }];
-    [menu presentFromView:sender inView:self.view];
+    [menu presentFromView:sender inView:self.view.window ?: self.view];
 }
 
 - (void)requestClearClipboardImagesOnly:(BOOL)imagesOnly {
