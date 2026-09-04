@@ -62,11 +62,7 @@ static NSString *const kKayokoPreferenceKeyItemDetailsMode = @"ItemDetailsMode";
 static NSString *const kKayokoPreferenceKeyHeightInPoints = @"HeightInPoints";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevelMode = @"OverlayWindowLevelMode";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevel = @"OverlayWindowLevel";
-static NSString *const kKayokoPreferenceKeySearchTemplate1 = @"SearchTemplate1";
-static NSString *const kKayokoPreferenceKeySearchTemplate2 = @"SearchTemplate2";
-static NSString *const kKayokoPreferenceKeySearchTemplate3 = @"SearchTemplate3";
-static NSString *const kKayokoPreferenceKeySearchTemplate4 = @"SearchTemplate4";
-static NSString *const kKayokoPreferenceKeySearchTemplate5 = @"SearchTemplate5";
+static NSString *const kKayokoPreferenceKeySearchEngines = @"SearchEngines";
 
 static BOOL const kKayokoPreferenceKeyEnabledDefaultValue = YES;
 static NSUInteger const kKayokoPreferenceKeyMaximumHistoryAmountDefaultValue = 200;

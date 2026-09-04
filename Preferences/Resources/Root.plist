@@ -411,37 +411,15 @@
 			<key>label</key>
 			<string>Word Selection Search</string>
 			<key>footerText</key>
-			<string>Optional. Enter each item as 【Name】URL, using %@ for the selected text. Anything after | is ignored.</string>
+			<string>Add, edit, delete, and reorder search engines. The first item is used when the search button is tapped.</string>
 		</dict>
 		<dict>
-			<key>cell</key><string>PSEditTextCell</string>
-			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
-			<key>key</key><string>SearchTemplate1</string>
-			<key>label</key><string>Search 1</string>
-		</dict>
-		<dict>
-			<key>cell</key><string>PSEditTextCell</string>
-			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
-			<key>key</key><string>SearchTemplate2</string>
-			<key>label</key><string>Search 2</string>
-		</dict>
-		<dict>
-			<key>cell</key><string>PSEditTextCell</string>
-			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
-			<key>key</key><string>SearchTemplate3</string>
-			<key>label</key><string>Search 3</string>
-		</dict>
-		<dict>
-			<key>cell</key><string>PSEditTextCell</string>
-			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
-			<key>key</key><string>SearchTemplate4</string>
-			<key>label</key><string>Search 4</string>
-		</dict>
-		<dict>
-			<key>cell</key><string>PSEditTextCell</string>
-			<key>defaults</key><string>com.mlgm.kayoko.preferences</string>
-			<key>key</key><string>SearchTemplate5</string>
-			<key>label</key><string>Search 5</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Search Engines</string>
+			<key>detail</key>
+			<string>KayokoSearchEnginesListController</string>
 		</dict>
 
 		<dict>

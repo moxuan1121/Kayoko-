@@ -1895,6 +1895,18 @@ NS_ASSUME_NONNULL_END
     [self setPendingWordSelectionItem:item];
 }
 
+- (void)prepareWordSelectionForDirectPresentation:(KayokoPasteboardItem *)item {
+    NSString *historyKey = [self effectiveActiveHistoryKey];
+    KayokoHistoryListView *sourceView = [self tableViewForHistoryKey:historyKey];
+    [self setActiveSourceContentView:sourceView];
+    [[self wordSelectionViewController] showWordSelectionWithItem:item
+                                                 sourceHistoryKey:historyKey
+                                               automaticallyPaste:[self automaticallyPaste]];
+    [[[self mainView] headerView] setHidden:YES];
+    [sourceView setHidden:YES];
+    [[[self wordSelectionViewController] wordSelectionView] setHidden:NO];
+}
+
 - (void)hidePreview {
     [[[self mainView] headerView] setHistorySwitcherVisible:YES animated:NO];
     [self updateFavoritesButtonForHistoryKey:[self effectiveActiveHistoryKey]];
@@ -2074,14 +2086,15 @@ NS_ASSUME_NONNULL_END
                               }
 
                               [self setHistoryContentVisibleForKey:historyKey];
-                              [[self searchController] attachToListViewController:[self activeListViewController]
-                                                                   hidesSearchBar:YES];
+                              KayokoPasteboardItem *pendingItem = [self pendingWordSelectionItem];
+                              [self setPendingWordSelectionItem:nil];
+                              if (pendingItem) {
+                                  [self prepareWordSelectionForDirectPresentation:pendingItem];
+                              } else {
+                                  [[self searchController] attachToListViewController:[self activeListViewController]
+                                                                       hidesSearchBar:YES];
+                              }
                               [[self panelPresentationController] showPanelWithCompletion:^{
-                                KayokoPasteboardItem *pendingItem = [self pendingWordSelectionItem];
-                                [self setPendingWordSelectionItem:nil];
-                                if (pendingItem) {
-                                    [self showContentForItem:pendingItem];
-                                }
                                 [self executePendingExternalHideRequestIfReady];
                               }];
                             }];

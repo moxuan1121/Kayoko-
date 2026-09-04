@@ -7,7 +7,6 @@
 
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoHeaderView.h"
-#import "KayokoActivitySharePresenter.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
@@ -34,8 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable, readwrite) NSString *sourceHistoryKey;
 @property(nonatomic, strong, nullable, readwrite) KayokoPasteboardItem *sourceItem;
 @property(nonatomic, strong) KayokoSystemTranslationPresenter *systemTranslationPresenter;
-@property(nonatomic, strong) KayokoActivitySharePresenter *activitySharePresenter;
-@property(nonatomic, assign) BOOL usesSelectionOrderForSelectedText;
 - (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries;
 - (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry;
 @end
@@ -54,10 +51,6 @@ NS_ASSUME_NONNULL_END
         [[_wordSelectionView headerView] setTitleText:name];
         [_wordSelectionView setHidden:YES];
         _systemTranslationPresenter = [[KayokoSystemTranslationPresenter alloc] init];
-        [[[_wordSelectionView headerView] alternateTrailingButton]
-                   addTarget:self
-                      action:@selector(handleSelectionOrderButtonPressed)
-            forControlEvents:UIControlEventTouchUpInside];
         [[[_wordSelectionView headerView] selectionActionButton]
                    addTarget:self
                       action:@selector(handleSelectionActionButtonPressed)
@@ -66,10 +59,6 @@ NS_ASSUME_NONNULL_END
                    addTarget:self
                       action:@selector(handleTranslationButtonPressed)
             forControlEvents:UIControlEventTouchUpInside];
-        [[[_wordSelectionView headerView] shareButton]
-                   addTarget:self
-                      action:@selector(handleShareButtonPressed)
-            forControlEvents:UIControlEventTouchUpInside];
         [[[_wordSelectionView headerView] searchButton]
                    addTarget:self
                       action:@selector(handleSearchButtonPressed)
@@ -77,7 +66,6 @@ NS_ASSUME_NONNULL_END
         UILongPressGestureRecognizer *searchLongPress = [[UILongPressGestureRecognizer alloc]
             initWithTarget:self action:@selector(handleSearchButtonLongPress:)];
         [[[_wordSelectionView headerView] searchButton] addGestureRecognizer:searchLongPress];
-        _activitySharePresenter = [[KayokoActivitySharePresenter alloc] init];
         [self setView:_wordSelectionView];
 
         __weak typeof(self) weakSelf = self;
@@ -85,7 +73,6 @@ NS_ASSUME_NONNULL_END
           [weakSelf updateActionButtonState];
           [weakSelf updateSelectionActionButtonStates];
           [weakSelf updateTranslationButtonState];
-          [weakSelf updateShareButtonState];
           [weakSelf updateSearchButtonState];
           if ([weakSelf selectionChangedHandler]) {
               [weakSelf selectionChangedHandler]();
@@ -126,7 +113,6 @@ NS_ASSUME_NONNULL_END
     [self setSourceHistoryKey:sourceHistoryKey];
 
     NSString *text = kayokoWordSelectionTextByTrimmingBoundaryNewlines([item content]);
-    [[self wordSelectionView] setUsesSelectionOrderForSelectedText:[self usesSelectionOrderForSelectedText]];
     [[self wordSelectionView] setText:text];
     [[self wordSelectionView] setHidden:NO];
 
@@ -144,20 +130,12 @@ NS_ASSUME_NONNULL_END
                        withImageName:(automaticallyPaste ? @"doc.on.clipboard" : @"doc.on.doc.fill")imageSize
                                     :kKayokoBackButtonImageSize
                            tintColor:[UIColor labelColor]];
-    [[headerView alternateTrailingButton] setHidden:NO];
-    [[headerView alternateTrailingButton] setEnabled:YES];
-    [[headerView alternateTrailingButton] setAlpha:1.0];
     [[headerView selectionActionButton] setHidden:NO];
     NSString *translationImageName = [UIImage systemImageNamed:@"character.book.closed"] ? @"character.book.closed" : @"globe";
     [headerView updateStyleForButton:[headerView translationButton]
                        withImageName:translationImageName
                            imageSize:kKayokoBackButtonImageSize
                            tintColor:[UIColor labelColor]];
-    [headerView updateStyleForButton:[headerView shareButton]
-                       withImageName:@"square.and.arrow.up"
-                           imageSize:kKayokoBackButtonImageSize
-                           tintColor:[UIColor labelColor]];
-    [[headerView shareButton] setHidden:NO];
     NSArray *searchEntries = [self searchEntries];
     [headerView updateStyleForButton:[headerView searchButton]
                        withImageName:@"magnifyingglass"
@@ -174,19 +152,9 @@ NS_ASSUME_NONNULL_END
                                   localizedStringForKey:(automaticallyPaste ? @"Paste" : @"Copy")
                                                   value:nil
                                                   table:@"Tweak"]];
-    [[headerView alternateTrailingButton]
-        setAccessibilityLabel:[[KayokoPasteboardManager localizationBundle] localizedStringForKey:@"Selection Order"
-                                                                                            value:nil
-                                                                                            table:@"Tweak"]];
-    [[headerView shareButton]
-        setAccessibilityLabel:[[KayokoPasteboardManager localizationBundle] localizedStringForKey:@"Share"
-                                                                                            value:nil
-                                                                                            table:@"Tweak"]];
-    [self updateSelectionOrderButtonState];
     [self updateActionButtonState];
     [self updateSelectionActionButtonStates];
     [self updateTranslationButtonState];
-    [self updateShareButtonState];
     [self updateSearchButtonState];
 }
 
@@ -226,11 +194,6 @@ NS_ASSUME_NONNULL_END
     [[self delegate] wordSelectionViewController:self triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleMedium];
 }
 
-- (void)handleSelectionOrderButtonPressed {
-    [self setUsesSelectionOrderForSelectedText:![self usesSelectionOrderForSelectedText]];
-    [[self delegate] wordSelectionViewController:self triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleLight];
-}
-
 - (void)handleSelectionActionButtonPressed {
     KayokoWordSelectionView *wordSelectionView = [self wordSelectionView];
     BOOL didChange = [wordSelectionView hasAllTokensSelected] ? [wordSelectionView clearSelectedTokens]
@@ -250,39 +213,15 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)handleShareButtonPressed {
-    NSString *text = [self selectedText];
-    if ([text length] == 0) {
-        return;
-    }
-
-    KayokoHeaderView *headerView = [[self wordSelectionView] headerView];
-    if ([[self activitySharePresenter] presentActivityItems:@[ text ] fromController:self anchorView:[headerView shareButton]]) {
-        [[self delegate] wordSelectionViewController:self triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleLight];
-    }
-}
-
 - (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries {
     NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
-    NSArray<NSString *> *keys = @[ kKayokoPreferenceKeySearchTemplate1, kKayokoPreferenceKeySearchTemplate2,
-                                   kKayokoPreferenceKeySearchTemplate3, kKayokoPreferenceKeySearchTemplate4,
-                                   kKayokoPreferenceKeySearchTemplate5 ];
+    [preferences synchronize];
     NSMutableArray *entries = [[NSMutableArray alloc] init];
-    for (NSString *key in keys) {
-        NSString *value = [[preferences stringForKey:key]
-            stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSRange nameEnd = [value rangeOfString:@"】"];
-        if (![value hasPrefix:@"【"] || nameEnd.location == NSNotFound) {
-            continue;
-        }
-        NSString *name = [value substringWithRange:NSMakeRange(1, nameEnd.location - 1)];
-        NSString *urlTemplate = [value substringFromIndex:NSMaxRange(nameEnd)];
-        NSRange ignoredBundle = [urlTemplate rangeOfString:@"|"];
-        if (ignoredBundle.location != NSNotFound) {
-            urlTemplate = [urlTemplate substringToIndex:ignoredBundle.location];
-        }
-        if ([name length] && [urlTemplate length]) {
-            [entries addObject:@{ @"name" : name, @"url" : urlTemplate }];
+    for (NSDictionary *storedEntry in [preferences arrayForKey:kKayokoPreferenceKeySearchEngines]) {
+        NSString *name = [storedEntry[@"name"] isKindOfClass:[NSString class]] ? storedEntry[@"name"] : nil;
+        NSString *engine = [storedEntry[@"engine"] isKindOfClass:[NSString class]] ? storedEntry[@"engine"] : nil;
+        if ([name length] && [engine length]) {
+            [entries addObject:@{ @"name" : name, @"url" : engine }];
         }
     }
     return entries;
@@ -300,6 +239,7 @@ NS_ASSUME_NONNULL_END
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
         [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        [[self delegate] wordSelectionViewController:self didRequestHideContainerAfterDirectPaste:NO];
     }
 }
 
@@ -314,7 +254,7 @@ NS_ASSUME_NONNULL_END
     NSArray<NSDictionary<NSString *, NSString *> *> *entries = [self searchEntries];
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"搜索"
                                                                    message:nil
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     for (NSDictionary<NSString *, NSString *> *entry in entries) {
         [sheet addAction:[UIAlertAction actionWithTitle:entry[@"name"]
                                               style:UIAlertActionStyleDefault
@@ -323,30 +263,14 @@ NS_ASSUME_NONNULL_END
         }]];
     }
     [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    UIPopoverPresentationController *popover = [sheet popoverPresentationController];
-    [popover setSourceView:[[[self wordSelectionView] headerView] searchButton]];
-    [popover setSourceRect:[[[self wordSelectionView] headerView] searchButton].bounds];
     [self presentViewController:sheet animated:YES completion:nil];
 }
 
 #pragma mark - State
 
-- (void)setUsesSelectionOrderForSelectedText:(BOOL)usesSelectionOrderForSelectedText {
-    if (_usesSelectionOrderForSelectedText == usesSelectionOrderForSelectedText) {
-        return;
-    }
-
-    _usesSelectionOrderForSelectedText = usesSelectionOrderForSelectedText;
-    [[self wordSelectionView] setUsesSelectionOrderForSelectedText:usesSelectionOrderForSelectedText];
-    [self updateSelectionOrderButtonState];
-    [self updateTranslationButtonState];
-}
-
 - (void)resetWordSelectionState {
     [[self systemTranslationPresenter] dismissTranslationAnimated:NO];
-    [[self activitySharePresenter] dismissActivityAnimated:NO];
     [[[[self wordSelectionView] headerView] translationButton] setHidden:YES];
-    [[[[self wordSelectionView] headerView] shareButton] setHidden:YES];
     [[[[self wordSelectionView] headerView] searchButton] setHidden:YES];
     [[self wordSelectionView] setHidden:YES];
     [[self wordSelectionView] reset];
@@ -363,39 +287,11 @@ NS_ASSUME_NONNULL_END
     [actionButton setAlpha:enabled ? 1.0 : 0.35];
 }
 
-- (void)updateShareButtonState {
-    UIButton *shareButton = [[[self wordSelectionView] headerView] shareButton];
-    BOOL enabled = [self hasSelectedText];
-    [shareButton setEnabled:enabled];
-    [shareButton setAlpha:enabled ? 1.0 : 0.35];
-}
-
 - (void)updateSearchButtonState {
     UIButton *button = [[[self wordSelectionView] headerView] searchButton];
     BOOL enabled = [self hasSelectedText];
     [button setEnabled:enabled];
     [button setAlpha:enabled ? 1.0 : 0.35];
-}
-
-- (void)updateSelectionOrderButtonState {
-    UIButton *selectionOrderButton = [[[self wordSelectionView] headerView] alternateTrailingButton];
-    BOOL enabled = [self usesSelectionOrderForSelectedText];
-    NSString *preferredImageName = enabled ? @"123.rectangle.fill" : @"123.rectangle";
-    // `123.rectangle` is unavailable on iOS 14 and would otherwise fall back to the generic document icon.
-    NSString *imageName = [UIImage systemImageNamed:preferredImageName] ? preferredImageName : @"textformat.123";
-    [[[self wordSelectionView] headerView]
-        updateStyleForButton:selectionOrderButton
-               withImageName:imageName
-                   imageSize:kKayokoBackButtonImageSize
-                   tintColor:[UIColor labelColor]];
-    [selectionOrderButton setSelected:enabled];
-    UIAccessibilityTraits traits = [selectionOrderButton accessibilityTraits] | UIAccessibilityTraitButton;
-    if (enabled) {
-        traits |= UIAccessibilityTraitSelected;
-    } else {
-        traits &= ~UIAccessibilityTraitSelected;
-    }
-    [selectionOrderButton setAccessibilityTraits:traits];
 }
 
 - (void)updateSelectionActionButtonStates {

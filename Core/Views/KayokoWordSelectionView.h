@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign, readonly) BOOL hasSelectedText;
 @property(nonatomic, assign, readonly) BOOL hasAllTokensSelected;
 @property(nonatomic, assign, readonly) BOOL hasCustomSelection;
-@property(nonatomic, assign) BOOL usesSelectionOrderForSelectedText;
 @property(nonatomic, assign) CGFloat keyboardBottomInset;
 @property(nonatomic, copy, nullable) void (^selectionChangedHandler)(void);
 
