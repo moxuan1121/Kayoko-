@@ -1,10 +1,11 @@
 #import "KayokoPreferenceKeys.h"
 
-#import <Preferences/PSListController.h>
+#import <Preferences/PSViewController.h>
 #import <UIKit/UIKit.h>
 
-@interface KayokoSearchEnginesListController : PSListController
+@interface KayokoSearchEnginesListController : PSViewController <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic, strong) NSMutableArray<NSMutableDictionary<NSString *, NSString *> *> *engines;
+@property(nonatomic, strong) UITableView *tableView;
 @end
 
 @implementation KayokoSearchEnginesListController
@@ -12,6 +13,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = [[NSBundle bundleForClass:self.class] localizedStringForKey:@"Search Engines" value:nil table:@"Root"];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleInsetGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    [self.view addSubview:self.tableView];
     NSArray *stored = [[[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier]
         arrayForKey:kKayokoPreferenceKeySearchEngines];
     self.engines = [[NSMutableArray alloc] init];
@@ -27,6 +33,11 @@
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                      target:self
                                                      action:@selector(addEngine)];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:animated];
 }
 
 - (void)saveEngines {
