@@ -385,9 +385,7 @@ NS_ASSUME_NONNULL_END
         return NO;
     }
     NSString *text = [self tokens][index][@"text"];
-    NSCharacterSet *asciiLettersAndNumbers =
-        [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
-    return [text length] > 1 && [text rangeOfCharacterFromSet:asciiLettersAndNumbers].location != NSNotFound;
+    return [text length] > 1;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
