@@ -9,6 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              destructive:(BOOL)destructive
                  handler:(dispatch_block_t)handler;
 - (void)presentFromView:(UIView *)sourceView inView:(UIView *)hostView;
+- (void)trackGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 - (void)dismiss;
 
 @end

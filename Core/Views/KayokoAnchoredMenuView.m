@@ -131,6 +131,10 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 }
 
 - (void)handleSlideGesture:(UILongPressGestureRecognizer *)gesture {
+    [self trackGestureRecognizer:gesture];
+}
+
+- (void)trackGestureRecognizer:(UIGestureRecognizer *)gesture {
     CGPoint point = [gesture locationInView:self.stackView];
     NSInteger index = CGRectContainsPoint(self.stackView.bounds, point)
                           ? MIN((NSInteger)(point.y / kKayokoAnchoredMenuRowHeight),
@@ -151,10 +155,13 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
         self.highlightedIndex = NSNotFound;
         if (selectedIndex != NSNotFound) {
             [self performItemAtIndex:selectedIndex];
+        } else {
+            [self dismiss];
         }
     } else if (gesture.state == UIGestureRecognizerStateCancelled ||
                gesture.state == UIGestureRecognizerStateFailed) {
         self.highlightedIndex = NSNotFound;
+        [self dismiss];
     }
 }
 

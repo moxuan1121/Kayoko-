@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable, readwrite) NSString *sourceHistoryKey;
 @property(nonatomic, strong, nullable, readwrite) KayokoPasteboardItem *sourceItem;
 @property(nonatomic, strong) KayokoSystemTranslationPresenter *systemTranslationPresenter;
+@property(nonatomic, strong, nullable) KayokoAnchoredMenuView *activeSearchMenu;
 - (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries;
 - (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry;
 @end
@@ -249,25 +250,34 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleSearchButtonLongPress:(UILongPressGestureRecognizer *)gesture {
-    if ([gesture state] != UIGestureRecognizerStateBegan || ![self hasSelectedText]) {
+    if (![self hasSelectedText]) {
         return;
     }
-    NSArray<NSDictionary<NSString *, NSString *> *> *entries = [self searchEntries];
-    KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
-    __weak typeof(self) weakSelf = self;
-    for (NSDictionary<NSString *, NSString *> *entry in entries) {
-        [menu addItemWithTitle:entry[@"name"]
-                         image:[UIImage systemImageNamed:@"magnifyingglass"]
-                   destructive:NO
-                       handler:^{ [weakSelf openSearchEntry:entry]; }];
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
+        __weak typeof(self) weakSelf = self;
+        for (NSDictionary<NSString *, NSString *> *entry in [self searchEntries]) {
+            [menu addItemWithTitle:entry[@"name"]
+                             image:[UIImage systemImageNamed:@"magnifyingglass"]
+                       destructive:NO
+                           handler:^{ [weakSelf openSearchEntry:entry]; }];
+        }
+        self.activeSearchMenu = menu;
+        [menu presentFromView:gesture.view inView:self.view.window ?: self.view];
     }
-    [menu presentFromView:gesture.view inView:self.view.window ?: self.view];
+    [self.activeSearchMenu trackGestureRecognizer:gesture];
+    if (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled ||
+        gesture.state == UIGestureRecognizerStateFailed) {
+        self.activeSearchMenu = nil;
+    }
 }
 
 #pragma mark - State
 
 - (void)resetWordSelectionState {
     [[self systemTranslationPresenter] dismissTranslationAnimated:NO];
+    [[self activeSearchMenu] dismiss];
+    [self setActiveSearchMenu:nil];
     [[[[self wordSelectionView] headerView] translationButton] setHidden:YES];
     [[[[self wordSelectionView] headerView] searchButton] setHidden:YES];
     [[self wordSelectionView] setHidden:YES];
