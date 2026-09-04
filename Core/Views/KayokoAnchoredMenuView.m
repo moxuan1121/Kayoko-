@@ -1,11 +1,12 @@
 #import "KayokoAnchoredMenuView.h"
 
 static NSInteger const kKayokoAnchoredMenuTag = 0x4B4D4E55;
-static CGFloat const kKayokoAnchoredMenuWidth = 250.0;
-static CGFloat const kKayokoAnchoredMenuRowHeight = 38.0;
+static CGFloat const kKayokoAnchoredMenuWidth = 190.0;
+static CGFloat const kKayokoAnchoredMenuRowHeight = 34.0;
 static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 
 @interface KayokoAnchoredMenuView ()
+@property(nonatomic, strong) UIView *cardView;
 @property(nonatomic, strong) UIStackView *stackView;
 @property(nonatomic, strong) NSMutableArray<dispatch_block_t> *handlers;
 @property(nonatomic, assign) NSInteger highlightedIndex;
@@ -17,23 +18,28 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     self = [super initWithFrame:CGRectZero];
     if (self) {
         self.tag = kKayokoAnchoredMenuTag;
-        self.backgroundColor = UIColor.clearColor;
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.12];
         [self addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
 
         _handlers = [NSMutableArray array];
         _highlightedIndex = NSNotFound;
+        _cardView = [[UIView alloc] init];
+        _cardView.layer.cornerRadius = 12.0;
+        _cardView.layer.cornerCurve = kCACornerCurveContinuous;
+        _cardView.layer.shadowColor = UIColor.blackColor.CGColor;
+        _cardView.layer.shadowOpacity = 0.22;
+        _cardView.layer.shadowRadius = 10.0;
+        _cardView.layer.shadowOffset = CGSizeMake(0, 4);
+        [self addSubview:_cardView];
+
         _stackView = [[UIStackView alloc] init];
         _stackView.axis = UILayoutConstraintAxisVertical;
         _stackView.distribution = UIStackViewDistributionFillEqually;
         _stackView.backgroundColor = UIColor.secondarySystemBackgroundColor;
-        _stackView.layer.cornerRadius = 14.0;
+        _stackView.layer.cornerRadius = 12.0;
         _stackView.layer.cornerCurve = kCACornerCurveContinuous;
         _stackView.clipsToBounds = YES;
-        _stackView.layer.shadowColor = UIColor.blackColor.CGColor;
-        _stackView.layer.shadowOpacity = 0.18;
-        _stackView.layer.shadowRadius = 12.0;
-        _stackView.layer.shadowOffset = CGSizeMake(0, 4);
-        [self addSubview:_stackView];
+        [_cardView addSubview:_stackView];
 
         UILongPressGestureRecognizer *slideGesture =
             [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSlideGesture:)];
@@ -51,9 +57,13 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     button.tag = self.handlers.count;
     button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     UIButtonConfiguration *configuration = [UIButtonConfiguration plainButtonConfiguration];
-    configuration.contentInsets = NSDirectionalEdgeInsetsMake(0, 18, 0, 18);
-    configuration.imagePadding = 12;
+    configuration.contentInsets = NSDirectionalEdgeInsetsMake(0, 12, 0, 12);
+    configuration.imagePadding = 8;
     configuration.baseForegroundColor = destructive ? UIColor.systemRedColor : UIColor.labelColor;
+    configuration.preferredSymbolConfigurationForImage = [UIImageSymbolConfiguration configurationWithPointSize:13.0];
+    configuration.attributedTitle = [[NSAttributedString alloc]
+        initWithString:title
+            attributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:13.0 weight:UIFontWeightRegular] }];
     button.configuration = configuration;
     button.configurationUpdateHandler = ^(UIButton *updatedButton) {
       UIButtonConfiguration *updatedConfiguration = updatedButton.configuration;
@@ -61,11 +71,20 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
           updatedButton.highlighted ? UIColor.tertiarySystemFillColor : UIColor.clearColor;
       updatedButton.configuration = updatedConfiguration;
     };
-    button.titleLabel.font = [UIFont systemFontOfSize:16.0];
-    [button setTitle:title forState:UIControlStateNormal];
     if (image) {
         [button setImage:image forState:UIControlStateNormal];
     }
+    UIView *separator = [[UIView alloc] init];
+    separator.backgroundColor = UIColor.separatorColor;
+    separator.userInteractionEnabled = NO;
+    [button addSubview:separator];
+    separator.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [separator.leadingAnchor constraintEqualToAnchor:button.leadingAnchor constant:12.0],
+        [separator.trailingAnchor constraintEqualToAnchor:button.trailingAnchor],
+        [separator.bottomAnchor constraintEqualToAnchor:button.bottomAnchor],
+        [separator.heightAnchor constraintEqualToConstant:0.5]
+    ]];
     [button addTarget:self action:@selector(handleItem:) forControlEvents:UIControlEventTouchUpInside];
     [self.handlers addObject:[handler copy]];
     [self.stackView addArrangedSubview:button];
@@ -87,7 +106,15 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
         y = MIN(CGRectGetMaxY(sourceFrame) + 6.0,
                 CGRectGetHeight(hostView.bounds) - height - kKayokoAnchoredMenuMargin);
     }
-    self.stackView.frame = CGRectMake(x, y, width, height);
+    self.cardView.frame = CGRectMake(x, y, width, height);
+    self.stackView.frame = self.cardView.bounds;
+    self.alpha = 0;
+    self.cardView.transform = CGAffineTransformMakeScale(0.96, 0.96);
+    [UIView animateWithDuration:0.16
+                     animations:^{
+                       self.alpha = 1;
+                       self.cardView.transform = CGAffineTransformIdentity;
+                     }];
 }
 
 - (void)handleItem:(UIButton *)sender {
