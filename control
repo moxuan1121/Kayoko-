@@ -2,7 +2,7 @@ Package: com.moxuan.kayoko.keyboardx
 Name: Kayoko键盘侠
 Version: 4.7.9-keyboardx1
 Architecture: iphoneos-arm
-Description: Kayoko 键盘侠分词版，mlgm 基于「乌龙工作室」版进行二次修改
+Description: Kayoko 键盘侠版，长按文字打开键盘侠分词；mlgm 基于「乌龙工作室」版进行二次修改
 Maintainer: mlgm
 Author: mlgm
 Section: Tweaks
