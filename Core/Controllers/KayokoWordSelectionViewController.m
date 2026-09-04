@@ -263,7 +263,7 @@ NS_ASSUME_NONNULL_END
       NSMutableArray<UIMenuElement *> *actions = [NSMutableArray arrayWithCapacity:entries.count];
       for (NSDictionary<NSString *, NSString *> *entry in entries) {
           [actions addObject:[UIAction actionWithTitle:entry[@"name"]
-                                             image:[UIImage systemImageNamed:@"magnifyingglass"]
+                                             image:nil
                                         identifier:nil
                                            handler:^(__unused UIAction *action) {
                                              [weakSelf openSearchEntry:entry];
