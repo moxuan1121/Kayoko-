@@ -131,16 +131,34 @@ NS_ASSUME_NONNULL_END
 
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
-    [UIView animateWithDuration:highlighted ? 0.1 : 0.18
+    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction;
+    if (!highlighted) {
+        [UIView animateWithDuration:0.34
+                              delay:0
+             usingSpringWithDamping:0.52
+              initialSpringVelocity:0.8
+                            options:options
+                         animations:^{ self.transform = CGAffineTransformIdentity; }
+                         completion:nil];
+        return;
+    }
+
+    [UIView animateWithDuration:0.1
                           delay:0
-         usingSpringWithDamping:0.75
-          initialSpringVelocity:0
-                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
-                     animations:^{
-                       self.transform = highlighted ? CGAffineTransformMakeScale(0.94, 0.94)
-                                                    : CGAffineTransformIdentity;
-                     }
-                     completion:nil];
+                        options:options | UIViewAnimationOptionCurveEaseOut
+                     animations:^{ self.transform = CGAffineTransformMakeScale(0.91, 0.91); }
+                     completion:^(__unused BOOL finished) {
+                       if (!self.highlighted) {
+                           return;
+                       }
+                       [UIView animateWithDuration:0.32
+                                             delay:0
+                            usingSpringWithDamping:0.48
+                             initialSpringVelocity:0.9
+                                           options:options
+                                        animations:^{ self.transform = CGAffineTransformMakeScale(0.98, 0.98); }
+                                        completion:nil];
+                     }];
 }
 
 - (void)layoutSubviews {
