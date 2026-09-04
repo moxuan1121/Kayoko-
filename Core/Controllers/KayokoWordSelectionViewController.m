@@ -7,6 +7,7 @@
 
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoHeaderView.h"
+#import "KayokoAnchoredMenuView.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
@@ -22,7 +23,7 @@ static NSString *kayokoWordSelectionTextByTrimmingBoundaryNewlines(NSString *tex
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KayokoWordSelectionViewController () <UIContextMenuInteractionDelegate>
+@interface KayokoWordSelectionViewController ()
 #pragma mark - Views
 
 @property(nonatomic, strong, readwrite) KayokoWordSelectionView *wordSelectionView;
@@ -33,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable, readwrite) NSString *sourceHistoryKey;
 @property(nonatomic, strong, nullable, readwrite) KayokoPasteboardItem *sourceItem;
 @property(nonatomic, strong) KayokoSystemTranslationPresenter *systemTranslationPresenter;
+@property(nonatomic, strong, nullable) KayokoAnchoredMenuView *searchMenu;
 - (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries;
 - (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry;
 @end
@@ -63,9 +65,10 @@ NS_ASSUME_NONNULL_END
                    addTarget:self
                       action:@selector(handleSearchButtonPressed)
             forControlEvents:UIControlEventTouchUpInside];
-        UIContextMenuInteraction *searchMenuInteraction =
-            [[UIContextMenuInteraction alloc] initWithDelegate:self];
-        [[[_wordSelectionView headerView] searchButton] addInteraction:searchMenuInteraction];
+        UILongPressGestureRecognizer *searchMenuGesture =
+            [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSearchMenuGesture:)];
+        [searchMenuGesture setMinimumPressDuration:0.35];
+        [[[_wordSelectionView headerView] searchButton] addGestureRecognizer:searchMenuGesture];
         [self setView:_wordSelectionView];
 
         __weak typeof(self) weakSelf = self;
@@ -247,54 +250,36 @@ NS_ASSUME_NONNULL_END
     [self openSearchEntry:[[self searchEntries] firstObject]];
 }
 
-- (UIContextMenuConfiguration *)contextMenuInteraction:(UIContextMenuInteraction *)interaction
-                        configurationForMenuAtLocation:(CGPoint)location {
-    (void)interaction;
-    (void)location;
-    if (![self hasSelectedText]) {
-        return nil;
+- (void)handleSearchMenuGesture:(UILongPressGestureRecognizer *)gesture {
+    if ([gesture state] == UIGestureRecognizerStateBegan) {
+        if (![self hasSelectedText]) {
+            return;
+        }
+        KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
+        menu.menuWidth = 150.0;
+        menu.centersTitles = YES;
+        __weak typeof(self) weakSelf = self;
+        for (NSDictionary<NSString *, NSString *> *entry in [self searchEntries]) {
+            [menu addItemWithTitle:entry[@"name"] image:nil destructive:NO handler:^{
+              [weakSelf openSearchEntry:entry];
+            }];
+        }
+        [self setSearchMenu:menu];
+        [menu presentFromView:gesture.view inView:self.view.window ?: self.view];
     }
-    __weak typeof(self) weakSelf = self;
-    NSArray<NSDictionary<NSString *, NSString *> *> *entries = [self searchEntries];
-    return [UIContextMenuConfiguration configurationWithIdentifier:nil
-                                                   previewProvider:nil
-                                                    actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
-      (void)suggestedActions;
-      NSMutableArray<UIMenuElement *> *actions = [NSMutableArray arrayWithCapacity:entries.count];
-      for (NSDictionary<NSString *, NSString *> *entry in entries) {
-          [actions addObject:[UIAction actionWithTitle:entry[@"name"]
-                                             image:nil
-                                        identifier:nil
-                                           handler:^(__unused UIAction *action) {
-                                             [weakSelf openSearchEntry:entry];
-                                           }]];
-      }
-      return [UIMenu menuWithTitle:@"" children:actions];
-    }];
-}
 
-- (UITargetedPreview *)searchButtonPreviewForInteraction:(UIContextMenuInteraction *)interaction {
-    UIPreviewParameters *parameters = [[UIPreviewParameters alloc] init];
-    parameters.backgroundColor = [UIColor clearColor];
-    parameters.visiblePath = [UIBezierPath bezierPathWithRoundedRect:interaction.view.bounds cornerRadius:8.0];
-    return [[UITargetedPreview alloc] initWithView:interaction.view parameters:parameters];
-}
-
-- (UITargetedPreview *)contextMenuInteraction:(UIContextMenuInteraction *)interaction
-       previewForHighlightingMenuWithConfiguration:(UIContextMenuConfiguration *)configuration {
-    (void)configuration;
-    return [self searchButtonPreviewForInteraction:interaction];
-}
-
-- (UITargetedPreview *)contextMenuInteraction:(UIContextMenuInteraction *)interaction
-          previewForDismissingMenuWithConfiguration:(UIContextMenuConfiguration *)configuration {
-    (void)configuration;
-    return [self searchButtonPreviewForInteraction:interaction];
+    [[self searchMenu] trackGestureRecognizer:gesture];
+    if ([gesture state] == UIGestureRecognizerStateEnded || [gesture state] == UIGestureRecognizerStateCancelled ||
+        [gesture state] == UIGestureRecognizerStateFailed) {
+        [self setSearchMenu:nil];
+    }
 }
 
 #pragma mark - State
 
 - (void)resetWordSelectionState {
+    [[self searchMenu] dismiss];
+    [self setSearchMenu:nil];
     [[self systemTranslationPresenter] dismissTranslationAnimated:NO];
     [[[[self wordSelectionView] headerView] translationButton] setHidden:YES];
     [[[[self wordSelectionView] headerView] searchButton] setHidden:YES];

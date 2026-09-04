@@ -23,6 +23,7 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 
         _handlers = [NSMutableArray array];
         _highlightedIndex = NSNotFound;
+        _menuWidth = kKayokoAnchoredMenuWidth;
         _cardView = [[UIView alloc] init];
         _cardView.layer.cornerRadius = 12.0;
         _cardView.layer.cornerCurve = kCACornerCurveContinuous;
@@ -55,7 +56,8 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
                  handler:(dispatch_block_t)handler {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.tag = self.handlers.count;
-    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    button.contentHorizontalAlignment = self.centersTitles ? UIControlContentHorizontalAlignmentCenter
+                                                           : UIControlContentHorizontalAlignmentLeft;
     UIButtonConfiguration *configuration = [UIButtonConfiguration plainButtonConfiguration];
     configuration.contentInsets = NSDirectionalEdgeInsetsMake(0, 12, 0, 12);
     configuration.imagePadding = 8;
@@ -98,7 +100,7 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 
     CGRect sourceFrame = [sourceView convertRect:sourceView.bounds toView:hostView];
     CGFloat height = self.handlers.count * kKayokoAnchoredMenuRowHeight;
-    CGFloat width = MIN(kKayokoAnchoredMenuWidth, CGRectGetWidth(hostView.bounds) - kKayokoAnchoredMenuMargin * 2.0);
+    CGFloat width = MIN(self.menuWidth, CGRectGetWidth(hostView.bounds) - kKayokoAnchoredMenuMargin * 2.0);
     CGFloat x = MIN(MAX(CGRectGetMidX(sourceFrame) - width / 2.0, kKayokoAnchoredMenuMargin),
                     CGRectGetWidth(hostView.bounds) - width - kKayokoAnchoredMenuMargin);
     CGFloat y = CGRectGetMinY(sourceFrame) - height - 6.0;

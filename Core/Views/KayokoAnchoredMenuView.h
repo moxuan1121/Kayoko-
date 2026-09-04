@@ -4,6 +4,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoAnchoredMenuView : UIControl
 
+@property(nonatomic, assign) CGFloat menuWidth;
+@property(nonatomic, assign) BOOL centersTitles;
+
 - (void)addItemWithTitle:(NSString *)title
                    image:(nullable UIImage *)image
              destructive:(BOOL)destructive
