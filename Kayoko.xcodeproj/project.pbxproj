@@ -50,6 +50,7 @@
 		2B4D4799D5389BA10B098791 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022ACFA540FEB276DC0DCBAE /* IOKit.framework */; };
 		2CFA9F8EAC72B1A2CC8E8E12 /* Tags.strings in Resources */ = {isa = PBXBuildFile; fileRef = B9A4AD282F7DBA19011610A8 /* Tags.strings */; };
 		2F2655417E2A1204B94DBCF7 /* KayokoNoteEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0931934F1FCF4351C46450A2 /* KayokoNoteEditorView.m */; };
+		2F2A219F697509C21893B47A /* KayokoWordTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 253E9B9017C8F5C7A8433AD2 /* KayokoWordTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32D0E3E4AF2412585D324FFC /* HomeScreen-Search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D1522F655F08DE27D58107D8 /* HomeScreen-Search@3x.png */; };
 		342F3458F906C9E62D1FCFE6 /* Tweak.strings in Resources */ = {isa = PBXBuildFile; fileRef = BDAFB3C88199504CF2F4D450 /* Tweak.strings */; };
 		35E2D45AD5BA1B9B40304BC2 /* KayokoKeyboardHostResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AEA016F80DFD80BAC41F58 /* KayokoKeyboardHostResolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -69,6 +70,7 @@
 		470DB079DC444152AB0039C2 /* KayokoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 41FCA06DA5C72A5B8198809E /* KayokoIcon.png */; };
 		484E4900A387C5F868E3F859 /* KayokoHelperConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = CA47CF38CF044F489AA0D299 /* KayokoHelperConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		494F5704B0DCAACAADC207C2 /* KayokoCore.m in Sources */ = {isa = PBXBuildFile; fileRef = A319E94A1536332DBB68B053 /* KayokoCore.m */; };
+		498375BA8747912D76340ED5 /* KayokoWordTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0D16E2333AA2789EFD0EE8 /* KayokoWordTokenView.m */; };
 		49CB9623AEFCA135298545C0 /* KayokoPreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = FB9200AECF827133129A26AD /* KayokoPreviewView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4ACEA45775CE928609B7BFBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AFCC3146095CECBD347E944 /* Foundation.framework */; };
 		4C4C004C787B0749956C9754 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F159528372065006DC14C58 /* Security.framework */; };
@@ -209,6 +211,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E0D16E2333AA2789EFD0EE8 /* KayokoWordTokenView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoWordTokenView.m; sourceTree = "<group>"; };
 		022ACFA540FEB276DC0DCBAE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		03F3A86C19EEE17BC08EB7FF /* KayokoEdgeFadingTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoEdgeFadingTableView.h; sourceTree = "<group>"; };
 		055D829E19C47334BFDD1504 /* KayokoActivitySharePresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoActivitySharePresenter.m; sourceTree = "<group>"; };
@@ -246,6 +249,7 @@
 		21CB13C5C001C3D73D2A2DC9 /* KayokoEmptyStateView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoEmptyStateView.m; sourceTree = "<group>"; };
 		236F1BFC7F30686920F45914 /* KayokoFavoritesTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoFavoritesTableView.h; sourceTree = "<group>"; };
 		25A0A3FC942890B8FFE67F3F /* Spotlight-Search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spotlight-Search@2x.png"; sourceTree = "<group>"; };
+		253E9B9017C8F5C7A8433AD2 /* KayokoWordTokenView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KayokoWordTokenView.h; sourceTree = "<group>"; };
 		2B485B9F32D3F476E0B190C9 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		2CD8B1BC3C14B77C4E56FD6D /* KayokoTableViewCellContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoTableViewCellContent.m; sourceTree = "<group>"; };
 		2D15B3350F857BE5DF746872 /* KayokoWordSelectionTokenizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KayokoWordSelectionTokenizer.m; sourceTree = "<group>"; };
