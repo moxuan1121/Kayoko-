@@ -269,6 +269,7 @@ NS_ASSUME_NONNULL_END
         KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
         menu.menuWidth = 150.0;
         menu.centersTitles = YES;
+        menu.animatesDismissal = YES;
         UIView *ancestor = self.view;
         while (ancestor && ![ancestor isKindOfClass:[KayokoMainView class]]) {
             ancestor = ancestor.superview;

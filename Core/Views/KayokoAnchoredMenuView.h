@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) CGFloat menuWidth;
 @property(nonatomic, assign) BOOL centersTitles;
 @property(nonatomic, assign) BOOL presentsBelowSource;
+@property(nonatomic, assign) BOOL animatesDismissal;
 
 - (void)addItemWithTitle:(NSString *)title
                    image:(nullable UIImage *)image

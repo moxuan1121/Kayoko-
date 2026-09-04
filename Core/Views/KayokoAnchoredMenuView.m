@@ -186,7 +186,19 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
 }
 
 - (void)dismiss {
-    [self removeFromSuperview];
+    if (!self.animatesDismissal || !self.superview) {
+        [self removeFromSuperview];
+        return;
+    }
+    self.userInteractionEnabled = NO;
+    [UIView animateWithDuration:0.14
+                     animations:^{
+                       self.alpha = 0;
+                       self.cardView.transform = CGAffineTransformMakeScale(0.96, 0.96);
+                     }
+                     completion:^(__unused BOOL finished) {
+                       [self removeFromSuperview];
+                     }];
 }
 
 @end
