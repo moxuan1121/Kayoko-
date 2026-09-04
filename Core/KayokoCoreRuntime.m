@@ -284,6 +284,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGRect)fullscreenPanelFrameInWindow:(nullable UIWindow *)window;
 - (KayokoPanelPresentationMode)currentPresentationMode;
 - (void)hideWordSelectionPrompt;
+- (void)scheduleWordSelectionPromptHideAfterDelay:(NSTimeInterval)delay;
 - (void)showWordSelectionPromptForItem:(KayokoPasteboardItem *)item;
 - (void)handleWordSelectionPromptLongPress:(UILongPressGestureRecognizer *)gesture;
 
@@ -1096,6 +1097,14 @@ NS_ASSUME_NONNULL_END
                      }];
 }
 
+- (void)scheduleWordSelectionPromptHideAfterDelay:(NSTimeInterval)delay {
+    __weak typeof(self) weakSelf = self;
+    dispatch_block_t hideBlock = dispatch_block_create(0, ^{ [weakSelf hideWordSelectionPrompt]; });
+    self.wordSelectionPromptHideBlock = hideBlock;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MIN(MAX(delay, 0.5), 3.0) * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), hideBlock);
+}
+
 - (void)handleWordSelectionPromptPressed {
     KayokoPasteboardItem *item = self.wordSelectionPromptItem;
     [self hideWordSelectionPrompt];
@@ -1141,7 +1150,15 @@ NS_ASSUME_NONNULL_END
     [self.wordSelectionPromptSearchMenu trackGestureRecognizer:gesture];
     if (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled ||
         gesture.state == UIGestureRecognizerStateFailed) {
-        [self hideWordSelectionPrompt];
+        if (self.wordSelectionPromptWindow) {
+            self.wordSelectionPromptSearchMenu = nil;
+            self.wordSelectionPromptWindow.interactiveView = self.wordSelectionPromptButton;
+            NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
+            NSTimeInterval duration = [preferences objectForKey:kKayokoPreferenceKeyWordSelectionPromptDuration]
+                                          ? [preferences doubleForKey:kKayokoPreferenceKeyWordSelectionPromptDuration]
+                                          : kKayokoPreferenceKeyWordSelectionPromptDurationDefaultValue;
+            [self scheduleWordSelectionPromptHideAfterDelay:duration];
+        }
     }
 }
 
@@ -1227,12 +1244,7 @@ NS_ASSUME_NONNULL_END
     self.wordSelectionPromptItem = item;
     [window setHidden:NO];
 
-    __weak typeof(self) weakSelf = self;
-    dispatch_block_t hideBlock = dispatch_block_create(0, ^{ [weakSelf hideWordSelectionPrompt]; });
-    self.wordSelectionPromptHideBlock = hideBlock;
-    displayDuration = MIN(MAX(displayDuration, 0.5), 3.0);
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(displayDuration * NSEC_PER_SEC)),
-                   dispatch_get_main_queue(), hideBlock);
+    [self scheduleWordSelectionPromptHideAfterDelay:displayDuration];
 }
 
 - (void)markPasteWillStart {
