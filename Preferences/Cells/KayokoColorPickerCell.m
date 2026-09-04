@@ -17,6 +17,7 @@ static UIColor *KayokoColorFromHex(NSString *hex) {
 
 @implementation KayokoColorPickerCell {
     UIColorWell *_colorWell;
+    UILabel *_titleLabel;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style
@@ -24,12 +25,32 @@ static UIColor *KayokoColorFromHex(NSString *hex) {
                     specifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
-        _colorWell = [[UIColorWell alloc] init];
+        self.textLabel.hidden = YES;
+        self.detailTextLabel.hidden = YES;
+        _colorWell = [[UIColorWell alloc] initWithFrame:CGRectZero];
+        _colorWell.translatesAutoresizingMaskIntoConstraints = NO;
         _colorWell.supportsAlpha = NO;
         NSString *hex = [specifier performGetter] ?: [specifier propertyForKey:@"default"];
         _colorWell.selectedColor = KayokoColorFromHex(hex);
         [_colorWell addTarget:self action:@selector(colorChanged:) forControlEvents:UIControlEventValueChanged];
-        self.accessoryView = _colorWell;
+        [self.contentView addSubview:_colorWell];
+
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        _titleLabel.adjustsFontForContentSizeCategory = YES;
+        _titleLabel.text = [specifier name];
+        [self.contentView addSubview:_titleLabel];
+
+        [NSLayoutConstraint activateConstraints:@[
+            [_colorWell.leadingAnchor constraintEqualToAnchor:self.contentView.layoutMarginsGuide.leadingAnchor],
+            [_colorWell.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor],
+            [_colorWell.widthAnchor constraintEqualToConstant:36],
+            [_colorWell.heightAnchor constraintEqualToConstant:36],
+            [_titleLabel.leadingAnchor constraintEqualToAnchor:_colorWell.trailingAnchor constant:16],
+            [_titleLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.contentView.layoutMarginsGuide.trailingAnchor],
+            [_titleLabel.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor]
+        ]];
     }
     return self;
 }
