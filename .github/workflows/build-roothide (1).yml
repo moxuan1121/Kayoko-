@@ -65,7 +65,7 @@ jobs:
           set -euo pipefail
           package="$(find packages -maxdepth 1 -name '*.deb' -print -quit)"
           test -n "$package"
-          test "$(dpkg-deb -f "$package" Package)" = "com.moxuan.kayoko"
+          test "$(dpkg-deb -f "$package" Package)" = "$(awk -F ': ' '/^Package:/{print $2; exit}' control)"
           test "$(dpkg-deb -f "$package" Architecture)" = "iphoneos-arm64e"
 
           contents="$(mktemp)"
