@@ -595,9 +595,6 @@ NS_ASSUME_NONNULL_END
     if ([self.mainViewController swipeToSelectWords] != self.swipeToSelectWords) {
         [self.mainViewController setSwipeToSelectWords:self.swipeToSelectWords];
     }
-    if ([self.mainViewController previewLineCount] != self.previewLineCount) {
-        [self.mainViewController setPreviewLineCount:self.previewLineCount];
-    }
     if ([self.mainViewController itemDetailsMode] != self.itemDetailsMode) {
         [self.mainViewController setItemDetailsMode:self.itemDetailsMode];
     }
