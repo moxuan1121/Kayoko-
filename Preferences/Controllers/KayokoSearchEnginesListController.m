@@ -28,11 +28,10 @@
             [self.engines addObject:[@{ @"name" : name, @"engine" : engine } mutableCopy]];
         }
     }
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    self.navigationItem.rightBarButtonItem =
-        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                     target:self
-                                                     action:@selector(addEngine)];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                              target:self
+                                                                              action:@selector(addEngine)];
+    self.navigationItem.rightBarButtonItems = @[ addButton, self.editButtonItem ];
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {

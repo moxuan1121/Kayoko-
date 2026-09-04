@@ -56,6 +56,14 @@
     return tokens;
 }
 
++ (NSArray<NSDictionary<NSString *, id> *> *)characterTokensForText:(NSString *)text inRange:(NSRange)range {
+    NSMutableArray<NSDictionary<NSString *, id> *> *tokens = [[NSMutableArray alloc] init];
+    if (NSMaxRange(range) <= [text length]) {
+        [self addCharacterTokensFromText:text inRange:range toTokens:tokens];
+    }
+    return tokens;
+}
+
 #pragma mark - Detectors
 
 + (NSArray<NSDictionary<NSString *, id> *> *)detectedTokensForText:(NSString *)text inRange:(NSRange)textRange {

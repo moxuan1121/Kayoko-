@@ -116,6 +116,11 @@ NS_ASSUME_NONNULL_END
         [self setSelectionGestureRecognizer:selectionGesture];
         [[self contentView] addGestureRecognizer:selectionGesture];
 
+        UILongPressGestureRecognizer *refineGesture =
+            [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleRefineGesture:)];
+        [refineGesture setDelegate:self];
+        [[self contentView] addGestureRecognizer:refineGesture];
+
     }
 
     return self;
@@ -129,6 +134,21 @@ NS_ASSUME_NONNULL_END
 
     NSArray<NSDictionary<NSString *, id> *> *tokens = [KayokoWordSelectionTokenizer tokensForText:text];
     [[self tokens] addObjectsFromArray:tokens];
+
+    [self rebuildTokenButtons];
+
+    [self updateButtonStyles];
+    if ([self selectionChangedHandler]) {
+        [self selectionChangedHandler]();
+    }
+    [self setNeedsLayout];
+}
+
+- (void)rebuildTokenButtons {
+    for (KayokoWordTokenView *button in [self tokenButtons]) {
+        [button removeFromSuperview];
+    }
+    [[self tokenButtons] removeAllObjects];
 
     for (NSUInteger index = 0; index < [[self tokens] count]; index++) {
         KayokoWordTokenView *button = [[KayokoWordTokenView alloc] initWithFrame:CGRectZero];
@@ -145,12 +165,6 @@ NS_ASSUME_NONNULL_END
         [[self contentView] addSubview:button];
         [[self tokenButtons] addObject:button];
     }
-
-    [self updateButtonStyles];
-    if ([self selectionChangedHandler]) {
-        [self selectionChangedHandler]();
-    }
-    [self setNeedsLayout];
 }
 
 - (void)reset {
@@ -315,11 +329,76 @@ NS_ASSUME_NONNULL_END
     }
 }
 
+- (void)handleRefineGesture:(UILongPressGestureRecognizer *)gesture {
+    if ([gesture state] != UIGestureRecognizerStateBegan) {
+        return;
+    }
+
+    NSUInteger index = [self tokenIndexAtPoint:[gesture locationInView:[self contentView]]];
+    if (![self canRefineTokenAtIndex:index]) {
+        return;
+    }
+
+    NSDictionary<NSString *, id> *token = [self tokens][index];
+
+    NSArray<NSDictionary<NSString *, id> *> *parts =
+        [KayokoWordSelectionTokenizer characterTokensForText:[self originalText] inRange:[token[@"range"] rangeValue]];
+    if ([parts count] < 2) {
+        return;
+    }
+
+    NSMutableArray<NSDictionary<NSString *, id> *> *replacement = [parts mutableCopy];
+    if (token[@"lineBreakAfter"]) {
+        NSMutableDictionary<NSString *, id> *last = [[replacement lastObject] mutableCopy];
+        last[@"lineBreakAfter"] = token[@"lineBreakAfter"];
+        replacement[[replacement count] - 1] = last;
+    }
+
+    BOOL wasSelected = [[self selectedTokenIndexes] containsIndex:index];
+    NSUInteger addedCount = [replacement count] - 1;
+    NSMutableIndexSet *selection = [[NSMutableIndexSet alloc] init];
+    [[self selectedTokenIndexes] enumerateIndexesUsingBlock:^(NSUInteger selectedIndex, BOOL *stop) {
+      if (selectedIndex < index) {
+          [selection addIndex:selectedIndex];
+      } else if (selectedIndex > index) {
+          [selection addIndex:selectedIndex + addedCount];
+      }
+    }];
+    if (wasSelected) {
+        [selection addIndexesInRange:NSMakeRange(index, [replacement count])];
+    }
+
+    [[self tokens] replaceObjectsInRange:NSMakeRange(index, 1) withObjectsFromArray:replacement];
+    [self rebuildTokenButtons];
+    [self applySelectedTokenIndexes:selection];
+    [self setHasCustomSelection:YES];
+    [self updateButtonStyles];
+    [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight] impactOccurred];
+    if ([self selectionChangedHandler]) {
+        [self selectionChangedHandler]();
+    }
+    [self setNeedsLayout];
+}
+
+- (BOOL)canRefineTokenAtIndex:(NSUInteger)index {
+    if (index == NSNotFound || index >= [[self tokens] count]) {
+        return NO;
+    }
+    NSString *text = [self tokens][index][@"text"];
+    NSCharacterSet *asciiLettersAndNumbers =
+        [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
+    return [text length] > 1 && [text rangeOfCharacterFromSet:[asciiLettersAndNumbers invertedSet]].location == NSNotFound;
+}
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     CGPoint location = [gestureRecognizer locationInView:[self contentView]];
 
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         return [self tokenIndexAtPoint:location] != NSNotFound;
+    }
+
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        return [self canRefineTokenAtIndex:[self tokenIndexAtPoint:location]];
     }
 
     if (![gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {

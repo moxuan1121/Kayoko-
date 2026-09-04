@@ -273,6 +273,25 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+- (UITargetedPreview *)searchButtonPreviewForInteraction:(UIContextMenuInteraction *)interaction {
+    UIPreviewParameters *parameters = [[UIPreviewParameters alloc] init];
+    parameters.backgroundColor = [UIColor clearColor];
+    parameters.visiblePath = [UIBezierPath bezierPathWithRoundedRect:interaction.view.bounds cornerRadius:8.0];
+    return [[UITargetedPreview alloc] initWithView:interaction.view parameters:parameters];
+}
+
+- (UITargetedPreview *)contextMenuInteraction:(UIContextMenuInteraction *)interaction
+       previewForHighlightingMenuWithConfiguration:(UIContextMenuConfiguration *)configuration {
+    (void)configuration;
+    return [self searchButtonPreviewForInteraction:interaction];
+}
+
+- (UITargetedPreview *)contextMenuInteraction:(UIContextMenuInteraction *)interaction
+          previewForDismissingMenuWithConfiguration:(UIContextMenuConfiguration *)configuration {
+    (void)configuration;
+    return [self searchButtonPreviewForInteraction:interaction];
+}
+
 #pragma mark - State
 
 - (void)resetWordSelectionState {
