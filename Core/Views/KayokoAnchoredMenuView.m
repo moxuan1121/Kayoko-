@@ -43,15 +43,15 @@ static CGFloat const kKayokoAnchoredMenuMargin = 8.0;
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.tag = self.handlers.count;
     button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    button.contentEdgeInsets = UIEdgeInsetsMake(0, 18, 0, 18);
+    UIButtonConfiguration *configuration = [UIButtonConfiguration plainButtonConfiguration];
+    configuration.contentInsets = NSDirectionalEdgeInsetsMake(0, 18, 0, 18);
+    configuration.imagePadding = 12;
+    configuration.baseForegroundColor = destructive ? UIColor.systemRedColor : UIColor.labelColor;
+    button.configuration = configuration;
     button.titleLabel.font = [UIFont systemFontOfSize:17.0];
     [button setTitle:title forState:UIControlStateNormal];
-    [button setTitleColor:(destructive ? UIColor.systemRedColor : UIColor.labelColor)
-                 forState:UIControlStateNormal];
     if (image) {
         [button setImage:image forState:UIControlStateNormal];
-        button.tintColor = destructive ? UIColor.systemRedColor : UIColor.labelColor;
-        button.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 12);
     }
     [button addTarget:self action:@selector(handleItem:) forControlEvents:UIControlEventTouchUpInside];
     [self.handlers addObject:[handler copy]];
