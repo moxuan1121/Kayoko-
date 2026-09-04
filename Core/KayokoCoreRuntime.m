@@ -1082,7 +1082,9 @@ NS_ASSUME_NONNULL_END
     [self hideWordSelectionPrompt];
     KayokoWordSelectionPromptWindow *window = [[KayokoWordSelectionPromptWindow alloc] initWithWindowScene:scene];
     [window setFrame:[[UIScreen mainScreen] bounds]];
-    [window setWindowLevel:[self overlayWindowLevel] + 1];
+    // Keep the short-lived prompt above tweak-owned overlay windows. Its hit-test
+    // still passes every point outside the button through to the underlying UI.
+    [window setWindowLevel:CGFLOAT_MAX];
     [window setBackgroundColor:[UIColor clearColor]];
     UIViewController *controller = [[UIViewController alloc] init];
     [controller.view setBackgroundColor:[UIColor clearColor]];
