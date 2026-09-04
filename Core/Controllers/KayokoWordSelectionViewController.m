@@ -7,6 +7,7 @@
 
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoHeaderView.h"
+#import "KayokoAnchoredMenuView.h"
 #import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
@@ -252,18 +253,15 @@ NS_ASSUME_NONNULL_END
         return;
     }
     NSArray<NSDictionary<NSString *, NSString *> *> *entries = [self searchEntries];
-    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"搜索"
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleAlert];
+    KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
+    __weak typeof(self) weakSelf = self;
     for (NSDictionary<NSString *, NSString *> *entry in entries) {
-        [sheet addAction:[UIAlertAction actionWithTitle:entry[@"name"]
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(__unused UIAlertAction *action) {
-          [self openSearchEntry:entry];
-        }]];
+        [menu addItemWithTitle:entry[@"name"]
+                         image:[UIImage systemImageNamed:@"magnifyingglass"]
+                   destructive:NO
+                       handler:^{ [weakSelf openSearchEntry:entry]; }];
     }
-    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [self presentViewController:sheet animated:YES completion:nil];
+    [menu presentFromView:gesture.view inView:self.view];
 }
 
 #pragma mark - State

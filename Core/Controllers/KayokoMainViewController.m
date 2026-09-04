@@ -6,6 +6,7 @@
 #import "KayokoMainViewController.h"
 #import "KayokoClearConfirmationView.h"
 #import "KayokoClearConfirmationViewController.h"
+#import "KayokoAnchoredMenuView.h"
 #import "KayokoEmptyStateView.h"
 #import "KayokoExternalHideCoordinator.h"
 #import "KayokoHeaderButtonStyle.h"
@@ -1189,29 +1190,22 @@ NS_ASSUME_NONNULL_END
     [leadingButton setMenu:nil];
 }
 
-- (void)showClipboardClearMenu:(__unused UIButton *)sender {
+- (void)showClipboardClearMenu:(UIButton *)sender {
     if ([self isShowingClearConfirmation] || [self presentedViewController]) {
         return;
     }
     NSBundle *bundle = [KayokoPasteboardManager localizationBundle];
     __weak typeof(self) weakSelf = self;
-    UIAlertController *menu = [UIAlertController alertControllerWithTitle:nil
-                                                                  message:nil
-                                                           preferredStyle:UIAlertControllerStyleAlert];
-    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Clear Images" value:nil table:@"Tweak"]
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(__unused UIAlertAction *action) {
-                                             [weakSelf requestClearClipboardImagesOnly:YES];
-                                           }]];
-    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Clear Clipboard" value:nil table:@"Tweak"]
-                                             style:UIAlertActionStyleDestructive
-                                           handler:^(__unused UIAlertAction *action) {
-                                             [weakSelf requestClearClipboardImagesOnly:NO];
-                                           }]];
-    [menu addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"Cancel" value:nil table:@"Tweak"]
-                                             style:UIAlertActionStyleCancel
-                                           handler:nil]];
-    [self presentViewController:menu animated:YES completion:nil];
+    KayokoAnchoredMenuView *menu = [[KayokoAnchoredMenuView alloc] init];
+    [menu addItemWithTitle:[bundle localizedStringForKey:@"Clear Images" value:nil table:@"Tweak"]
+                     image:[UIImage systemImageNamed:@"photo"]
+               destructive:NO
+                   handler:^{ [weakSelf requestClearClipboardImagesOnly:YES]; }];
+    [menu addItemWithTitle:[bundle localizedStringForKey:@"Clear Clipboard" value:nil table:@"Tweak"]
+                     image:[UIImage systemImageNamed:@"trash"]
+               destructive:YES
+                   handler:^{ [weakSelf requestClearClipboardImagesOnly:NO]; }];
+    [menu presentFromView:sender inView:self.view];
 }
 
 - (void)requestClearClipboardImagesOnly:(BOOL)imagesOnly {
