@@ -129,6 +129,20 @@ NS_ASSUME_NONNULL_END
 
 @implementation KayokoWordSelectionPromptButton
 
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    [UIView animateWithDuration:highlighted ? 0.1 : 0.18
+                          delay:0
+         usingSpringWithDamping:0.75
+          initialSpringVelocity:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                       self.transform = highlighted ? CGAffineTransformMakeScale(0.94, 0.94)
+                                                    : CGAffineTransformIdentity;
+                     }
+                     completion:nil];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.gradientLayer.frame = self.bounds;
@@ -1055,10 +1069,24 @@ NS_ASSUME_NONNULL_END
         dispatch_block_cancel(self.wordSelectionPromptHideBlock);
         self.wordSelectionPromptHideBlock = nil;
     }
-    [self.wordSelectionPromptWindow setHidden:YES];
+    KayokoWordSelectionPromptWindow *window = self.wordSelectionPromptWindow;
+    UIView *interactiveView = window.interactiveView;
     self.wordSelectionPromptWindow = nil;
     self.wordSelectionPromptItem = nil;
     self.wordSelectionPromptSearchMenu = nil;
+    if (!window || window.hidden) {
+        return;
+    }
+    [UIView animateWithDuration:0.16
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                       window.alpha = 0;
+                       interactiveView.transform = CGAffineTransformMakeScale(0.96, 0.96);
+                     }
+                     completion:^(__unused BOOL finished) {
+                       window.hidden = YES;
+                     }];
 }
 
 - (void)handleWordSelectionPromptPressed {
