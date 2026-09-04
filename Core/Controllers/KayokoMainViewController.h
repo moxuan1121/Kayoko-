@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class KayokoMainViewController;
+@class KayokoPasteboardItem;
 
 @protocol KayokoMainViewControllerDelegate <NSObject>
 
@@ -55,6 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
                                       completion:(nullable void (^)(void))completion;
 - (void)hideImmediately;
 - (void)reload;
+- (void)presentWordSelectionForItemWhenShown:(KayokoPasteboardItem *)item;
 
 @end
 

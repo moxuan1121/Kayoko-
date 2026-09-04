@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) KayokoSystemTranslationPresenter *systemTranslationPresenter;
 @property(nonatomic, strong) KayokoActivitySharePresenter *activitySharePresenter;
 @property(nonatomic, assign) BOOL usesSelectionOrderForSelectedText;
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries;
+- (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry;
 @end
 
 NS_ASSUME_NONNULL_END
@@ -67,6 +69,13 @@ NS_ASSUME_NONNULL_END
                    addTarget:self
                       action:@selector(handleShareButtonPressed)
             forControlEvents:UIControlEventTouchUpInside];
+        [[[_wordSelectionView headerView] searchButton]
+                   addTarget:self
+                      action:@selector(handleSearchButtonPressed)
+            forControlEvents:UIControlEventTouchUpInside];
+        UILongPressGestureRecognizer *searchLongPress = [[UILongPressGestureRecognizer alloc]
+            initWithTarget:self action:@selector(handleSearchButtonLongPress:)];
+        [[[_wordSelectionView headerView] searchButton] addGestureRecognizer:searchLongPress];
         _activitySharePresenter = [[KayokoActivitySharePresenter alloc] init];
         [self setView:_wordSelectionView];
 
@@ -76,6 +85,7 @@ NS_ASSUME_NONNULL_END
           [weakSelf updateSelectionActionButtonStates];
           [weakSelf updateTranslationButtonState];
           [weakSelf updateShareButtonState];
+          [weakSelf updateSearchButtonState];
           if ([weakSelf selectionChangedHandler]) {
               [weakSelf selectionChangedHandler]();
           }
@@ -147,6 +157,13 @@ NS_ASSUME_NONNULL_END
                            imageSize:kKayokoBackButtonImageSize
                            tintColor:[UIColor labelColor]];
     [[headerView shareButton] setHidden:NO];
+    NSArray *searchEntries = [self searchEntries];
+    [headerView updateStyleForButton:[headerView searchButton]
+                       withImageName:@"magnifyingglass"
+                           imageSize:kKayokoBackButtonImageSize
+                           tintColor:[UIColor labelColor]];
+    [[headerView searchButton] setHidden:[searchEntries count] == 0];
+    [[headerView searchButton] setAccessibilityLabel:@"搜索"];
     [[headerView leadingButton]
         setAccessibilityLabel:[[KayokoPasteboardManager localizationBundle] localizedStringForKey:@"Back"
                                                                                             value:nil
@@ -169,6 +186,7 @@ NS_ASSUME_NONNULL_END
     [self updateSelectionActionButtonStates];
     [self updateTranslationButtonState];
     [self updateShareButtonState];
+    [self updateSearchButtonState];
 }
 
 #pragma mark - Dismissal
@@ -243,6 +261,73 @@ NS_ASSUME_NONNULL_END
     }
 }
 
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)searchEntries {
+    NSUserDefaults *preferences = [[NSUserDefaults alloc] initWithSuiteName:kKayokoPreferencesIdentifier];
+    NSArray<NSString *> *keys = @[ kKayokoPreferenceKeySearchTemplate1, kKayokoPreferenceKeySearchTemplate2,
+                                   kKayokoPreferenceKeySearchTemplate3, kKayokoPreferenceKeySearchTemplate4,
+                                   kKayokoPreferenceKeySearchTemplate5 ];
+    NSMutableArray *entries = [[NSMutableArray alloc] init];
+    for (NSString *key in keys) {
+        NSString *value = [[preferences stringForKey:key]
+            stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSRange nameEnd = [value rangeOfString:@"】"];
+        if (![value hasPrefix:@"【"] || nameEnd.location == NSNotFound) {
+            continue;
+        }
+        NSString *name = [value substringWithRange:NSMakeRange(1, nameEnd.location - 1)];
+        NSString *urlTemplate = [value substringFromIndex:NSMaxRange(nameEnd)];
+        NSRange ignoredBundle = [urlTemplate rangeOfString:@"|"];
+        if (ignoredBundle.location != NSNotFound) {
+            urlTemplate = [urlTemplate substringToIndex:ignoredBundle.location];
+        }
+        if ([name length] && [urlTemplate length]) {
+            [entries addObject:@{ @"name" : name, @"url" : urlTemplate }];
+        }
+    }
+    return entries;
+}
+
+- (void)openSearchEntry:(nullable NSDictionary<NSString *, NSString *> *)entry {
+    NSString *text = [self selectedText];
+    if (![text length] || !entry) {
+        return;
+    }
+    NSCharacterSet *allowed = [NSCharacterSet characterSetWithCharactersInString:
+        @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"];
+    NSString *encodedText = [text stringByAddingPercentEncodingWithAllowedCharacters:allowed] ?: @"";
+    NSString *urlString = [entry[@"url"] stringByReplacingOccurrencesOfString:@"%@" withString:encodedText];
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (url) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+    }
+}
+
+- (void)handleSearchButtonPressed {
+    [self openSearchEntry:[[self searchEntries] firstObject]];
+}
+
+- (void)handleSearchButtonLongPress:(UILongPressGestureRecognizer *)gesture {
+    if ([gesture state] != UIGestureRecognizerStateBegan || ![self hasSelectedText]) {
+        return;
+    }
+    NSArray<NSDictionary<NSString *, NSString *> *> *entries = [self searchEntries];
+    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"搜索"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    for (NSDictionary<NSString *, NSString *> *entry in entries) {
+        [sheet addAction:[UIAlertAction actionWithTitle:entry[@"name"]
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(__unused UIAlertAction *action) {
+          [self openSearchEntry:entry];
+        }]];
+    }
+    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    UIPopoverPresentationController *popover = [sheet popoverPresentationController];
+    [popover setSourceView:[[[self wordSelectionView] headerView] searchButton]];
+    [popover setSourceRect:[[[self wordSelectionView] headerView] searchButton].bounds];
+    [self presentViewController:sheet animated:YES completion:nil];
+}
+
 #pragma mark - State
 
 - (void)setUsesSelectionOrderForSelectedText:(BOOL)usesSelectionOrderForSelectedText {
@@ -261,6 +346,7 @@ NS_ASSUME_NONNULL_END
     [[self activitySharePresenter] dismissActivityAnimated:NO];
     [[[[self wordSelectionView] headerView] translationButton] setHidden:YES];
     [[[[self wordSelectionView] headerView] shareButton] setHidden:YES];
+    [[[[self wordSelectionView] headerView] searchButton] setHidden:YES];
     [[self wordSelectionView] setHidden:YES];
     [[self wordSelectionView] reset];
     [self setSourceItem:nil];
@@ -281,6 +367,13 @@ NS_ASSUME_NONNULL_END
     BOOL enabled = [self hasSelectedText];
     [shareButton setEnabled:enabled];
     [shareButton setAlpha:enabled ? 1.0 : 0.35];
+}
+
+- (void)updateSearchButtonState {
+    UIButton *button = [[[self wordSelectionView] headerView] searchButton];
+    BOOL enabled = [self hasSelectedText];
+    [button setEnabled:enabled];
+    [button setAlpha:enabled ? 1.0 : 0.35];
 }
 
 - (void)updateSelectionOrderButtonState {

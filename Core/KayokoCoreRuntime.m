@@ -9,6 +9,7 @@
 #import "KayokoHeaderButtonStyle.h"
 #import "KayokoNotificationKeys.h"
 #import "KayokoPanelPresentationMode.h"
+#import "KayokoPasteboardItem.h"
 #import "KayokoPasteboardManager.h"
 #import "KayokoPreferenceKeys.h"
 
@@ -62,6 +63,10 @@ static NSTimeInterval const kKayokoPasteSuppressionExpirationDelay = 1.0;
 @interface KayokoOverlayWindow : UIWindow
 @end
 
+@interface KayokoWordSelectionPromptWindow : UIWindow
+@property(nonatomic, weak) UIView *interactiveView;
+@end
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KayokoPasteSuppressionState : NSObject
@@ -103,6 +108,15 @@ NS_ASSUME_NONNULL_END
     }
 
     return [super hitTest:point withEvent:event];
+}
+
+@end
+
+@implementation KayokoWordSelectionPromptWindow
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hitView = [super hitTest:point withEvent:event];
+    return hitView == self.interactiveView || [hitView isDescendantOfView:self.interactiveView] ? hitView : nil;
 }
 
 @end
@@ -180,6 +194,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) UIWindow *overlayWindow;
 @property(nonatomic, assign) KayokoPanelPresentationMode activePresentationMode;
 @property(nonatomic, assign) BOOL pendingHeightPreferenceApply;
+@property(nonatomic, strong, nullable) KayokoWordSelectionPromptWindow *wordSelectionPromptWindow;
+@property(nonatomic, strong, nullable) KayokoPasteboardItem *wordSelectionPromptItem;
+@property(nonatomic, copy, nullable) dispatch_block_t wordSelectionPromptHideBlock;
 
 #pragma mark - Preferences
 
@@ -221,6 +238,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)preparePanelHostForPresentationMode:(KayokoPanelPresentationMode)presentationMode;
 - (CGRect)fullscreenPanelFrameInWindow:(nullable UIWindow *)window;
 - (KayokoPanelPresentationMode)currentPresentationMode;
+- (void)hideWordSelectionPrompt;
+- (void)showWordSelectionPromptForItem:(KayokoPasteboardItem *)item;
 
 @end
 
@@ -961,6 +980,7 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
+    [self hideWordSelectionPrompt];
     [self hideImmediately];
 }
 
@@ -989,6 +1009,74 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Pasteboard
 
+- (void)hideWordSelectionPrompt {
+    if (self.wordSelectionPromptHideBlock) {
+        dispatch_block_cancel(self.wordSelectionPromptHideBlock);
+        self.wordSelectionPromptHideBlock = nil;
+    }
+    [self.wordSelectionPromptWindow setHidden:YES];
+    self.wordSelectionPromptWindow = nil;
+    self.wordSelectionPromptItem = nil;
+}
+
+- (void)handleWordSelectionPromptPressed {
+    KayokoPasteboardItem *item = self.wordSelectionPromptItem;
+    [self hideWordSelectionPrompt];
+    if (!item) {
+        return;
+    }
+    [self createMainViewControllerIfNeeded];
+    [self.mainViewController presentWordSelectionForItemWhenShown:item];
+    [self show];
+}
+
+- (void)showWordSelectionPromptForItem:(KayokoPasteboardItem *)item {
+    if (!item || [[item imageName] length] > 0 || ![[item content] length] || [self panelVisible]) {
+        return;
+    }
+    BOOL locked = NO;
+    if ([self readUILocked:&locked] && locked) {
+        return;
+    }
+    UIWindowScene *scene = [self.statusBarWindow windowScene];
+    if (!scene) {
+        return;
+    }
+    [self hideWordSelectionPrompt];
+    KayokoWordSelectionPromptWindow *window = [[KayokoWordSelectionPromptWindow alloc] initWithWindowScene:scene];
+    [window setFrame:[[UIScreen mainScreen] bounds]];
+    [window setWindowLevel:[self overlayWindowLevel] + 1];
+    [window setBackgroundColor:[UIColor clearColor]];
+    UIViewController *controller = [[UIViewController alloc] init];
+    [controller.view setBackgroundColor:[UIColor clearColor]];
+    [window setRootViewController:controller];
+
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setTitle:@"✨ 分词" forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightSemibold]];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor systemIndigoColor]];
+    [button.layer setCornerRadius:22];
+    [button addTarget:self action:@selector(handleWordSelectionPromptPressed) forControlEvents:UIControlEventTouchUpInside];
+    [controller.view addSubview:button];
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [NSLayoutConstraint activateConstraints:@[
+        [[button trailingAnchor] constraintEqualToAnchor:[controller.view safeAreaLayoutGuide].trailingAnchor constant:-16],
+        [[button centerYAnchor] constraintEqualToAnchor:[controller.view centerYAnchor]],
+        [[button widthAnchor] constraintEqualToConstant:92],
+        [[button heightAnchor] constraintEqualToConstant:44],
+    ]];
+    window.interactiveView = button;
+    self.wordSelectionPromptWindow = window;
+    self.wordSelectionPromptItem = item;
+    [window setHidden:NO];
+
+    __weak typeof(self) weakSelf = self;
+    dispatch_block_t hideBlock = dispatch_block_create(0, ^{ [weakSelf hideWordSelectionPrompt]; });
+    self.wordSelectionPromptHideBlock = hideBlock;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), hideBlock);
+}
+
 - (void)markPasteWillStart {
     [self.pasteSuppressionState beginWithExpirationDelay:kKayokoPasteSuppressionExpirationDelay];
 }
@@ -1012,6 +1100,8 @@ NS_ASSUME_NONNULL_END
           return;
       }
 
+      [self showWordSelectionPromptForItem:[[KayokoPasteboardManager sharedInstance] getLatestHistoryItem]];
+
       NSTimeInterval now = CACurrentMediaTime();
       if (fabs(now - self.lastCopyFeedbackOccurred) < kKayokoMinimumFeedbackInterval) {
           return;
@@ -1027,6 +1117,8 @@ NS_ASSUME_NONNULL_END
     if ([self isPackageMaintenanceMode]) {
         return;
     }
+
+    [self hideWordSelectionPrompt];
 
     [self createMainViewControllerIfNeeded];
     if (!self.mainViewController || ![self.mainViewController isHidden]) {
@@ -1123,6 +1215,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)prepareForPackageMaintenance {
     [self setPackageMaintenanceMode:YES];
+    [self hideWordSelectionPrompt];
     [[KayokoPasteboardManager sharedInstance] enterMaintenanceModeUntilProcessExit];
     [self hideImmediately];
 }

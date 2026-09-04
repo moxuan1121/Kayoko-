@@ -29,6 +29,7 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
 @property(nonatomic, strong, readwrite) UIButton *selectionActionButton;
 @property(nonatomic, strong, readwrite) UIButton *translationButton;
 @property(nonatomic, strong, readwrite) UIButton *shareButton;
+@property(nonatomic, strong, readwrite) UIButton *searchButton;
 @property(nonatomic, strong, readwrite) UISegmentedControl *historySegmentedControl;
 
 @end
@@ -126,6 +127,11 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
         [_trailingButtonStack addArrangedSubview:_shareButton];
         [_shareButton setTranslatesAutoresizingMaskIntoConstraints:NO];
 
+        _searchButton = [[UIButton alloc] init];
+        [_searchButton setHidden:YES];
+        [_trailingButtonStack addArrangedSubview:_searchButton];
+        [_searchButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+
         _trailingButton = [[UIButton alloc] init];
         [_trailingButtonStack addArrangedSubview:_trailingButton];
         [_trailingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -167,6 +173,8 @@ static CGFloat const kKayokoSegmentBottomInset = 6;
             [[_translationButton heightAnchor] constraintEqualToConstant:32],
             [[_shareButton widthAnchor] constraintEqualToConstant:32],
             [[_shareButton heightAnchor] constraintEqualToConstant:32],
+            [[_searchButton widthAnchor] constraintEqualToConstant:32],
+            [[_searchButton heightAnchor] constraintEqualToConstant:32],
             [[_trailingButton widthAnchor] constraintEqualToConstant:32],
             [[_trailingButton heightAnchor] constraintEqualToConstant:32],
             [[_titleLabel trailingAnchor] constraintLessThanOrEqualToAnchor:[_trailingButtonStack leadingAnchor]

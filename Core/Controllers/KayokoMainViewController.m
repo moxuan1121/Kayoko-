@@ -99,6 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL noteEditingBeganFromSearch;
 @property(nonatomic, assign) BOOL noteEditingKeepsSearchHeaderHidden;
 @property(nonatomic, assign, getter=isFinishingNoteEditing) BOOL finishingNoteEditing;
+@property(nonatomic, strong, nullable) KayokoPasteboardItem *pendingWordSelectionItem;
 @property(nonatomic, assign) CGRect noteEditingOriginalPanelFrame;
 @property(nonatomic, assign) NSTimeInterval noteEditingKeyboardAnimationDuration;
 @property(nonatomic, assign) UIViewAnimationOptions noteEditingKeyboardAnimationOptions;
@@ -1883,6 +1884,17 @@ NS_ASSUME_NONNULL_END
     [[self panelPresentationController] triggerHapticFeedbackWithStyle:UIImpactFeedbackStyleMedium];
 }
 
+- (void)presentWordSelectionForItemWhenShown:(KayokoPasteboardItem *)item {
+    if (!item || [[item imageName] length] > 0 || ![[self wordSelectionViewController] canShowText:[item content]]) {
+        return;
+    }
+    if (![self isHidden] && ![[self panelPresentationController] isAnimating]) {
+        [self showContentForItem:item];
+        return;
+    }
+    [self setPendingWordSelectionItem:item];
+}
+
 - (void)hidePreview {
     [[[self mainView] headerView] setHistorySwitcherVisible:YES animated:NO];
     [self updateFavoritesButtonForHistoryKey:[self effectiveActiveHistoryKey]];
@@ -2065,6 +2077,11 @@ NS_ASSUME_NONNULL_END
                               [[self searchController] attachToListViewController:[self activeListViewController]
                                                                    hidesSearchBar:YES];
                               [[self panelPresentationController] showPanelWithCompletion:^{
+                                KayokoPasteboardItem *pendingItem = [self pendingWordSelectionItem];
+                                [self setPendingWordSelectionItem:nil];
+                                if (pendingItem) {
+                                    [self showContentForItem:pendingItem];
+                                }
                                 [self executePendingExternalHideRequestIfReady];
                               }];
                             }];
