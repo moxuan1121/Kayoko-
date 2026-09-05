@@ -2086,7 +2086,6 @@ NS_ASSUME_NONNULL_END
 
                               [self setHistoryContentVisibleForKey:historyKey];
                               KayokoPasteboardItem *pendingItem = [self pendingWordSelectionItem];
-                              [self setPendingWordSelectionItem:nil];
                               if (pendingItem) {
                                   [self prepareWordSelectionForDirectPresentation:pendingItem];
                               } else {
@@ -2094,6 +2093,10 @@ NS_ASSUME_NONNULL_END
                                                                        hidesSearchBar:YES];
                               }
                               [[self panelPresentationController] showPanelWithCompletion:^{
+                                if (pendingItem && [self pendingWordSelectionItem] == pendingItem) {
+                                    [self prepareWordSelectionForDirectPresentation:pendingItem];
+                                    [self setPendingWordSelectionItem:nil];
+                                }
                                 [self executePendingExternalHideRequestIfReady];
                               }];
                             }];
