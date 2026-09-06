@@ -1,12 +1,12 @@
-Package: com.moxuan.kayoko.keyboardx
-Name: Kayoko键盘侠
-Version: 4.7.9-keyboardx1
+Package: com.moxuan.kayoko.keyboardai
+Name: Kayoko AI
+Version: 4.7.9-keyboardai1
 Architecture: iphoneos-arm
-Description: Kayoko 键盘侠版，长按文字打开键盘侠分词；mlgm 基于「乌龙工作室」版进行二次修改
+Description: Kayoko AI 版，长按文字打开 Keyboard AI 分词；mlgm 基于「乌龙工作室」版进行二次修改
 Maintainer: mlgm
 Author: mlgm
 Section: Tweaks
 Icon: https://mlgm66.github.io/icon/kayoko.png
 Depends: firmware (>= 15.0), firmware (<< 16.0), mobilesubstrate, preferenceloader
-Conflicts: com.moxuan.kayoko, com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
-Replaces: com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
+Conflicts: com.moxuan.kayoko.keyboardx, com.moxuan.kayoko, com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko
+Replaces: com.moxuan.kayoko.keyboardx, com.moxuan.kayoko, com.mlgm.kayoko, codes.aurora.kayoko, dev.traurige.kayoko, com.82flex.kayoko, com.skypain.kayoko, com.dao.kayoko, xyz.cypwn.kayoko

@@ -17,11 +17,7 @@
 #import "KayokoTableViewCellContent.h"
 #import "KayokoTableViewCellContentProvider.h"
 
-@interface UIKeyboardImpl : NSObject
-+ (instancetype)sharedInstance;
-+ (instancetype)activeInstance;
-- (void)showTokenSelectionPopup:(NSString *)text;
-@end
+#import "KayokoKeyboardAI.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -939,22 +935,14 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
-    NSString *text = [[item content] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([[item imageName] length] == 0 && [text length] > 0) {
-        Class keyboardImplClass = NSClassFromString(@"UIKeyboardImpl");
-        UIKeyboardImpl *keyboardImpl = nil;
-        if ([keyboardImplClass respondsToSelector:@selector(sharedInstance)]) {
-            keyboardImpl = [keyboardImplClass sharedInstance];
-        }
-        if (![keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)] &&
-            [keyboardImplClass respondsToSelector:@selector(activeInstance)]) {
-            keyboardImpl = [keyboardImplClass activeInstance];
-        }
-        if ([keyboardImpl respondsToSelector:@selector(showTokenSelectionPopup:)]) {
-            [[self delegate] historyListViewControllerDidRequestHide:self];
-            [keyboardImpl showTokenSelectionPopup:[item content] ?: @""];
-            return;
-        }
+    NSString *text = [item content];
+    KayokoKeyboardAIOpenText openText = KayokoKeyboardAIOpener(text, [[item imageName] length] > 0);
+    if (openText) {
+        NSString *snapshot = [text copy];
+        [[self delegate] historyListViewController:self didRequestHideWithCompletion:^{
+            openText(snapshot);
+        }];
+        return;
     }
 
     [[self delegate] historyListViewController:self didRequestPreviewForItem:item];

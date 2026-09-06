@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - release
+      - kayoko-keyboardai
 
 permissions:
   contents: write
@@ -28,6 +29,13 @@ jobs:
 
       - name: Check out source
         uses: actions/checkout@v4
+
+      - name: Check Keyboard AI bridge
+        run: |
+          mkdir -p .bridge-check
+          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation -dynamiclib tests/keyboardai-mock.m -o .bridge-check/mock.dylib
+          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation tests/keyboardai-bridge.m -o .bridge-check/check
+          .bridge-check/check "$PWD/.bridge-check/mock.dylib"
 
       - name: Check out RootHide Theos
         uses: actions/checkout@v4

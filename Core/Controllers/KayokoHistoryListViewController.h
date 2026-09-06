@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol KayokoHistoryListViewControllerDelegate <NSObject>
 
 - (void)historyListViewControllerDidRequestHide:(KayokoHistoryListViewController *)controller;
+- (void)historyListViewController:(KayokoHistoryListViewController *)controller
+    didRequestHideWithCompletion:(void (^)(void))completion;
 - (void)historyListViewControllerDidRequestHideAfterDirectPaste:(KayokoHistoryListViewController *)controller;
 - (void)historyListViewController:(KayokoHistoryListViewController *)controller
          didRequestPreviewForItem:(KayokoPasteboardItem *)item;

@@ -546,6 +546,16 @@ NS_ASSUME_NONNULL_END
     [self hideRestoringFocus];
 }
 
+- (void)historyListViewController:(KayokoHistoryListViewController *)controller
+    didRequestHideWithCompletion:(void (^)(void))completion {
+    [[self panelPresentationController] prepareStandardDismissAnimation];
+    [self hideWithCompletion:^{
+        [[self delegate] mainViewControllerDidRequestFocusRestore:self];
+        // Run after completeHide and mainViewControllerDidHide finish their cleanup.
+        dispatch_async(dispatch_get_main_queue(), completion);
+    }];
+}
+
 - (void)historyListViewControllerDidRequestHideAfterDirectPaste:(KayokoHistoryListViewController *)controller {
     [[self panelPresentationController] prepareStandardDismissAnimation];
     [self hideAfterDirectPaste];
