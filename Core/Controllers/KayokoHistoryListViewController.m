@@ -938,6 +938,7 @@ NS_ASSUME_NONNULL_END
     NSString *text = [item content];
     KayokoKeyboardAIOpenText openText = KayokoKeyboardAIOpener(text, [[item imageName] length] > 0);
     if (openText) {
+        [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium] impactOccurred];
         NSString *snapshot = [text copy];
         [[self delegate] historyListViewController:self didRequestHideWithCompletion:^{
             openText(snapshot);
