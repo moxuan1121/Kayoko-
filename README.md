@@ -23,6 +23,6 @@ no KeyboardX methods, clipboard rewriting, AI request or new IPC dependency.
 Image/empty/over-24,000-UTF-16 entries and missing plugin retain Kayoko preview.
 The receiving panel offers Search / Copy / Close, with Keyboard AI's settings.
 
-Package: `com.moxuan.kayoko.keyboardai`, version `4.7.9-keyboardai1`.
+Package: `com.moxuan.kayoko.keyboardai`, version `4.7.9-keyboardai2`. Long-press handoff now closes Kayoko immediately instead of waiting for its 0.33-second dismissal animation before opening Keyboard AI.
 Conflicts/replaces the KeyboardX edition to prevent double injection. Existing Kayoko
 preference domains and data paths are retained. Original authorship and GPLv3 retained.

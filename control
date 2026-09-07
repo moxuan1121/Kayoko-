@@ -1,6 +1,6 @@
 Package: com.moxuan.kayoko.keyboardai
 Name: Kayoko AI
-Version: 4.7.9-keyboardai1
+Version: 4.7.9-keyboardai2
 Architecture: iphoneos-arm
 Description: Kayoko AI 版，长按文字打开 Keyboard AI 分词；mlgm 基于「乌龙工作室」版进行二次修改
 Maintainer: mlgm
