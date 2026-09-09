@@ -30,11 +30,11 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
-      - name: Check Keyboard AI bridge
+      - name: Check RegionShot bridge
         run: |
           mkdir -p .bridge-check
-          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation -dynamiclib tests/keyboardai-mock.m -o .bridge-check/mock.dylib
-          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation tests/keyboardai-bridge.m -o .bridge-check/check
+          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation -dynamiclib tests/regionshot-mock.m -o .bridge-check/mock.dylib
+          xcrun clang -fobjc-arc -Wall -Wextra -Werror -framework Foundation tests/regionshot-bridge.m -o .bridge-check/check
           .bridge-check/check "$PWD/.bridge-check/mock.dylib"
 
       - name: Check out RootHide Theos
