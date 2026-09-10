@@ -15,7 +15,7 @@ GPLv3. See [`COPYING`](COPYING).
 
 ## RegionShot 分词接入
 
-在 `kayoko-keyboardai` 分支中，长按文字历史或收藏条目会先关闭 Kayoko，再打开 RegionShot 分词窗口。动态调用 `RSInputOpenCopiedText`，需要 RegionShotInput 已注入同一进程；不再调用或依赖 KeyboardAI。
+在 `kayoko-keyboardai` 分支中，长按文字历史或收藏条目会先关闭 Kayoko，再打开 RegionShot 分词窗口。动态调用 SpringBoard 内 `RegionShot.dylib` 提供的 `RSKAOpenTokens`；不再调用或依赖 KeyboardAI。
 
 图片、空文本、超过 24,000 UTF-16 单元的文本，以及 RegionShot 未加载时，保留 Kayoko 原有预览。传递原文，不改写剪贴板，不发送 AI 请求。
 

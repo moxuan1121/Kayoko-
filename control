@@ -1,8 +1,8 @@
 Package: com.moxuan.kayoko.keyboardai
-Name: Kayoko RegionShot
-Version: 4.7.10-regionshot1
+Name: Kayoko
+Version: 4.7.10-regionshot2
 Architecture: iphoneos-arm
-Description: Kayoko AI 版，长按文字打开 RegionShot 分词；mlgm 基于「乌龙工作室」版进行二次修改
+Description: Kayoko 剪贴板管理器，长按文字可打开 RegionShot 分词窗口；mlgm 基于「乌龙工作室」版进行二次修改
 Maintainer: mlgm
 Author: mlgm
 Section: Tweaks

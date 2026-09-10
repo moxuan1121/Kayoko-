@@ -7,5 +7,5 @@ static inline KayokoRegionShotOpenText KayokoRegionShotOpener(id text, BOOL isIm
     if (isImage || ![text isKindOfClass:NSString.class] || [text length] > 24000 ||
         ![[text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet] length]) return NULL;
     // Resolve on use: optional plugin, no direct linking or forced dylib loading.
-    return (KayokoRegionShotOpenText)dlsym(RTLD_DEFAULT, "RSInputOpenCopiedText");
+    return (KayokoRegionShotOpenText)dlsym(RTLD_DEFAULT, "RSKAOpenTokens");
 }

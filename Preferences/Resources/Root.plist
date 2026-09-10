@@ -15,7 +15,7 @@
 			<key>cellClass</key>
 			<string>KayokoHeaderCell</string>
 			<key>headerTitle</key>
-			<string>Kayoko AI</string>
+			<string>Kayoko</string>
 			<key>headerSubtitle</key>
 			<string>Feature-rich clipboard manager for iOS.</string>
 			<key>detail</key>
