@@ -271,6 +271,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Fullscreen Geometry
 
 - (BOOL)usesPortraitCardSearchPresentation {
+    UIView *referenceView = [[self containerView] superview] ?: [self containerView];
+    CGRect bounds = [referenceView bounds];
+    if (!CGRectIsEmpty(bounds)) {
+        return CGRectGetHeight(bounds) >= CGRectGetWidth(bounds);
+    }
     return [self presentationMode] != KayokoPanelPresentationModeCompactLandscapeFullscreen;
 }
 
@@ -283,14 +288,14 @@ NS_ASSUME_NONNULL_END
 
     CGRect bounds = [superview bounds];
     CGRect referenceFrame = [self hasNormalFrameBeforeSearch] ? [self normalFrameBeforeSearch] : [containerView frame];
-    CGFloat y = MAX(CGRectGetMinY(referenceFrame), CGRectGetMinY(bounds));
     CGFloat keyboardTop = CGRectGetMaxY(bounds) - MAX(hostKeyboardBottomInset, 0.0);
-    y = MIN(y, keyboardTop);
 
     // Search becomes edge-to-edge and slightly overlaps the keyboard so the
     // panel's rounded bottom corners cannot expose a seam.
     CGFloat bottom = MIN(keyboardTop + kKayokoPanelFloatingInset, CGRectGetMaxY(bounds));
-    return CGRectMake(CGRectGetMinX(bounds), y, CGRectGetWidth(bounds), MAX(bottom - y, 0.0));
+    CGFloat height = MIN(CGRectGetHeight(referenceFrame), MAX(bottom - CGRectGetMinY(bounds), 0.0));
+    CGFloat y = bottom - height;
+    return CGRectMake(CGRectGetMinX(bounds), y, CGRectGetWidth(bounds), height);
 }
 
 - (CGRect)activeSearchFrame {
