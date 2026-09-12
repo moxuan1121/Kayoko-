@@ -302,7 +302,7 @@ NS_ASSUME_NONNULL_END
     CGFloat y = CGRectGetMidY(bounds) - preferredHeight * 0.5;
     // Preserve the reference top position while extending the card to the
     // screen bottom, avoiding an exposed strip below the landscape panel.
-    CGFloat height = MAX(CGRectGetMaxY(bounds) - y, 0.0);
+    CGFloat height = MAX(CGRectGetMaxY(bounds) + inset - y, 0.0);
     return CGRectMake(x, y, width, height);
 }
 

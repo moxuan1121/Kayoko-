@@ -282,34 +282,15 @@ NS_ASSUME_NONNULL_END
     }
 
     CGRect bounds = [superview bounds];
-    CGFloat inset = kKayokoPanelFloatingInset;
     CGRect referenceFrame = [self hasNormalFrameBeforeSearch] ? [self normalFrameBeforeSearch] : [containerView frame];
+    CGFloat y = MAX(CGRectGetMinY(referenceFrame), CGRectGetMinY(bounds));
+    CGFloat keyboardTop = CGRectGetMaxY(bounds) - MAX(hostKeyboardBottomInset, 0.0);
+    y = MIN(y, keyboardTop);
 
-    // Preserve floating-card width/x. Never expand portrait search to full host bounds.
-    CGFloat width = CGRectGetWidth(referenceFrame);
-    CGFloat x = CGRectGetMinX(referenceFrame);
-    if (width <= 0.0 || width >= CGRectGetWidth(bounds) - 1.0) {
-        width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-        width = MAX(width, 280.0);
-        x = CGRectGetMidX(bounds) - width * 0.5;
-    }
-
-    CGFloat preferredHeight = CGRectGetHeight(referenceFrame);
-    if (preferredHeight <= 0.0) {
-        preferredHeight = MIN(420.0, CGRectGetHeight(bounds) - inset * 2.0);
-        preferredHeight = MAX(preferredHeight, 220.0);
-    }
-
-    // Sit the card above the keyboard with the same edge gap as the floating chrome.
-    CGFloat availableBottom = CGRectGetMaxY(bounds) - MAX(hostKeyboardBottomInset, 0.0) - inset;
-    CGFloat maxHeight = MAX(availableBottom - inset, 220.0);
-    CGFloat height = MIN(preferredHeight, maxHeight);
-    CGFloat y = availableBottom - height;
-    if (y < inset) {
-        y = inset;
-        height = MIN(height, MAX(availableBottom - y, 220.0));
-    }
-    return CGRectMake(x, y, width, height);
+    // Search becomes edge-to-edge and slightly overlaps the keyboard so the
+    // panel's rounded bottom corners cannot expose a seam.
+    CGFloat bottom = MIN(keyboardTop + kKayokoPanelFloatingInset, CGRectGetMaxY(bounds));
+    return CGRectMake(CGRectGetMinX(bounds), y, CGRectGetWidth(bounds), MAX(bottom - y, 0.0));
 }
 
 - (CGRect)activeSearchFrame {
