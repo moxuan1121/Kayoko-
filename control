@@ -1,6 +1,6 @@
 Package: com.moxuan.kayoko.keyboardai
 Name: Kayoko
-Version: 4.7.10-regionshot3
+Version: 4.7.11
 Architecture: iphoneos-arm
 Description: Kayoko 剪贴板管理器，长按文字可打开 RegionShot 分词窗口；mlgm 基于「乌龙工作室」版进行二次修改
 Maintainer: mlgm
