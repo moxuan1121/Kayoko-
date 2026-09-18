@@ -10,6 +10,7 @@ int main(int argc, const char **argv) {
         assert(!KayokoRegionShotOpener(@42, NO));
         assert(!KayokoRegionShotOpener(@" \n", NO));
         assert(!KayokoRegionShotOpener(@"image caption", YES));
+        assert(!KayokoRegionShotImageOpener(nil));
         NSString *limit = [@"a" stringByPaddingToLength:24000 withString:@"a" startingAtIndex:0];
         assert(KayokoRegionShotOpener(limit, NO));
         assert(!KayokoRegionShotOpener([limit stringByAppendingString:@"a"], NO));
@@ -17,7 +18,10 @@ int main(int argc, const char **argv) {
         KayokoRegionShotOpenText openText = KayokoRegionShotOpener(text, NO);
         assert(openText);
         openText(text); // Mock asserts lossless whitespace and composed characters.
-        puts("RegionShot bridge: optional lookup, input bounds and lossless delivery passed.");
+        KayokoRegionShotOpenImage openImage = KayokoRegionShotImageOpener(@"image");
+        assert(openImage);
+        openImage(@"image", @"scene");
+        puts("RegionShot bridge: text and long-pressed image delivery passed.");
     }
     return 0;
 }

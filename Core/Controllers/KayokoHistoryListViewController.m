@@ -935,8 +935,22 @@ NS_ASSUME_NONNULL_END
         return;
     }
 
+    if ([[item imageName] length] > 0) {
+        UIImage *image = [[KayokoPasteboardManager sharedInstance] getImageForItem:item];
+        KayokoRegionShotOpenImage openImage = KayokoRegionShotImageOpener(image);
+        if (openImage && image.size.width > 0 && image.size.height > 0) {
+            UIWindowScene *scene = recognizedView.window.windowScene;
+            [[self delegate] historyListViewController:self didRequestHideWithCompletion:^{
+                openImage(image, scene);
+            }];
+            return;
+        }
+        [[self delegate] historyListViewController:self didRequestPreviewForItem:item];
+        return;
+    }
+
     NSString *text = [item content];
-    KayokoRegionShotOpenText openText = KayokoRegionShotOpener(text, [[item imageName] length] > 0);
+    KayokoRegionShotOpenText openText = KayokoRegionShotOpener(text, NO);
     if (openText) {
         [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium] impactOccurred];
         NSString *snapshot = [text copy];
